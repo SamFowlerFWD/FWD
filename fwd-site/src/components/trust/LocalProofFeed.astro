@@ -1,0 +1,133 @@
+---
+interface Proof {
+  company: string;
+  location: string;
+  action: string;
+  timeAgo: string;
+  saving?: string;
+}
+
+const proofs: Proof[] = [
+  { company: "Norfolk Logistics Ltd", location: "Norwich", action: "Reduced delivery planning time by 73%", timeAgo: "2 hours ago", saving: "£4,200/month" },
+  { company: "East Anglian Foods", location: "Great Yarmouth", action: "Automated inventory management", timeAgo: "5 hours ago", saving: "£6,800/month" },
+  { company: "Suffolk Manufacturing", location: "Bury St Edmunds", action: "Deployed quality control AI", timeAgo: "Yesterday", saving: "£9,500/month" },
+  { company: "Cambridge Tech Solutions", location: "Cambridge", action: "Launched customer service bot", timeAgo: "2 days ago", saving: "£3,100/month" },
+  { company: "Norfolk Insurance Group", location: "King's Lynn", action: "Automated claims processing", timeAgo: "3 days ago", saving: "£12,000/month" },
+  { company: "Essex Retail Co", location: "Chelmsford", action: "Implemented predictive analytics", timeAgo: "4 days ago", saving: "£5,500/month" }
+];
+---
+
+<div class="local-proof-feed">
+  <div class="flex items-center justify-between mb-4">
+    <h3 class="text-lg font-bold text-deep-space">Live Activity Feed</h3>
+    <span class="trust-badge">
+      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+        <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
+      </svg>
+      Verified
+    </span>
+  </div>
+  
+  <div class="proof-ticker space-y-3 max-h-96 overflow-hidden">
+    {proofs.map((proof, index) => (
+      <div 
+        class="proof-item bg-white rounded-lg p-4 border border-gray-100 shadow-sm hover:shadow-md transition-shadow animate-trust-slide"
+        style={`animation-delay: ${index * 0.1}s`}
+      >
+        <div class="flex items-start justify-between">
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="font-semibold text-deep-space">{proof.company}</span>
+              <span class="text-xs text-gray-500">• {proof.location}</span>
+            </div>
+            <p class="text-sm text-gray-700">{proof.action}</p>
+            {proof.saving && (
+              <div class="flex items-center gap-2 mt-2">
+                <span class="success-badge text-xs">
+                  Saving {proof.saving}
+                </span>
+              </div>
+            )}
+          </div>
+          <span class="text-xs text-gray-400 whitespace-nowrap">{proof.timeAgo}</span>
+        </div>
+      </div>
+    ))}
+  </div>
+  
+  <div class="mt-4 pt-4 border-t border-gray-200">
+    <div class="flex items-center justify-between text-sm">
+      <span class="text-gray-600">
+        <span class="font-bold text-success-green">287</span> businesses transformed
+      </span>
+      <button class="text-ai-purple hover:text-ai-purple/80 font-medium">
+        View Case Studies →
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Auto-scroll effect
+  const ticker = document.querySelector('.proof-ticker') as HTMLElement;
+  let isPaused = false;
+  
+  if (ticker) {
+    // Pause on hover
+    ticker.addEventListener('mouseenter', () => isPaused = true);
+    ticker.addEventListener('mouseleave', () => isPaused = false);
+    
+    // Clone items for infinite scroll
+    const items = ticker.querySelectorAll('.proof-item');
+    items.forEach(item => {
+      const clone = item.cloneNode(true) as HTMLElement;
+      ticker.appendChild(clone);
+    });
+    
+    // Auto-scroll animation
+    let scrollPosition = 0;
+    setInterval(() => {
+      if (!isPaused) {
+        scrollPosition += 1;
+        if (scrollPosition >= ticker.scrollHeight / 2) {
+          scrollPosition = 0;
+        }
+        ticker.scrollTop = scrollPosition;
+      }
+    }, 50);
+    
+    // Add new "live" updates periodically
+    setInterval(() => {
+      if (Math.random() > 0.7) {
+        const notification = document.createElement('div');
+        notification.className = 'fixed bottom-4 right-4 bg-success-green text-white px-4 py-3 rounded-lg shadow-lg animate-slide-up z-50';
+        notification.innerHTML = `
+          <div class="flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span class="font-medium">New business just saved £3,400/month!</span>
+          </div>
+        `;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+          notification.classList.add('animate-fade-out');
+          setTimeout(() => notification.remove(), 500);
+        }, 5000);
+      }
+    }, 30000); // Every 30 seconds
+  }
+</script>
+
+<style>
+  @keyframes fade-out {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(20px); }
+  }
+  
+  .animate-fade-out {
+    animation: fade-out 0.5s ease-out forwards;
+  }
+</style>

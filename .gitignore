@@ -1,0 +1,44 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+.astro/
+*.local
+
+# Environment variables
+.env
+.env.local
+.env.production.local
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+.idea/
+*.sw?
+*.swp
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test results and reports
+playwright-report/
+test-results/
+coverage/
+
+# Temporary files
+*.tmp
+*.temp
+test-animation.js
+test-animation-headless.js
+validate-animation.html
+verify-smooth-scroll.js

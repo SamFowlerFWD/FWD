@@ -1,0 +1,234 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@400;600;700;800&display=swap');
+@import 'tailwindcss';
+
+@layer base {
+  :root {
+    --deep-space: 10 14 39;
+    --ai-purple: 139 92 246;
+    --success-green: 16 185 129;
+    --trust-blue: 59 130 246;
+    --urgent-amber: 245 158 11;
+    --norfolk-sand: 243 232 220;
+    --premium-gray: 31 41 55;
+    --soft-white: 250 250 250;
+    
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-display: 'Sora', system-ui, sans-serif;
+  }
+
+  * {
+    @apply border-0;
+  }
+
+  html {
+    @apply scroll-smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-white text-gray-800;
+    font-family: var(--font-sans);
+    line-height: 1.6;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    @apply font-bold tracking-tight;
+  }
+
+  /* Psychological hover states */
+  .hover-lift {
+    @apply transition-all duration-300 ease-out;
+  }
+  
+  .hover-lift:hover {
+    @apply -translate-y-1 shadow-xl;
+  }
+
+  /* Trust indicators */
+  .trust-badge {
+    @apply inline-flex items-center gap-1 px-3 py-1 bg-blue-500/10 text-blue-500 rounded-full text-sm font-medium;
+  }
+
+  /* Urgency indicators */
+  .urgency-badge {
+    @apply inline-flex items-center gap-1 px-3 py-1 bg-amber-500/10 text-amber-500 rounded-full text-sm font-medium animate-pulse;
+  }
+
+  /* Success indicators */
+  .success-badge {
+    @apply inline-flex items-center gap-1 px-3 py-1 bg-green-500/10 text-green-500 rounded-full text-sm font-medium;
+  }
+
+  /* Premium glass effect */
+  .glass-premium {
+    @apply backdrop-blur-xl bg-white/70 border border-white/20 shadow-xl;
+  }
+
+  /* AI gradient backgrounds */
+  .ai-gradient {
+    background: linear-gradient(to bottom right, #0A0E27, rgba(139, 92, 246, 0.2), #0A0E27);
+  }
+
+  .ai-gradient-text {
+    @apply bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent;
+  }
+
+  /* Conversion-focused buttons */
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-6 py-3 bg-purple-500 text-white font-semibold rounded-lg hover:bg-purple-600 transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0;
+  }
+
+  .btn-urgent {
+    @apply inline-flex items-center justify-center px-6 py-3 bg-amber-500 text-gray-900 font-bold rounded-lg hover:bg-amber-600 transition-all duration-200 hover:shadow-lg animate-pulse;
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+  }
+
+  .btn-trust {
+    @apply inline-flex items-center justify-center px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-all duration-200;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  /* Loading states */
+  .skeleton {
+    @apply animate-pulse bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-[shimmer_1.5s_ease-in-out_infinite];
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  
+  @keyframes slideInFromBottom {
+    0% {
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .glass-premium {
+    @apply border-2 border-gray-900;
+  }
+}
+
+/* Custom color utilities */
+.text-deep-space {
+  color: rgb(var(--deep-space));
+}
+
+.text-ai-purple {
+  color: rgb(var(--ai-purple));
+}
+
+.text-success-green {
+  color: rgb(var(--success-green));
+}
+
+.text-trust-blue {
+  color: rgb(var(--trust-blue));
+}
+
+.text-urgent-amber {
+  color: rgb(var(--urgent-amber));
+}
+
+.text-premium-gray {
+  color: rgb(var(--premium-gray));
+}
+
+.bg-deep-space {
+  background-color: rgb(var(--deep-space));
+}
+
+.bg-ai-purple {
+  background-color: rgb(var(--ai-purple));
+}
+
+.bg-success-green {
+  background-color: rgb(var(--success-green));
+}
+
+.bg-trust-blue {
+  background-color: rgb(var(--trust-blue));
+}
+
+.bg-urgent-amber {
+  background-color: rgb(var(--urgent-amber));
+}
+
+.bg-norfolk-sand {
+  background-color: rgb(var(--norfolk-sand));
+}
+
+/* Fix overlapping sections */
+section {
+  position: relative;
+  z-index: 1;
+}
+
+/* Ensure navigation stays on top */
+nav {
+  z-index: 1000;
+}
+
+/* Prevent content jumping when navigation loads */
+body {
+  padding-top: 80px;
+}
+
+/* Improve contrast for all text */
+p, span, div {
+  color: rgb(31, 41, 55);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: rgb(10, 14, 39);
+}
+
+/* Shadow utilities for urgency */
+.shadow-urgent {
+  box-shadow: 0 10px 40px -10px rgba(245, 158, 11, 0.3);
+}
+
+/* Animation utilities */
+@keyframes urgency-shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+  20%, 40%, 60%, 80% { transform: translateX(2px); }
+}
+
+.animate-urgency-shake {
+  animation: urgency-shake 0.5s ease-in-out;
+}
+
+/* React component specific styles */
+[data-component] {
+  min-height: 50px;
+}
+
+/* Ensure interactive elements are visible */
+button, input, select, textarea {
+  position: relative;
+  z-index: 10;
+}

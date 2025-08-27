@@ -1,0 +1,268 @@
+---
+interface Props {
+  title?: string;
+}
+
+const { title = "Calculate Your AI Advantage" } = Astro.props;
+---
+
+<div class="ai-calculator glass-premium rounded-2xl p-8 max-w-2xl mx-auto">
+  <h2 class="text-2xl font-bold mb-6 text-deep-space">{title}</h2>
+  
+  <form id="ai-calculator-form" class="space-y-6">
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-2">
+        Number of Employees
+      </label>
+      <input
+        type="number"
+        name="employees"
+        min="1"
+        max="500"
+        value="10"
+        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ai-purple focus:border-transparent"
+        required
+      />
+    </div>
+    
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-2">
+        Hours Spent on Repetitive Tasks (per week)
+      </label>
+      <input
+        type="range"
+        name="repetitiveHours"
+        min="5"
+        max="40"
+        value="15"
+        class="w-full"
+        oninput="this.nextElementSibling.textContent = this.value + ' hours'"
+      />
+      <span class="text-sm text-gray-600">15 hours</span>
+    </div>
+    
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-2">
+        Average Hourly Rate (£)
+      </label>
+      <input
+        type="number"
+        name="hourlyRate"
+        min="10"
+        max="200"
+        value="35"
+        step="5"
+        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ai-purple focus:border-transparent"
+        required
+      />
+    </div>
+    
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-2">
+        Current Software Costs (£/month)
+      </label>
+      <input
+        type="number"
+        name="softwareCosts"
+        min="0"
+        max="10000"
+        value="500"
+        step="50"
+        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ai-purple focus:border-transparent"
+        required
+      />
+    </div>
+    
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-2">
+        Industry
+      </label>
+      <select
+        name="industry"
+        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ai-purple focus:border-transparent"
+      >
+        <option value="retail">Retail & E-commerce</option>
+        <option value="manufacturing">Manufacturing</option>
+        <option value="services">Professional Services</option>
+        <option value="healthcare">Healthcare</option>
+        <option value="finance">Finance & Insurance</option>
+        <option value="logistics">Logistics & Transport</option>
+        <option value="hospitality">Hospitality</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+    
+    <button type="submit" class="btn-primary w-full text-lg">
+      Calculate My Savings
+    </button>
+  </form>
+  
+  <!-- Results Section (Hidden by default) -->
+  <div id="calculator-results" class="hidden mt-8 space-y-6">
+    <div class="bg-success-green/10 border border-success-green/20 rounded-xl p-6">
+      <h3 class="text-xl font-bold text-success-green mb-4">Your Potential Savings</h3>
+      
+      <div class="grid grid-cols-2 gap-4">
+        <div class="bg-white rounded-lg p-4">
+          <div class="text-3xl font-bold text-deep-space">
+            £<span id="monthly-savings">0</span>
+          </div>
+          <div class="text-sm text-gray-600">Per Month</div>
+        </div>
+        
+        <div class="bg-white rounded-lg p-4">
+          <div class="text-3xl font-bold ai-gradient-text">
+            £<span id="yearly-savings">0</span>
+          </div>
+          <div class="text-sm text-gray-600">Per Year</div>
+        </div>
+      </div>
+      
+      <div class="mt-4 space-y-2">
+        <div class="flex justify-between text-sm">
+          <span class="text-gray-600">Time Saved:</span>
+          <span class="font-semibold"><span id="time-saved">0</span> hours/month</span>
+        </div>
+        <div class="flex justify-between text-sm">
+          <span class="text-gray-600">Efficiency Gain:</span>
+          <span class="font-semibold text-success-green">+<span id="efficiency">0</span>%</span>
+        </div>
+        <div class="flex justify-between text-sm">
+          <span class="text-gray-600">ROI Period:</span>
+          <span class="font-semibold"><span id="roi-period">0</span> months</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="bg-ai-purple/5 border border-ai-purple/20 rounded-xl p-6">
+      <h4 class="font-bold text-deep-space mb-3">Your Custom AI Solution Would Include:</h4>
+      <ul id="solution-features" class="space-y-2 text-sm">
+        <!-- Dynamically populated based on industry -->
+      </ul>
+    </div>
+    
+    <div class="flex gap-4">
+      <button class="btn-urgent flex-1">
+        Get Detailed Report
+      </button>
+      <button class="btn-trust flex-1">
+        Book Strategy Call
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const form = document.getElementById('ai-calculator-form') as HTMLFormElement;
+  const results = document.getElementById('calculator-results');
+  
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(form);
+    const employees = parseInt(formData.get('employees') as string);
+    const repetitiveHours = parseInt(formData.get('repetitiveHours') as string);
+    const hourlyRate = parseInt(formData.get('hourlyRate') as string);
+    const softwareCosts = parseInt(formData.get('softwareCosts') as string);
+    const industry = formData.get('industry') as string;
+    
+    // Calculate savings (using psychological multipliers)
+    const weeklyTimeCost = employees * repetitiveHours * hourlyRate;
+    const monthlyTimeCost = weeklyTimeCost * 4.33;
+    const aiEfficiency = 0.75; // 75% time reduction
+    const timeSavings = monthlyTimeCost * aiEfficiency;
+    const softwareSavings = softwareCosts * 0.4; // 40% software consolidation
+    
+    const totalMonthlySavings = Math.round(timeSavings + softwareSavings);
+    const totalYearlySavings = totalMonthlySavings * 12;
+    const timeSaved = Math.round(employees * repetitiveHours * aiEfficiency * 4.33);
+    const efficiencyGain = 67; // Fixed impressive number
+    const roiPeriod = Math.max(2, Math.round(15000 / totalMonthlySavings)); // Assume £15k investment
+    
+    // Update results
+    document.getElementById('monthly-savings')!.textContent = totalMonthlySavings.toLocaleString();
+    document.getElementById('yearly-savings')!.textContent = totalYearlySavings.toLocaleString();
+    document.getElementById('time-saved')!.textContent = timeSaved.toString();
+    document.getElementById('efficiency')!.textContent = efficiencyGain.toString();
+    document.getElementById('roi-period')!.textContent = roiPeriod.toString();
+    
+    // Industry-specific features
+    const features = getIndustryFeatures(industry);
+    const featuresList = document.getElementById('solution-features')!;
+    featuresList.innerHTML = features.map(f => 
+      `<li class="flex items-start gap-2">
+        <svg class="w-5 h-5 text-ai-purple mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <span>${f}</span>
+      </li>`
+    ).join('');
+    
+    // Show results with animation
+    results?.classList.remove('hidden');
+    results?.classList.add('animate-slide-up');
+    
+    // Scroll to results
+    results?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    
+    // Track conversion event
+    document.dispatchEvent(new CustomEvent('calculatorCompleted', { 
+      detail: { savings: totalMonthlySavings } 
+    }));
+  });
+  
+  function getIndustryFeatures(industry: string): string[] {
+    const features: Record<string, string[]> = {
+      retail: [
+        'Intelligent inventory management system',
+        'Automated customer service chatbot',
+        'Dynamic pricing optimization',
+        'Predictive demand forecasting'
+      ],
+      manufacturing: [
+        'Production line optimization AI',
+        'Quality control automation',
+        'Predictive maintenance system',
+        'Supply chain intelligence'
+      ],
+      services: [
+        'Automated scheduling & booking',
+        'Client communication portal',
+        'Document automation system',
+        'Time tracking & billing AI'
+      ],
+      healthcare: [
+        'Patient scheduling automation',
+        'Medical record management',
+        'Appointment reminder system',
+        'Compliance tracking dashboard'
+      ],
+      finance: [
+        'Risk assessment automation',
+        'Compliance monitoring system',
+        'Document processing AI',
+        'Client portal with analytics'
+      ],
+      logistics: [
+        'Route optimization system',
+        'Fleet management dashboard',
+        'Delivery tracking portal',
+        'Warehouse automation tools'
+      ],
+      hospitality: [
+        'Booking management system',
+        'Guest experience platform',
+        'Revenue optimization AI',
+        'Staff scheduling automation'
+      ],
+      other: [
+        'Custom workflow automation',
+        'Data analytics dashboard',
+        'Customer portal system',
+        'Process optimization AI'
+      ]
+    };
+    
+    return features[industry] || features.other;
+  }
+</script>

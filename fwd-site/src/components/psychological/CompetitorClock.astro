@@ -1,0 +1,12 @@
+---
+import CompetitorAdvantageClock from './CompetitorAdvantageClock.tsx';
+
+interface Props {
+  initialCompetitors?: number;
+  incrementRate?: number;
+}
+
+const props = Astro.props;
+---
+
+<CompetitorAdvantageClock client:load {...props} />

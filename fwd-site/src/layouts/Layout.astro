@@ -1,0 +1,117 @@
+---
+import Nav from '../components/ui/Nav.astro';
+
+export interface Props {
+  title: string;
+  description?: string;
+  keywords?: string;
+  ogImage?: string;
+  noindex?: boolean;
+}
+
+const { 
+  title, 
+  description = "FWD - AI-powered software development agency helping UK SMBs save 70% on custom software costs. Transform your business with intelligent automation.",
+  keywords = "ai software development, custom app development, norwich software agency, uk sme software, affordable custom software, business automation",
+  ogImage = "/og-image.png",
+  noindex = false
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!DOCTYPE html>
+<html lang="en-GB">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    
+    <!-- Primary Meta Tags -->
+    <title>{title} | FWD - AI Software Development Agency</title>
+    <meta name="title" content={`${title} | FWD - AI Software Development Agency`} />
+    <meta name="description" content={description} />
+    <meta name="keywords" content={keywords} />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonicalURL} />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={`${title} | FWD`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content="en_GB" />
+    <meta property="og:site_name" content="FWD - AI Software Development Agency" />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalURL} />
+    <meta property="twitter:title" content={`${title} | FWD`} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={ogImage} />
+    
+    <!-- Robots -->
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    
+    <!-- Performance hints -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="/src/styles/global.css" />
+    
+    <!-- Schema.org markup for Google -->
+    <script type="application/ld+json">
+      {JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "FWD",
+        "description": "AI-powered software development agency",
+        "url": "https://fwd-agency.co.uk",
+        "logo": "https://fwd-agency.co.uk/logo.png",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Norwich",
+          "addressRegion": "Norfolk",
+          "addressCountry": "GB"
+        },
+        "priceRange": "££",
+        "telephone": "+44-XXXX-XXXXXX",
+        "email": "hello@fwd-agency.co.uk"
+      })}
+    </script>
+  </head>
+  <body>
+    <Nav />
+    <slot />
+    
+    <!-- Psychological urgency script -->
+    <script>
+      // Track time on page for urgency messaging
+      let timeOnPage = 0;
+      setInterval(() => {
+        timeOnPage++;
+        if (timeOnPage === 30) {
+          // Trigger exit intent after 30 seconds
+          document.dispatchEvent(new CustomEvent('timeBasedUrgency'));
+        }
+      }, 1000);
+      
+      // Track scroll depth for engagement
+      let maxScroll = 0;
+      window.addEventListener('scroll', () => {
+        const scrollPercentage = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+        if (scrollPercentage > maxScroll) {
+          maxScroll = scrollPercentage;
+          if (maxScroll > 70) {
+            document.dispatchEvent(new CustomEvent('deepEngagement'));
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
