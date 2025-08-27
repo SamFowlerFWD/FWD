@@ -25,7 +25,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/webp" href="/fwd-logo.webp" />
+    <link rel="alternate icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/fwd-logo.webp" />
     <meta name="generator" content={Astro.generator} />
     
     <!-- Primary Meta Tags -->
@@ -81,7 +83,87 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         },
         "priceRange": "££",
         "telephone": "+44-XXXX-XXXXXX",
-        "email": "hello@fwd-agency.co.uk"
+        "email": "hello@fwd-agency.co.uk",
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "AI-Powered Business Solutions",
+          "itemListElement": [
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Business Process Automation",
+                "description": "Turn 40-hour weeks into 4-hour oversight with AI automation",
+                "url": "https://fwd-agency.co.uk/services/business-process-automation"
+              },
+              "price": "799",
+              "priceCurrency": "GBP",
+              "priceSpecification": {
+                "@type": "PriceSpecification",
+                "price": "799",
+                "priceCurrency": "GBP",
+                "minPrice": "799"
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "AI-Powered Websites",
+                "description": "Websites that convert 3x more visitors with AI optimization",
+                "url": "https://fwd-agency.co.uk/services/ai-powered-websites"
+              },
+              "price": "2999",
+              "priceCurrency": "GBP",
+              "priceSpecification": {
+                "@type": "PriceSpecification",
+                "price": "2999",
+                "priceCurrency": "GBP",
+                "minPrice": "2999"
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Custom App Development",
+                "description": "Enterprise software at SMB prices - 70% cheaper than traditional development",
+                "url": "https://fwd-agency.co.uk/services/custom-app-development"
+              },
+              "price": "15000",
+              "priceCurrency": "GBP",
+              "priceSpecification": {
+                "@type": "PriceSpecification",
+                "price": "15000",
+                "priceCurrency": "GBP",
+                "minPrice": "15000"
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "AI Hosting & Maintenance",
+                "description": "Hosting that prevents problems before they happen with AI monitoring",
+                "url": "https://fwd-agency.co.uk/services/ai-hosting-maintenance"
+              },
+              "price": "99",
+              "priceCurrency": "GBP",
+              "priceSpecification": {
+                "@type": "PriceSpecification",
+                "price": "99",
+                "priceCurrency": "GBP",
+                "minPrice": "99",
+                "unitText": "MONTH"
+              }
+            }
+          ]
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.9",
+          "reviewCount": "287"
+        }
       })}
     </script>
   </head>

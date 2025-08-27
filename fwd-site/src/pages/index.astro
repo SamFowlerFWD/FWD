@@ -5,6 +5,11 @@ import CompetitorClock from '../components/psychological/CompetitorClock.astro';
 import RevenueCounter from '../components/psychological/RevenueCounter.astro';
 import Calculator from '../components/interactive/Calculator.astro';
 import ProofFeed from '../components/trust/ProofFeed.astro';
+import ServiceCard from '../components/services/ServiceCard.tsx';
+import ServiceComparison from '../components/services/ServiceComparison.tsx';
+import LiveSuccessFeed from '../components/services/LiveSuccessFeed.tsx';
+import ServiceQuiz from '../components/services/ServiceQuiz.tsx';
+import StickyServiceBar from '../components/services/StickyServiceBar.tsx';
 ---
 
 <Layout 
@@ -50,6 +55,144 @@ import ProofFeed from '../components/trust/ProofFeed.astro';
           </div>
         </div>
       </div>
+    </div>
+  </section>
+  
+  <!-- Comprehensive Services Section -->
+  <section id="services" class="py-20 bg-gradient-to-b from-white to-ai-purple/5">
+    <div class="container mx-auto px-6 lg:px-8">
+      <!-- Section Header -->
+      <div class="text-center max-w-3xl mx-auto mb-12">
+        <div class="inline-flex items-center gap-2 bg-urgent-amber/10 rounded-full px-4 py-2 mb-6">
+          <span class="text-sm font-medium text-urgent-amber">Starting from just £799</span>
+        </div>
+        <h2 class="text-4xl lg:text-5xl font-bold text-deep-space mb-6">
+          4 Ways to <span class="ai-gradient-text">Leave Your Competition Behind</span>
+        </h2>
+        <p class="text-xl text-gray-700">
+          Every service pays for itself within 8 weeks. Your competitors already started.
+        </p>
+      </div>
+
+      <!-- Service Cards Grid -->
+      <div class="grid lg:grid-cols-2 gap-6 mb-12">
+        <ServiceCard
+          client:load
+          title="Business Process Automation"
+          description="Turn 40-hour weeks into 4-hour oversight"
+          price="From £799"
+          benefits={[
+            "Save 30+ hours per week on repetitive tasks",
+            "Eliminate 99% of human errors",
+            "ROI guaranteed within 4 weeks"
+          ]}
+          competitorCount={17}
+          savingsAmount="£3,000+/month"
+          href="/services/business-process-automation"
+          badge="Most Popular"
+          icon="⚡"
+          testimonial={{
+            quote: "Saved us £4,200 in the first month alone",
+            author: "James Wilson",
+            location: "Norwich"
+          }}
+        />
+        
+        <ServiceCard
+          client:load
+          title="AI-Powered Websites"
+          description="Websites that convert 3x more visitors"
+          price="From £2,999"
+          benefits={[
+            "Triple your conversion rate",
+            "Self-updating content with AI",
+            "Live in just 3 weeks"
+          ]}
+          competitorCount={23}
+          savingsAmount="£7,000"
+          href="/services/ai-powered-websites"
+          icon="🌐"
+          testimonial={{
+            quote: "Our leads increased by 340% in 6 weeks",
+            author: "Sarah Mitchell",
+            location: "Great Yarmouth"
+          }}
+        />
+        
+        <ServiceCard
+          client:load
+          title="Custom App Development"
+          description="Enterprise software at SMB prices"
+          price="From £1,299"
+          benefits={[
+            "70% cheaper than traditional development",
+            "Built in 8 weeks, not 8 months",
+            "Includes 12 months of updates"
+          ]}
+          competitorCount={8}
+          savingsAmount="£85,000+"
+          href="/services/custom-app-development"
+          badge="Limited Spots"
+          icon="📱"
+          testimonial={{
+            quote: "Replaced 5 different tools with one perfect solution",
+            author: "Mark Thompson",
+            location: "King's Lynn"
+          }}
+        />
+        
+        <ServiceCard
+          client:load
+          title="AI Hosting & Maintenance"
+          description="Hosting that prevents problems before they happen"
+          price="From £99"
+          monthlyPrice="£99"
+          benefits={[
+            "99.99% uptime guarantee",
+            "AI-powered performance optimization",
+            "24/7 proactive monitoring"
+          ]}
+          competitorCount={12}
+          savingsAmount="£400/month"
+          href="/services/ai-hosting-maintenance"
+          icon="🚀"
+          testimonial={{
+            quote: "Zero downtime in 18 months, saved us thousands",
+            author: "Emma Davis",
+            location: "Ipswich"
+          }}
+        />
+      </div>
+
+      <!-- Bundle Offer Banner -->
+      <div class="bg-gradient-to-r from-urgent-amber to-ai-purple rounded-2xl p-8 text-white text-center mb-12">
+        <h3 class="text-3xl font-bold mb-3">Bundle 2+ Services and Save 35%</h3>
+        <p class="text-xl mb-6">Most businesses start with automation + AI website for maximum impact</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <button class="bg-white text-deep-space font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition-all duration-200">
+            Calculate Bundle Savings
+          </button>
+          <button class="bg-white/20 backdrop-blur-sm border-2 border-white text-white font-bold py-3 px-8 rounded-lg hover:bg-white/30 transition-all duration-200">
+            See Bundle Examples
+          </button>
+        </div>
+      </div>
+
+      <!-- Interactive Components Grid -->
+      <div class="grid lg:grid-cols-2 gap-8">
+        <!-- Service Quiz -->
+        <ServiceQuiz client:load />
+        
+        <!-- Live Success Feed -->
+        <LiveSuccessFeed client:load />
+      </div>
+    </div>
+  </section>
+
+  <!-- Service Comparison Section -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <ServiceComparison client:load serviceName="automation" comparisons={[]} />
     </div>
   </section>
   
@@ -205,4 +348,6 @@ import ProofFeed from '../components/trust/ProofFeed.astro';
       </p>
     </div>
   </section>
+  <!-- Sticky Service Bar -->
+  <StickyServiceBar client:load />
 </Layout>

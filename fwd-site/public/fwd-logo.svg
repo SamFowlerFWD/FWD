@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 100" width="300" height="100">
+  <!-- Black F arrow -->
+  <path d="M 20 20 L 80 50 L 20 80 Z" fill="#000000"/>
+  <text x="40" y="58" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF">F</text>
+  
+  <!-- Blue W arrow -->
+  <path d="M 90 20 L 150 50 L 90 80 Z" fill="#00B4D8"/>
+  <text x="105" y="58" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF">W</text>
+  
+  <!-- Green D arrow -->
+  <path d="M 160 20 L 220 50 L 160 80 Z" fill="#90EE90"/>
+  <text x="180" y="58" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#000000">D</text>
+</svg>

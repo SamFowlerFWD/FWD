@@ -1,0 +1,389 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CompetitorAdvantageClock from '../../components/psychological/CompetitorAdvantageClock.astro';
+---
+
+<Layout 
+  title="AI Development Services - Save 70% on Custom Software"
+  description="AI-powered development services for UK SMBs. Automation, websites, apps, hosting. Starting from £799. Norfolk's trusted AI partner."
+  keywords="ai development services norwich, business automation uk, custom software development, affordable ai solutions"
+>
+  <!-- Hero Section -->
+  <section class="relative py-20 bg-gradient-to-br from-deep-space via-deep-space/95 to-ai-purple/20">
+    <div class="absolute inset-0 bg-ai-mesh opacity-20"></div>
+    <div class="container relative z-10 mx-auto px-6 lg:px-8">
+      <div class="max-w-4xl mx-auto text-center text-white">
+        <div class="inline-flex items-center gap-2 bg-urgent-amber/20 backdrop-blur-sm border border-urgent-amber/30 rounded-full px-4 py-2 mb-6">
+          <svg class="w-4 h-4 text-urgent-amber animate-pulse" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"/>
+          </svg>
+          <span class="text-sm font-medium text-urgent-amber">Your competitors are using AI right now</span>
+        </div>
+        
+        <h1 class="text-5xl lg:text-6xl font-bold mb-6">
+          AI Solutions That Cost <span class="ai-gradient-text">70% Less</span> <br/>
+          Than Traditional Development
+        </h1>
+        
+        <p class="text-xl lg:text-2xl text-gray-300 mb-8">
+          Stop overpaying agencies for outdated solutions. Our AI-powered services deliver enterprise quality at startup prices. Starting from just £799.
+        </p>
+        
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="#services" class="btn-urgent text-lg px-8 py-4">
+            Explore AI Services
+          </a>
+          <button class="bg-white/10 backdrop-blur-sm border border-white/20 text-white px-8 py-4 rounded-lg font-semibold hover:bg-white/20 transition-all duration-200">
+            Calculate Your Savings
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Competitor Clock -->
+  <section class="py-8 bg-gradient-to-b from-urgent-amber/5 to-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <CompetitorAdvantageClock />
+    </div>
+  </section>
+  
+  <!-- Services Grid -->
+  <section id="services" class="py-20 bg-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-deep-space mb-4">
+          Choose Your <span class="ai-gradient-text">AI Advantage</span>
+        </h2>
+        <p class="text-xl text-gray-700">
+          Every solution designed to save you time and money from day one
+        </p>
+      </div>
+      
+      <div class="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+        {[
+          {
+            title: "Business Process Automation",
+            tagline: "Turn 40-hour weeks into 4-hour oversight",
+            description: "Automate repetitive tasks, eliminate errors, and save £1000s monthly. AI handles the boring work while you focus on growth.",
+            price: "From £799 + maintenance",
+            savings: "Save 30+ hours/week",
+            features: [
+              "Invoice & data processing",
+              "Customer service automation",
+              "Workflow optimization",
+              "Integration with existing tools"
+            ],
+            href: "/services/business-process-automation",
+            icon: "⚡",
+            badge: "Most Popular",
+            color: "from-urgent-amber to-ai-purple"
+          },
+          {
+            title: "AI-Powered Websites",
+            tagline: "Websites that convert 3x more without 3x the cost",
+            description: "Smart websites that adapt to each visitor, predict their needs, and convert automatically. Not just pretty - actually profitable.",
+            price: "From £799 + maintenance",
+            savings: "312% avg conversion increase",
+            features: [
+              "Visitor personalisation",
+              "Predictive content",
+              "Auto-optimization",
+              "Smart lead capture"
+            ],
+            href: "/services/ai-powered-websites",
+            icon: "🌐",
+            color: "from-trust-blue to-success-green"
+          },
+          {
+            title: "Custom App Development",
+            tagline: "Apps that used to cost £100k now from £1,299",
+            description: "AI builds your custom software 5x faster, 70% cheaper. Same features, better code, fraction of the price.",
+            price: "From £1,299 + maintenance",
+            savings: "Save £50k+ on development",
+            features: [
+              "Mobile & web apps",
+              "SaaS platforms",
+              "Business tools",
+              "API development"
+            ],
+            href: "/services/custom-app-development",
+            icon: "📱",
+            color: "from-ai-purple to-trust-blue"
+          },
+          {
+            title: "AI Hosting & Maintenance",
+            tagline: "Hosting that prevents problems before they happen",
+            description: "AI monitors, predicts, and fixes issues automatically. 99.99% uptime, auto-scaling, and security that never sleeps.",
+            price: "From £99/month",
+            savings: "Prevent 97% of downtime",
+            features: [
+              "Predictive maintenance",
+              "Auto-scaling",
+              "24/7 AI monitoring",
+              "Security shield"
+            ],
+            href: "/services/ai-hosting-maintenance",
+            icon: "🛡️",
+            color: "from-success-green to-ai-purple"
+          }
+        ].map(service => (
+          <div class="relative group">
+            {service.badge && (
+              <div class="absolute -top-3 left-6 z-10">
+                <span class="bg-urgent-amber text-white text-sm font-semibold px-4 py-1 rounded-full">
+                  {service.badge}
+                </span>
+              </div>
+            )}
+            
+            <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden h-full">
+              <div class={`h-2 bg-gradient-to-r ${service.color}`}></div>
+              
+              <div class="p-8">
+                <div class="flex items-start justify-between mb-4">
+                  <div class="text-4xl">{service.icon}</div>
+                  <span class="text-lg font-bold text-success-green">{service.price}</span>
+                </div>
+                
+                <h3 class="text-2xl font-bold text-deep-space mb-2">{service.title}</h3>
+                <p class="text-sm text-ai-purple font-medium mb-3">{service.tagline}</p>
+                <p class="text-gray-600 mb-4">{service.description}</p>
+                
+                <div class="bg-success-green/10 rounded-lg px-4 py-2 mb-4 inline-block">
+                  <span class="text-success-green font-semibold text-sm">{service.savings}</span>
+                </div>
+                
+                <ul class="space-y-2 mb-6">
+                  {service.features.map(feature => (
+                    <li class="flex items-start gap-2 text-sm text-gray-700">
+                      <svg class="w-4 h-4 text-ai-purple mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                      </svg>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+                
+                <a 
+                  href={service.href}
+                  class="block w-full text-center bg-gradient-to-r from-deep-space to-deep-space/90 text-white py-3 rounded-lg font-semibold hover:from-ai-purple hover:to-trust-blue transition-all duration-300"
+                >
+                  Learn More →
+                </a>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      
+      <!-- AI Software Development Card -->
+      <div class="mt-8 max-w-6xl mx-auto">
+        <div class="bg-gradient-to-r from-ai-purple via-deep-space to-trust-blue rounded-2xl p-8 text-white">
+          <div class="grid lg:grid-cols-2 gap-8 items-center">
+            <div>
+              <div class="text-4xl mb-4">🤖</div>
+              <h3 class="text-3xl font-bold mb-4">Custom AI Software Development</h3>
+              <p class="text-gray-200 mb-4">
+                Need something completely unique? Our AI development team builds custom solutions for complex business challenges.
+              </p>
+              <ul class="space-y-2 mb-6">
+                {[
+                  "Machine learning models",
+                  "Natural language processing",
+                  "Computer vision systems",
+                  "Predictive analytics"
+                ].map(feature => (
+                  <li class="flex items-center gap-2 text-gray-200">
+                    <svg class="w-4 h-4 text-success-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+              <div class="text-center mb-4">
+                <div class="text-3xl font-bold mb-2">From £5,000</div>
+                <div class="text-sm text-gray-300">Custom AI Solutions</div>
+              </div>
+              <a 
+                href="/services/ai-software-development"
+                class="block w-full text-center bg-white text-deep-space py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all"
+              >
+                Explore AI Development →
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Why Choose FWD -->
+  <section class="py-20 bg-gradient-to-b from-norfolk-sand/10 to-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-deep-space mb-4">
+          Why Norfolk Businesses <span class="ai-gradient-text">Choose FWD</span>
+        </h2>
+      </div>
+      
+      <div class="grid lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+        {[
+          {
+            stat: "70%",
+            label: "Average Cost Savings",
+            description: "vs traditional agencies"
+          },
+          {
+            stat: "5x",
+            label: "Faster Delivery",
+            description: "weeks not months"
+          },
+          {
+            stat: "247+",
+            label: "Norfolk Businesses",
+            description: "trust our AI solutions"
+          },
+          {
+            stat: "99.9%",
+            label: "Client Satisfaction",
+            description: "with 90-day guarantee"
+          }
+        ].map(item => (
+          <div class="text-center">
+            <div class="text-4xl font-bold ai-gradient-text mb-2">{item.stat}</div>
+            <div class="font-semibold text-deep-space mb-1">{item.label}</div>
+            <div class="text-sm text-gray-600">{item.description}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+  
+  <!-- Comparison Table -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-deep-space mb-4">
+          FWD vs <span class="text-urgent-amber">Traditional Agencies</span>
+        </h2>
+      </div>
+      
+      <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+          <div class="grid grid-cols-3 bg-gradient-to-r from-ai-purple to-trust-blue text-white">
+            <div class="p-4 font-semibold">Feature</div>
+            <div class="p-4 font-semibold text-center">FWD AI</div>
+            <div class="p-4 font-semibold text-center">Traditional</div>
+          </div>
+          
+          {[
+            { feature: "Development Time", fwd: "2-6 weeks", traditional: "3-9 months" },
+            { feature: "Starting Price", fwd: "£799", traditional: "£15,000+" },
+            { feature: "Custom Solutions", fwd: "✅ Always", traditional: "✅ Always" },
+            { feature: "AI Integration", fwd: "✅ Built-in", traditional: "❌ Extra cost" },
+            { feature: "Maintenance", fwd: "✅ AI-powered", traditional: "❌ Manual" },
+            { feature: "Scalability", fwd: "✅ Automatic", traditional: "❌ Manual setup" },
+            { feature: "ROI Period", fwd: "4-8 weeks", traditional: "6-12 months" },
+            { feature: "Support", fwd: "24/7 AI + Human", traditional: "Business hours" },
+            { feature: "Money-back Guarantee", fwd: "✅ 90 days", traditional: "❌ None" },
+            { feature: "Local Team", fwd: "✅ Norfolk-based", traditional: "❓ Often offshore" }
+          ].map((row, index) => (
+            <div class={`grid grid-cols-3 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
+              <div class="p-4 text-gray-700 font-medium">{row.feature}</div>
+              <div class="p-4 text-center font-semibold text-success-green">{row.fwd}</div>
+              <div class="p-4 text-center text-gray-500">{row.traditional}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- CTA Section -->
+  <section class="py-20 bg-gradient-to-r from-ai-purple via-deep-space to-trust-blue text-white">
+    <div class="container mx-auto px-6 lg:px-8 text-center">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-4xl lg:text-5xl font-bold mb-6">
+          Start Saving 70% on Development Today
+        </h2>
+        
+        <p class="text-xl text-gray-100 mb-8">
+          Join 247+ Norfolk businesses using AI to build better, faster, cheaper. Free consultation to explore your options.
+        </p>
+        
+        <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 mb-8 inline-block">
+          <div class="grid grid-cols-3 gap-6 text-center">
+            <div>
+              <div class="text-2xl font-bold">24hr</div>
+              <div class="text-sm">Quote Response</div>
+            </div>
+            <div>
+              <div class="text-2xl font-bold">£799</div>
+              <div class="text-sm">Starting From</div>
+            </div>
+            <div>
+              <div class="text-2xl font-bold">90 days</div>
+              <div class="text-sm">Guarantee</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <button class="btn-urgent text-lg px-8 py-4 bg-white text-deep-space hover:bg-gray-100">
+            Get Free AI Consultation →
+          </button>
+          <a href="tel:+441234567890" class="bg-white/20 backdrop-blur-sm border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-deep-space transition-all duration-200 inline-flex items-center justify-center">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+            </svg>
+            Call: 01234 567890
+          </a>
+        </div>
+        
+        <p class="text-sm text-gray-200 mt-6">
+          Free consultation worth £500 • No obligation • Start saving immediately
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Schema Markup -->
+  <script type="application/ld+json">
+    {JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "FWD AI Development Services",
+      "description": "AI-powered development services for UK SMBs",
+      "itemListElement": [
+        {
+          "@type": "Service",
+          "@id": "https://fwd-agency.co.uk/services/business-process-automation",
+          "name": "Business Process Automation",
+          "description": "Automate repetitive tasks and save 30+ hours per week"
+        },
+        {
+          "@type": "Service",
+          "@id": "https://fwd-agency.co.uk/services/ai-powered-websites",
+          "name": "AI-Powered Websites",
+          "description": "Websites that convert 3x better with AI personalization"
+        },
+        {
+          "@type": "Service",
+          "@id": "https://fwd-agency.co.uk/services/custom-app-development",
+          "name": "Custom App Development",
+          "description": "Build apps 5x faster and 70% cheaper with AI"
+        },
+        {
+          "@type": "Service",
+          "@id": "https://fwd-agency.co.uk/services/ai-hosting-maintenance",
+          "name": "AI Hosting & Maintenance",
+          "description": "Hosting that prevents problems before they happen"
+        }
+      ]
+    })}
+  </script>
+</Layout>

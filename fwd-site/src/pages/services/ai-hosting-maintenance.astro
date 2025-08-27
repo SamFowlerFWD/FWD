@@ -1,0 +1,822 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import AIAdvantageCalculator from '../../components/interactive/AIAdvantageCalculator.astro';
+import CompetitorAdvantageClock from '../../components/psychological/CompetitorAdvantageClock.astro';
+import LocalProofFeed from '../../components/trust/LocalProofFeed.astro';
+---
+
+<Layout 
+  title="AI Hosting & Maintenance - Hosting That Prevents Problems Before They Happen"
+  description="AI-powered hosting that predicts and prevents downtime. 99.99% uptime, auto-scaling, security monitoring. Norfolk's smartest hosting solution from £29/month."
+  keywords="ai hosting norfolk, predictive maintenance uk, website hosting norwich, managed hosting, smart hosting solutions"
+>
+  <!-- Hero Section -->
+  <section class="relative py-20 bg-gradient-to-br from-deep-space via-deep-space/95 to-success-green/20">
+    <div class="absolute inset-0 bg-ai-mesh opacity-20"></div>
+    <div class="container relative z-10 mx-auto px-6 lg:px-8">
+      <div class="max-w-4xl mx-auto text-center text-white">
+        <!-- Reliability Badge -->
+        <div class="inline-flex items-center gap-2 bg-success-green/20 backdrop-blur-sm border border-success-green/30 rounded-full px-4 py-2 mb-6">
+          <div class="w-2 h-2 bg-success-green rounded-full animate-pulse"></div>
+          <span class="text-sm font-medium text-success-green">99.99% Uptime Guaranteed</span>
+        </div>
+        
+        <h1 class="text-5xl lg:text-6xl font-bold mb-6">
+          Hosting That <span class="ai-gradient-text">Fixes Problems</span> <br/>
+          Before They Happen
+        </h1>
+        
+        <p class="text-xl lg:text-2xl text-gray-300 mb-8">
+          Stop losing £1000s to downtime and slow sites. AI-powered hosting predicts issues, auto-scales resources, and keeps you online 24/7/365. While you sleep peacefully.
+        </p>
+        
+        <div class="grid grid-cols-4 gap-4 max-w-3xl mx-auto mb-8">
+          <div class="bg-white/10 backdrop-blur-sm rounded-lg p-3">
+            <div class="text-2xl font-bold text-success-green">0.01%</div>
+            <div class="text-xs text-gray-300">Downtime</div>
+          </div>
+          <div class="bg-white/10 backdrop-blur-sm rounded-lg p-3">
+            <div class="text-2xl font-bold text-ai-purple">< 200ms</div>
+            <div class="text-xs text-gray-300">Response Time</div>
+          </div>
+          <div class="bg-white/10 backdrop-blur-sm rounded-lg p-3">
+            <div class="text-2xl font-bold text-trust-blue">24/7</div>
+            <div class="text-xs text-gray-300">AI Monitoring</div>
+          </div>
+          <div class="bg-white/10 backdrop-blur-sm rounded-lg p-3">
+            <div class="text-2xl font-bold text-white">100%</div>
+            <div class="text-xs text-gray-300">Auto-Scaling</div>
+          </div>
+        </div>
+        
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="#calculator" class="btn-urgent text-lg px-8 py-4">
+            Calculate Your Downtime Costs
+          </a>
+          <button class="bg-white/10 backdrop-blur-sm border border-white/20 text-white px-8 py-4 rounded-lg font-semibold hover:bg-white/20 transition-all duration-200">
+            See Live Dashboard
+          </button>
+        </div>
+        
+        <p class="text-sm text-gray-400 mt-4">
+          From £29/month • No setup fees • Migrate free
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <!-- The Cost of Bad Hosting -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-deep-space mb-4">
+          Your Current Hosting Is <span class="text-urgent-amber">Bleeding Money</span>
+        </h2>
+        <p class="text-xl text-gray-700">
+          Every minute of downtime costs you customers and reputation
+        </p>
+      </div>
+      
+      <div class="max-w-5xl mx-auto">
+        <!-- Downtime Calculator -->
+        <div class="bg-gradient-to-br from-urgent-amber/5 to-urgent-amber/10 rounded-2xl p-8 mb-8 border border-urgent-amber/20">
+          <h3 class="text-2xl font-bold text-deep-space mb-6 text-center">The True Cost of Downtime</h3>
+          
+          <div class="grid lg:grid-cols-3 gap-6 mb-6">
+            <div class="text-center">
+              <div class="text-3xl font-bold text-urgent-amber mb-2">£125</div>
+              <div class="text-sm text-gray-700">Lost per hour for small business</div>
+            </div>
+            <div class="text-center">
+              <div class="text-3xl font-bold text-urgent-amber mb-2">£540</div>
+              <div class="text-sm text-gray-700">Lost per hour for e-commerce</div>
+            </div>
+            <div class="text-center">
+              <div class="text-3xl font-bold text-urgent-amber mb-2">£8,400</div>
+              <div class="text-sm text-gray-700">Lost per hour for enterprise</div>
+            </div>
+          </div>
+          
+          <div class="bg-white rounded-lg p-4">
+            <div class="flex items-center justify-between">
+              <span class="text-gray-700">Average UK hosting downtime (98.5% uptime):</span>
+              <span class="font-bold text-urgent-amber">11 hours/month</span>
+            </div>
+            <div class="flex items-center justify-between mt-2">
+              <span class="text-gray-700">Monthly loss from downtime:</span>
+              <span class="text-2xl font-bold text-urgent-amber">£1,375 - £92,400</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Problems vs Solutions -->
+        <div class="grid lg:grid-cols-2 gap-8">
+          <div>
+            <h3 class="text-xl font-bold text-urgent-amber mb-4">❌ Traditional Hosting Problems</h3>
+            <div class="space-y-3">
+              {[
+                { problem: "React to problems after damage done", impact: "Lost revenue" },
+                { problem: "Manual scaling during traffic spikes", impact: "Site crashes" },
+                { problem: "Security patches applied late", impact: "Data breaches" },
+                { problem: "No performance optimization", impact: "Slow loading" },
+                { problem: "Generic support tickets", impact: "Hours of downtime" },
+                { problem: "Hidden resource limits", impact: "Unexpected bills" }
+              ].map(item => (
+                <div class="flex justify-between items-center p-3 bg-red-50 rounded-lg">
+                  <span class="text-gray-700 text-sm">{item.problem}</span>
+                  <span class="text-urgent-amber text-xs font-medium">{item.impact}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          <div>
+            <h3 class="text-xl font-bold text-success-green mb-4">✅ AI Hosting Solutions</h3>
+            <div class="space-y-3">
+              {[
+                { solution: "Predict & prevent issues before they occur", benefit: "Zero downtime" },
+                { solution: "Auto-scale instantly with AI prediction", benefit: "Always fast" },
+                { solution: "Proactive security threat detection", benefit: "100% secure" },
+                { solution: "Continuous AI optimization", benefit: "3x faster" },
+                { solution: "AI support resolves issues instantly", benefit: "5-min fixes" },
+                { solution: "Smart resource allocation", benefit: "50% cheaper" }
+              ].map(item => (
+                <div class="flex justify-between items-center p-3 bg-green-50 rounded-lg">
+                  <span class="text-gray-700 text-sm">{item.solution}</span>
+                  <span class="text-success-green text-xs font-medium">{item.benefit}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- AI Features -->
+  <section class="py-20 bg-gradient-to-b from-norfolk-sand/10 to-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-deep-space mb-4">
+          AI Features That Keep You <span class="ai-gradient-text">Always Online</span>
+        </h2>
+        <p class="text-xl text-gray-700">
+          Enterprise-grade intelligence for every website
+        </p>
+      </div>
+      
+      <div class="grid lg:grid-cols-3 gap-8">
+        {[
+          {
+            feature: "Predictive Maintenance",
+            icon: "🔮",
+            description: "AI predicts failures 72 hours before they happen",
+            capabilities: [
+              "Hardware failure prediction",
+              "Traffic spike forecasting",
+              "Resource exhaustion alerts",
+              "Dependency monitoring"
+            ],
+            stat: "Prevents 97% of outages"
+          },
+          {
+            feature: "Auto-Scaling Intelligence",
+            icon: "📈",
+            description: "Resources scale automatically based on AI predictions",
+            capabilities: [
+              "Traffic pattern learning",
+              "Seasonal adjustment",
+              "Event-based scaling",
+              "Cost optimization"
+            ],
+            stat: "Handles 10,000% spikes"
+          },
+          {
+            feature: "Security Shield",
+            icon: "🛡️",
+            description: "AI detects and blocks threats in real-time",
+            capabilities: [
+              "DDoS prevention",
+              "Malware detection",
+              "Vulnerability scanning",
+              "Automated patching"
+            ],
+            stat: "Blocks 99.9% of attacks"
+          },
+          {
+            feature: "Performance Optimizer",
+            icon: "⚡",
+            description: "AI continuously optimizes for maximum speed",
+            capabilities: [
+              "CDN optimization",
+              "Cache management",
+              "Database tuning",
+              "Code optimization"
+            ],
+            stat: "3x faster load times"
+          },
+          {
+            feature: "Smart Backup System",
+            icon: "💾",
+            description: "Intelligent backups that never lose data",
+            capabilities: [
+              "Continuous replication",
+              "Point-in-time recovery",
+              "Geo-redundancy",
+              "Instant restoration"
+            ],
+            stat: "Zero data loss guarantee"
+          },
+          {
+            feature: "AI Support Agent",
+            icon: "🤖",
+            description: "24/7 AI that fixes issues automatically",
+            capabilities: [
+              "Self-healing systems",
+              "Automated troubleshooting",
+              "Instant escalation",
+              "Proactive communication"
+            ],
+            stat: "85% issues auto-resolved"
+          }
+        ].map(item => (
+          <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all border border-gray-100">
+            <div class="text-4xl mb-4">{item.icon}</div>
+            <h3 class="text-xl font-bold text-deep-space mb-2">{item.feature}</h3>
+            <p class="text-gray-600 text-sm mb-4">{item.description}</p>
+            
+            <ul class="space-y-2 mb-4">
+              {item.capabilities.map(capability => (
+                <li class="flex items-start gap-2 text-sm text-gray-700">
+                  <svg class="w-4 h-4 text-ai-purple mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                  </svg>
+                  {capability}
+                </li>
+              ))}
+            </ul>
+            
+            <div class="pt-4 border-t">
+              <span class="text-success-green font-bold">{item.stat}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+  
+  <!-- Pricing Plans -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-deep-space mb-4">
+          Smart Hosting from <span class="ai-gradient-text">£29/month</span>
+        </h2>
+        <p class="text-xl text-gray-700">
+          All plans include AI monitoring, auto-scaling, and 99.99% uptime guarantee
+        </p>
+      </div>
+      
+      <div class="grid lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+        {[
+          {
+            name: "Starter AI",
+            price: "£29",
+            perfect: "Small business sites",
+            specs: {
+              storage: "10GB SSD",
+              bandwidth: "100GB",
+              sites: "1 website",
+              ssl: "Free SSL",
+              backups: "Daily backups",
+              support: "AI support"
+            },
+            features: [
+              "AI monitoring",
+              "Auto-scaling to 2x",
+              "DDoS protection",
+              "99.9% uptime"
+            ],
+            cta: "Start Hosting",
+            popular: false
+          },
+          {
+            name: "Business AI",
+            price: "£79",
+            perfect: "Growing businesses",
+            specs: {
+              storage: "50GB SSD",
+              bandwidth: "500GB",
+              sites: "5 websites",
+              ssl: "Wildcard SSL",
+              backups: "Hourly backups",
+              support: "Priority support"
+            },
+            features: [
+              "Everything in Starter +",
+              "Auto-scaling to 5x",
+              "CDN included",
+              "99.99% uptime"
+            ],
+            cta: "Scale Smart",
+            popular: true
+          },
+          {
+            name: "Pro AI",
+            price: "£199",
+            perfect: "High-traffic sites",
+            specs: {
+              storage: "200GB NVMe",
+              bandwidth: "Unlimited",
+              sites: "20 websites",
+              ssl: "Premium SSL",
+              backups: "Real-time backup",
+              support: "Dedicated manager"
+            },
+            features: [
+              "Everything in Business +",
+              "Auto-scaling to 20x",
+              "Global CDN",
+              "Custom AI rules"
+            ],
+            cta: "Go Pro",
+            popular: false
+          },
+          {
+            name: "Enterprise",
+            price: "Custom",
+            perfect: "Mission-critical apps",
+            specs: {
+              storage: "Custom",
+              bandwidth: "Unlimited",
+              sites: "Unlimited",
+              ssl: "Custom certificates",
+              backups: "Multi-region",
+              support: "24/7 team"
+            },
+            features: [
+              "Everything in Pro +",
+              "Unlimited scaling",
+              "Private cloud",
+              "Custom SLA"
+            ],
+            cta: "Contact Us",
+            popular: false
+          }
+        ].map(plan => (
+          <div class={`relative rounded-2xl p-6 ${
+            plan.popular 
+              ? 'bg-gradient-to-b from-ai-purple/10 to-trust-blue/10 border-2 border-ai-purple shadow-xl scale-105 z-10' 
+              : 'bg-white border border-gray-200'
+          }`}>
+            {plan.popular && (
+              <div class="absolute -top-3 left-1/2 -translate-x-1/2">
+                <span class="bg-gradient-to-r from-ai-purple to-trust-blue text-white text-xs font-semibold px-3 py-1 rounded-full">
+                  MOST POPULAR
+                </span>
+              </div>
+            )}
+            
+            <div class="text-center mb-4">
+              <h3 class="text-xl font-bold text-deep-space mb-2">{plan.name}</h3>
+              <div class="text-3xl font-bold ai-gradient-text mb-1">
+                {plan.price === "Custom" ? "Custom" : `${plan.price}/mo`}
+              </div>
+              <div class="text-xs text-gray-600">{plan.perfect}</div>
+            </div>
+            
+            <div class="space-y-2 mb-4 pb-4 border-b">
+              {Object.entries(plan.specs).map(([key, value]) => (
+                <div class="flex justify-between text-sm">
+                  <span class="text-gray-600 capitalize">{key}:</span>
+                  <span class="font-medium text-deep-space text-right">{value}</span>
+                </div>
+              ))}
+            </div>
+            
+            <ul class="space-y-2 mb-4">
+              {plan.features.map(feature => (
+                <li class="flex items-start gap-2 text-sm">
+                  <svg class="w-4 h-4 text-success-green mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                  </svg>
+                  <span class="text-gray-700">{feature}</span>
+                </li>
+              ))}
+            </ul>
+            
+            <button class={`w-full py-2 rounded-lg font-semibold text-sm transition-all ${
+              plan.popular 
+                ? 'bg-gradient-to-r from-ai-purple to-trust-blue text-white hover:shadow-lg' 
+                : 'bg-deep-space text-white hover:bg-deep-space/90'
+            }`}>
+              {plan.cta} →
+            </button>
+          </div>
+        ))}
+      </div>
+      
+      <div class="mt-12 text-center">
+        <p class="text-gray-700 mb-4">All plans include:</p>
+        <div class="inline-flex flex-wrap gap-3 justify-center">
+          {[
+            "✅ Free migration",
+            "✅ No setup fees",
+            "✅ UK data centers",
+            "✅ Green energy",
+            "✅ GDPR compliant",
+            "✅ Cancel anytime"
+          ].map(feature => (
+            <span class="bg-gray-100 text-gray-700 px-4 py-2 rounded-full text-sm">
+              {feature}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Real-Time Dashboard Preview -->
+  <section class="py-20 bg-gradient-to-b from-gray-50 to-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-deep-space mb-4">
+          See Everything in <span class="ai-gradient-text">Real-Time</span>
+        </h2>
+        <p class="text-xl text-gray-700">
+          Your AI command center for complete control
+        </p>
+      </div>
+      
+      <div class="max-w-5xl mx-auto">
+        <div class="bg-deep-space rounded-2xl p-8 shadow-2xl">
+          <div class="grid lg:grid-cols-4 gap-4 mb-6">
+            {[
+              { label: "Uptime", value: "99.99%", color: "text-success-green" },
+              { label: "Response", value: "187ms", color: "text-ai-purple" },
+              { label: "Threats Blocked", value: "1,247", color: "text-urgent-amber" },
+              { label: "AI Optimizations", value: "342/day", color: "text-trust-blue" }
+            ].map(metric => (
+              <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center">
+                <div class="text-gray-400 text-sm mb-1">{metric.label}</div>
+                <div class={`text-2xl font-bold ${metric.color}`}>{metric.value}</div>
+              </div>
+            ))}
+          </div>
+          
+          <div class="space-y-4">
+            <div class="bg-white/5 rounded-lg p-4">
+              <h4 class="text-white font-semibold mb-2">🔮 AI Predictions</h4>
+              <div class="space-y-2">
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-gray-400">Traffic spike expected in 3 hours</span>
+                  <span class="text-ai-purple">Auto-scaling ready</span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-gray-400">SSL renewal needed in 14 days</span>
+                  <span class="text-success-green">Auto-renewal scheduled</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="bg-white/5 rounded-lg p-4">
+              <h4 class="text-white font-semibold mb-2">⚡ Recent AI Actions</h4>
+              <div class="space-y-2 text-sm text-gray-400">
+                <div class="flex items-center gap-2">
+                  <div class="w-2 h-2 bg-success-green rounded-full"></div>
+                  <span>Blocked DDoS attack from 89.185.x.x</span>
+                  <span class="text-gray-500">2 min ago</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="w-2 h-2 bg-ai-purple rounded-full"></div>
+                  <span>Optimized database queries, 34% faster</span>
+                  <span class="text-gray-500">15 min ago</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="w-2 h-2 bg-trust-blue rounded-full"></div>
+                  <span>Auto-scaled resources for traffic surge</span>
+                  <span class="text-gray-500">1 hour ago</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Migration Process -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-deep-space mb-4">
+          Zero-Downtime Migration in <span class="ai-gradient-text">24 Hours</span>
+        </h2>
+        <p class="text-xl text-gray-700">
+          We handle everything while your site stays online
+        </p>
+      </div>
+      
+      <div class="max-w-4xl mx-auto">
+        <div class="space-y-4">
+          {[
+            {
+              step: "AI Analysis",
+              description: "Our AI scans your current setup and creates migration plan",
+              time: "30 minutes",
+              icon: "🔍"
+            },
+            {
+              step: "Parallel Setup",
+              description: "Build your new AI-powered environment alongside current hosting",
+              time: "2-4 hours",
+              icon: "🏗️"
+            },
+            {
+              step: "Data Sync",
+              description: "Copy all files, databases, and configurations",
+              time: "1-3 hours",
+              icon: "📦"
+            },
+            {
+              step: "Testing Phase",
+              description: "AI runs 500+ tests to ensure everything works perfectly",
+              time: "1 hour",
+              icon: "✅"
+            },
+            {
+              step: "DNS Switch",
+              description: "Seamlessly point your domain to new AI hosting",
+              time: "5 minutes",
+              icon: "🔄"
+            },
+            {
+              step: "Monitoring",
+              description: "AI monitors closely for 48 hours to ensure stability",
+              time: "48 hours",
+              icon: "👁️"
+            }
+          ].map((item, index) => (
+            <div class="flex gap-4">
+              <div class="flex-shrink-0">
+                <div class="w-12 h-12 bg-gradient-to-br from-ai-purple to-trust-blue rounded-full flex items-center justify-center text-2xl">
+                  {item.icon}
+                </div>
+              </div>
+              <div class="flex-1">
+                <div class="bg-gray-50 rounded-xl p-4">
+                  <div class="flex items-center justify-between mb-1">
+                    <h3 class="font-semibold text-deep-space">{item.step}</h3>
+                    <span class="text-xs text-ai-purple font-medium">{item.time}</span>
+                  </div>
+                  <p class="text-sm text-gray-600">{item.description}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        <div class="mt-8 text-center">
+          <div class="inline-flex items-center gap-2 bg-success-green/10 rounded-lg px-6 py-3">
+            <svg class="w-5 h-5 text-success-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span class="font-semibold text-deep-space">
+              100% Free Migration • Zero Downtime • No Risk
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- ROI Calculator -->
+  <section id="calculator" class="py-20 bg-gradient-to-b from-norfolk-sand/10 to-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-deep-space mb-4">
+          Calculate Your <span class="ai-gradient-text">Hosting ROI</span>
+        </h2>
+        <p class="text-xl text-gray-700">
+          See how much downtime and slow loading costs you
+        </p>
+      </div>
+      
+      <AIAdvantageCalculator title="Hosting Cost Calculator" />
+      
+      <div class="mt-12">
+        <CompetitorAdvantageClock />
+      </div>
+    </div>
+  </section>
+  
+  <!-- Local Success Stories -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-deep-space mb-4">
+          Norfolk Businesses <span class="ai-gradient-text">Love Our Hosting</span>
+        </h2>
+      </div>
+      
+      <div class="grid lg:grid-cols-2 gap-8">
+        <LocalProofFeed />
+        
+        <div class="space-y-6">
+          <!-- Uptime Stats -->
+          <div class="bg-gradient-to-br from-success-green/5 to-success-green/10 rounded-xl p-6 border border-success-green/20">
+            <h3 class="text-xl font-bold text-deep-space mb-4">Live Norfolk Hosting Stats</h3>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <div class="text-2xl font-bold text-success-green">99.99%</div>
+                <div class="text-sm text-gray-700">Average Uptime</div>
+              </div>
+              <div>
+                <div class="text-2xl font-bold text-ai-purple">168ms</div>
+                <div class="text-sm text-gray-700">Avg Response Time</div>
+              </div>
+              <div>
+                <div class="text-2xl font-bold text-trust-blue">247</div>
+                <div class="text-sm text-gray-700">Sites Hosted</div>
+              </div>
+              <div>
+                <div class="text-2xl font-bold text-urgent-amber">0</div>
+                <div class="text-sm text-gray-700">Security Breaches</div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Case Study -->
+          <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 bg-trust-blue/10 rounded-full flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-trust-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+              </div>
+              <div>
+                <h4 class="font-bold text-deep-space">Norwich E-commerce Ltd</h4>
+                <p class="text-sm text-gray-600 mt-1">
+                  "Moved from expensive AWS setup. Same performance, 70% cheaper, and the AI prevented 3 potential outages during Black Friday. Brilliant!"
+                </p>
+                <div class="flex items-center gap-4 mt-3 text-sm">
+                  <span class="text-success-green font-semibold">Saving £420/month</span>
+                  <span class="text-gray-500">Since Oct 2024</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- FAQ -->
+  <section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-deep-space mb-4">
+          AI Hosting Questions Answered
+        </h2>
+      </div>
+      
+      <div class="max-w-3xl mx-auto space-y-6">
+        {[
+          {
+            q: "How is AI hosting different from regular hosting?",
+            a: "AI hosting uses machine learning to predict and prevent problems before they happen. It auto-scales resources, blocks threats, optimizes performance, and fixes issues automatically - all without human intervention."
+          },
+          {
+            q: "Will migrating cause downtime?",
+            a: "No. We set up your new hosting in parallel and only switch when everything is tested and ready. Your site stays online throughout. Most migrations complete in under 24 hours with zero downtime."
+          },
+          {
+            q: "What's included in the £29 starter plan?",
+            a: "10GB SSD storage, 100GB bandwidth, 1 website, free SSL, daily backups, AI monitoring, auto-scaling to 2x capacity, DDoS protection, and 99.9% uptime guarantee. Perfect for small business sites."
+          },
+          {
+            q: "Can AI hosting handle traffic spikes?",
+            a: "Yes! AI predicts traffic patterns and scales resources automatically. We've handled 10,000% traffic spikes without any slowdown. You only pay for resources when you use them."
+          },
+          {
+            q: "Is my data safe with AI hosting?",
+            a: "Absolutely. UK data centers, GDPR compliant, encrypted backups, real-time threat detection, and automated security patches. AI actually makes your site MORE secure by catching threats humans miss."
+          },
+          {
+            q: "What if I need to leave?",
+            a: "No contracts, cancel anytime. We'll provide full backups and even help you migrate elsewhere if needed. You're never locked in."
+          }
+        ].map(faq => (
+          <details class="bg-white rounded-xl p-6 hover:shadow-md transition-shadow group">
+            <summary class="flex justify-between items-center cursor-pointer list-none">
+              <h3 class="text-lg font-semibold text-deep-space pr-4">{faq.q}</h3>
+              <svg class="w-5 h-5 text-ai-purple transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </summary>
+            <p class="text-gray-700 mt-4">{faq.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+  
+  <!-- CTA -->
+  <section class="py-20 bg-gradient-to-r from-success-green via-ai-purple to-trust-blue text-white">
+    <div class="container mx-auto px-6 lg:px-8 text-center">
+      <div class="max-w-3xl mx-auto">
+        <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
+          <div class="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+          <span class="text-sm font-medium">Your site could be 3x faster in 24 hours</span>
+        </div>
+        
+        <h2 class="text-4xl lg:text-5xl font-bold mb-6">
+          Stop Losing Money to Bad Hosting
+        </h2>
+        
+        <p class="text-xl text-gray-100 mb-8">
+          Switch to AI hosting that prevents problems, scales automatically, and keeps you online 99.99% of the time. Free migration, no downtime.
+        </p>
+        
+        <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 mb-8 inline-block">
+          <div class="text-2xl font-bold mb-2">January Special</div>
+          <div class="text-lg">First 3 months 50% off + Free migration</div>
+          <div class="text-sm mt-2">Worth £200+ • Limited spots</div>
+        </div>
+        
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <button class="btn-urgent text-lg px-8 py-4 bg-white text-deep-space hover:bg-gray-100">
+            Start Free Migration →
+          </button>
+          <a href="tel:+441234567890" class="bg-white/20 backdrop-blur-sm border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-deep-space transition-all duration-200 inline-flex items-center justify-center">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+            </svg>
+            01234 567890
+          </a>
+        </div>
+        
+        <p class="text-sm text-gray-200 mt-6">
+          No setup fees • Cancel anytime • 99.99% uptime guarantee
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Schema Markup -->
+  <script type="application/ld+json">
+    {JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "name": "AI Hosting & Maintenance",
+      "description": "AI-powered hosting that predicts and prevents downtime. 99.99% uptime guaranteed.",
+      "provider": {
+        "@type": "Organization",
+        "name": "FWD"
+      },
+      "areaServed": "Norfolk, UK",
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "AI Hosting Plans",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "name": "Starter AI Hosting",
+            "price": "29",
+            "priceCurrency": "GBP",
+            "priceSpecification": {
+              "@type": "UnitPriceSpecification",
+              "price": "29",
+              "priceCurrency": "GBP",
+              "unitText": "MONTH"
+            }
+          },
+          {
+            "@type": "Offer",
+            "name": "Business AI Hosting",
+            "price": "79",
+            "priceCurrency": "GBP",
+            "priceSpecification": {
+              "@type": "UnitPriceSpecification",
+              "price": "79",
+              "priceCurrency": "GBP",
+              "unitText": "MONTH"
+            }
+          },
+          {
+            "@type": "Offer",
+            "name": "Pro AI Hosting",
+            "price": "199",
+            "priceCurrency": "GBP",
+            "priceSpecification": {
+              "@type": "UnitPriceSpecification",
+              "price": "199",
+              "priceCurrency": "GBP",
+              "unitText": "MONTH"
+            }
+          }
+        ]
+      }
+    })}
+  </script>
+</Layout>
