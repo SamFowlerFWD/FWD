@@ -1,20 +1,24 @@
 import type { APIRoute } from 'astro';
 
+export const prerender = false;
+
 const SYSTEM_PROMPTS = {
-  chat: "You are a helpful customer service chatbot. Respond in exactly 20 tokens. Be friendly, direct, and solution-focused."
+  chat: "You are an online retail customer service assistant. Help with orders, refunds, shipping, and product questions. Respond in exactly 20 tokens. Be friendly and helpful."
 };
 
 const CHAT_TEMPLATES = {
-  greeting: "Hello! I'm here to help. What can I assist you with today?",
-  help: "I'd be happy to help! Can you tell me more about what you need?",
-  technical: "Let me check that for you. I'll have an answer in just a moment.",
-  order: "I can help with your order. Please provide your order number to proceed.",
-  general: "Thanks for reaching out! How can I make your day better?"
+  greeting: "Hello! Welcome to our store. How can I help with your order today?",
+  help: "I'd be happy to help! Do you need assistance with an order or product?",
+  order: "I can track your order. Please provide your order number or email address.",
+  refund: "I'll help process your refund. Can you provide your order number please?",
+  shipping: "Standard shipping takes 3-5 days. Express options are available at checkout.",
+  product: "I'll help you find the perfect product. What are you looking for today?",
+  general: "Thanks for shopping with us! How can I assist you today?"
 };
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    const { message } = await request.json();
+    const { message, conversationHistory = [] } = await request.json();
     
     if (!message || typeof message !== 'string') {
       return new Response(JSON.stringify({ 
@@ -39,6 +43,13 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
+    // Build messages array with conversation history
+    const messages = [
+      { role: 'system', content: SYSTEM_PROMPTS.chat },
+      ...conversationHistory.slice(-4), // Keep last 4 messages for context
+      { role: 'user', content: message }
+    ];
+
     // Call OpenAI with strict 20 token limit
     const openAIResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -48,10 +59,7 @@ export const POST: APIRoute = async ({ request }) => {
       },
       body: JSON.stringify({
         model: 'gpt-3.5-turbo',
-        messages: [
-          { role: 'system', content: SYSTEM_PROMPTS.chat },
-          { role: 'user', content: message }
-        ],
+        messages,
         max_tokens: 20,
         temperature: 0.4
       })
@@ -96,11 +104,17 @@ function selectChatTemplate(message: string): string {
   if (lower.includes('help') || lower.includes('assist') || lower.includes('support')) {
     return CHAT_TEMPLATES.help;
   }
-  if (lower.includes('error') || lower.includes('problem') || lower.includes('issue')) {
-    return CHAT_TEMPLATES.technical;
-  }
-  if (lower.includes('order') || lower.includes('purchase') || lower.includes('buy')) {
+  if (lower.includes('track') || lower.includes('order') || lower.includes('where is')) {
     return CHAT_TEMPLATES.order;
+  }
+  if (lower.includes('refund') || lower.includes('return') || lower.includes('money back')) {
+    return CHAT_TEMPLATES.refund;
+  }
+  if (lower.includes('shipping') || lower.includes('delivery') || lower.includes('how long')) {
+    return CHAT_TEMPLATES.shipping;
+  }
+  if (lower.includes('product') || lower.includes('item') || lower.includes('looking for')) {
+    return CHAT_TEMPLATES.product;
   }
   
   return CHAT_TEMPLATES.general;

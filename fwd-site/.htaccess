@@ -1,0 +1,151 @@
+# FWD Agency - Optimized Apache Configuration
+
+# Security Headers
+<IfModule mod_headers.c>
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    Header set Permissions-Policy "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()"
+    
+    # Remove server signature
+    Header unset Server
+    Header unset X-Powered-By
+</IfModule>
+
+# Enable compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript
+    AddOutputFilterByType DEFLATE application/javascript application/x-javascript
+    AddOutputFilterByType DEFLATE application/xml application/xhtml+xml application/rss+xml
+    AddOutputFilterByType DEFLATE application/json application/ld+json
+    AddOutputFilterByType DEFLATE image/svg+xml
+    AddOutputFilterByType DEFLATE font/ttf font/otf font/eot
+</IfModule>
+
+# Browser caching
+<IfModule mod_expires.c>
+    ExpiresActive On
+    
+    # Images
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/x-icon "access plus 1 year"
+    
+    # CSS and JavaScript
+    ExpiresByType text/css "access plus 6 months"
+    ExpiresByType text/javascript "access plus 6 months"
+    ExpiresByType application/javascript "access plus 6 months"
+    
+    # Fonts
+    ExpiresByType font/ttf "access plus 1 year"
+    ExpiresByType font/otf "access plus 1 year"
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType application/font-woff "access plus 1 year"
+    
+    # Others
+    ExpiresByType text/html "access plus 0 seconds"
+    ExpiresByType application/xml "access plus 0 seconds"
+    ExpiresByType application/json "access plus 0 seconds"
+</IfModule>
+
+# URL rewriting
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Force HTTPS
+    RewriteCond %{HTTPS} !=on
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+    
+    # Remove www
+    RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+    RewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]
+    
+    # Remove trailing slash except for directories
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+    
+    # Clean URLs - remove .html extension
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME}.html -f
+    RewriteRule ^(.*)$ $1.html [L]
+    
+    # Error pages
+    ErrorDocument 404 /404.html
+    ErrorDocument 500 /500.html
+</IfModule>
+
+# Block bad bots
+<IfModule mod_setenvif.c>
+    SetEnvIfNoCase User-Agent "^$" bad_bot
+    SetEnvIfNoCase User-Agent "360Spider" bad_bot
+    SetEnvIfNoCase User-Agent "Alexibot" bad_bot
+    SetEnvIfNoCase User-Agent "asterias" bad_bot
+    SetEnvIfNoCase User-Agent "BackDoorBot" bad_bot
+    SetEnvIfNoCase User-Agent "Black.Hole" bad_bot
+    SetEnvIfNoCase User-Agent "BlowFish" bad_bot
+    SetEnvIfNoCase User-Agent "BotALot" bad_bot
+    SetEnvIfNoCase User-Agent "BuiltBotTough" bad_bot
+    SetEnvIfNoCase User-Agent "Bullseye" bad_bot
+    SetEnvIfNoCase User-Agent "BunnySlippers" bad_bot
+    SetEnvIfNoCase User-Agent "ChinaClaw" bad_bot
+    SetEnvIfNoCase User-Agent "CopyRightCheck" bad_bot
+    SetEnvIfNoCase User-Agent "cosmos" bad_bot
+    SetEnvIfNoCase User-Agent "Crescent" bad_bot
+    SetEnvIfNoCase User-Agent "DISCo" bad_bot
+    SetEnvIfNoCase User-Agent "DittoSpyder" bad_bot
+    SetEnvIfNoCase User-Agent "DOC" bad_bot
+    SetEnvIfNoCase User-Agent "Download Demon" bad_bot
+    SetEnvIfNoCase User-Agent "eCatch" bad_bot
+    SetEnvIfNoCase User-Agent "EirGrabber" bad_bot
+    SetEnvIfNoCase User-Agent "EmailCollector" bad_bot
+    SetEnvIfNoCase User-Agent "EmailSiphon" bad_bot
+    SetEnvIfNoCase User-Agent "EmailWolf" bad_bot
+    SetEnvIfNoCase User-Agent "EroCrawler" bad_bot
+    SetEnvIfNoCase User-Agent "ExtractorPro" bad_bot
+    SetEnvIfNoCase User-Agent "Foobot" bad_bot
+    SetEnvIfNoCase User-Agent "GetRight" bad_bot
+    SetEnvIfNoCase User-Agent "GetWeb!" bad_bot
+    SetEnvIfNoCase User-Agent "Go!Zilla" bad_bot
+    SetEnvIfNoCase User-Agent "GrabNet" bad_bot
+    SetEnvIfNoCase User-Agent "Grafula" bad_bot
+    SetEnvIfNoCase User-Agent "Harvest" bad_bot
+    SetEnvIfNoCase User-Agent "hloader" bad_bot
+    SetEnvIfNoCase User-Agent "hmview" bad_bot
+    SetEnvIfNoCase User-Agent "httplib" bad_bot
+    SetEnvIfNoCase User-Agent "HTTrack" bad_bot
+    SetEnvIfNoCase User-Agent "humanlinks" bad_bot
+    SetEnvIfNoCase User-Agent "InfoNaviRobot" bad_bot
+    SetEnvIfNoCase User-Agent "InfoTekies" bad_bot
+    SetEnvIfNoCase User-Agent "Internet Ninja" bad_bot
+    SetEnvIfNoCase User-Agent "InternetSeer.com" bad_bot
+    SetEnvIfNoCase User-Agent "JennyBot" bad_bot
+    SetEnvIfNoCase User-Agent "Kenjin.Spider" bad_bot
+    SetEnvIfNoCase User-Agent "Keyword.Density" bad_bot
+    SetEnvIfNoCase User-Agent "larbin" bad_bot
+    SetEnvIfNoCase User-Agent "LeechFTP" bad_bot
+    SetEnvIfNoCase User-Agent "LexiBot" bad_bot
+    SetEnvIfNoCase User-Agent "libWeb/clsHTTP" bad_bot
+</IfModule>
+
+<IfModule mod_authz_core.c>
+    <RequireAll>
+        Require all granted
+        Require not env bad_bot
+    </RequireAll>
+</IfModule>
+
+# Prevent directory browsing
+Options -Indexes
+
+# Protect sensitive files
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>

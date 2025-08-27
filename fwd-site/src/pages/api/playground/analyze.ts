@@ -1,7 +1,23 @@
 import type { APIRoute } from 'astro';
 
+export const prerender = false;
+
 const SYSTEM_PROMPTS = {
-  analyzer: "You are a business consultant. In 50 tokens maximum: 1) Identify the core problem 2) Recommend ONE solution from: automation/websites/apps/hosting 3) State a specific metric. Format: [Problem]. Solution: [service]. Savings: £[amount]/year."
+  analyzer: `You are FWD's AI assistant helping business owners discover how AI can transform their operations.
+
+RULES:
+- Always acknowledge and directly respond to what the user just said
+- Be conversational and natural, not scripted
+- When asked about experience/clients, mention specific relevant success stories
+- For hair/beauty salons: mention automated booking systems, reminder texts, inventory management
+- For restaurants: mention reservation systems, order management, customer feedback automation
+- For retail: mention inventory tracking, customer service chatbots, sales analytics
+- For trades: mention job scheduling, quote generation, invoice automation
+- Keep responses under 80 tokens
+- Be specific about the solution that matches their exact problem
+- If asked if you're AI, be honest and explain your capabilities
+
+Focus on understanding their specific pain points and recommending the right FWD service.`
 };
 
 // Simple in-memory rate limiter
@@ -38,7 +54,7 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
-    const { problem } = await request.json();
+    const { problem, conversationHistory = [] } = await request.json();
     
     if (!problem || typeof problem !== 'string') {
       return new Response(JSON.stringify({ 
@@ -60,6 +76,13 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
+    // Build messages array with conversation history
+    const messages = [
+      { role: 'system', content: SYSTEM_PROMPTS.analyzer },
+      ...conversationHistory,
+      { role: 'user', content: problem }
+    ];
+
     // Call OpenAI API with strict token limit
     const openAIResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -69,12 +92,9 @@ export const POST: APIRoute = async ({ request }) => {
       },
       body: JSON.stringify({
         model: 'gpt-3.5-turbo',
-        messages: [
-          { role: 'system', content: SYSTEM_PROMPTS.analyzer },
-          { role: 'user', content: problem }
-        ],
-        max_tokens: 75,
-        temperature: 0.3,
+        messages,
+        max_tokens: 100,
+        temperature: 0.7,
         top_p: 0.9
       })
     });
@@ -107,65 +127,75 @@ export const POST: APIRoute = async ({ request }) => {
 function analyzeProblemFallback(problem: string) {
   const lower = problem.toLowerCase();
   
-  if (lower.includes('email') || lower.includes('customer') || lower.includes('support')) {
+  if (lower.includes('restaurant')) {
     return {
-      problem: 'Customer communication inefficiency',
+      problem: 'Constant phone interruptions',
       solution: 'automation',
       service: 'Business Process Automation',
-      savings: 31200,
-      message: 'Manual customer communications waste 20+ hours weekly. Solution: automation. Savings: £31,200/year.'
+      message: "I know the feeling - your phone never stops ringing during service, tables calling to book while you're plating food. AI handles all bookings 24/7 via text and web, so you never miss a reservation and can focus on cooking. Like having a full-time receptionist who never takes breaks."
     };
   }
   
-  if (lower.includes('website') || lower.includes('online') || lower.includes('presence')) {
+  if (lower.includes('retail') || lower.includes('shop')) {
     return {
-      problem: 'Poor online presence',
-      solution: 'website',
+      problem: 'Repetitive customer questions',
+      solution: 'automation',
       service: 'AI-Powered Website',
-      savings: 24000,
-      message: 'Outdated website losing customers daily. Solution: AI-powered website. Savings: £24,000/year in lost revenue.'
+      message: "You're constantly answering the same questions - 'What time do you open?', 'Do you have this in stock?'. An AI chatbot on your website handles these instantly 24/7. You'll stop feeling like a human FAQ and can actually help customers who need real assistance."
     };
   }
   
-  if (lower.includes('inventory') || lower.includes('scheduling') || lower.includes('booking')) {
+  if (lower.includes('hair') || lower.includes('salon') || lower.includes('beauty')) {
     return {
-      problem: 'Manual process inefficiency',
+      problem: 'Appointment chaos',
+      solution: 'automation',
+      service: 'Business Process Automation',
+      message: "You're cutting hair with one hand and answering the phone with the other. Clients text at midnight wanting appointments. AI booking system lets clients book, change, and confirm appointments 24/7 by text. No more playing phone tag or double bookings - just focus on your craft."
+    };
+  }
+
+  if (lower.includes('service') || lower.includes('plumb') || lower.includes('electric') || lower.includes('trade')) {
+    return {
+      problem: 'Quote and invoice nightmare',
       solution: 'app',
       service: 'Custom App Development',
-      savings: 46800,
-      message: 'Manual scheduling wastes 30+ hours weekly. Solution: custom app. Savings: £46,800/year.'
+      message: "You finish a job exhausted, then spend evenings writing quotes and chasing invoices. AI app generates quotes on-site from photos, sends invoices automatically, and chases payment. Get home and actually relax instead of doing paperwork until midnight."
     };
   }
   
   // Default response
   return {
-    problem: 'Manual business processes',
+    problem: 'Daily overwhelm',
     solution: 'automation',
     service: 'Business Process Automation',
-    savings: 31200,
-    message: 'Manual processes waste 20+ hours weekly. Solution: automation. Savings: £31,200/year.'
+    message: "Running a business shouldn't mean working 24/7. AI handles the repetitive tasks that steal your time - customer queries, bookings, data entry. Imagine actually having evenings and weekends back. That's what our automation gives you - your life back."
   };
 }
 
 function parseAnalysis(message: string) {
   const result: any = { message };
+  const lower = message.toLowerCase();
   
-  // Extract solution type
-  if (message.toLowerCase().includes('automation')) {
+  // More intelligent solution detection based on keywords
+  if (lower.includes('booking') || lower.includes('appointment') || lower.includes('scheduling') || lower.includes('reminder')) {
     result.solution = 'automation';
     result.service = 'Business Process Automation';
-  } else if (message.toLowerCase().includes('website')) {
+    result.savings = 25000;
+  } else if (lower.includes('website') || lower.includes('online presence') || lower.includes('chat') || lower.includes('customer service')) {
     result.solution = 'website';
     result.service = 'AI-Powered Website';
-  } else if (message.toLowerCase().includes('app')) {
+    result.savings = 20000;
+  } else if (lower.includes('quote') || lower.includes('invoice') || lower.includes('inventory') || lower.includes('tracking') || lower.includes('manage')) {
     result.solution = 'app';
     result.service = 'Custom App Development';
-  } else if (message.toLowerCase().includes('hosting')) {
+    result.savings = 30000;
+  } else if (lower.includes('hosting') || lower.includes('maintenance') || lower.includes('security')) {
     result.solution = 'hosting';
     result.service = 'AI Hosting & Maintenance';
+    result.savings = 15000;
   }
   
-  // Extract savings
+  // Extract any specific savings mentioned
   const savingsMatch = message.match(/£([\d,]+)/);
   if (savingsMatch) {
     result.savings = parseInt(savingsMatch[1].replace(',', ''));

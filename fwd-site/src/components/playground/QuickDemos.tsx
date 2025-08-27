@@ -55,17 +55,24 @@ const demos: DemoCard[] = [
 export default function QuickDemos() {
   const [activeDemo, setActiveDemo] = useState<string | null>(null);
   const [emailTone, setEmailTone] = useState<'professional' | 'friendly' | 'urgent'>('professional');
-  const [productType, setProductType] = useState<'tech' | 'retail' | 'service'>('tech');
+  const [productName, setProductName] = useState('');
+  const [productType, setProductType] = useState<'electronics' | 'clothing' | 'home' | 'beauty' | 'sports'>('electronics');
   const [hoursPerWeek, setHoursPerWeek] = useState(20);
   const [generatedContent, setGeneratedContent] = useState('');
 
   const handleEmailDemo = async () => {
     try {
+      const contexts = {
+        professional: 'Customer asking about order status',
+        friendly: 'Happy customer leaving positive feedback',
+        urgent: 'Customer complaint about delayed shipping'
+      };
+      
       const response = await fetch('/api/playground/email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          context: `Generate a ${emailTone} email response`,
+          context: contexts[emailTone],
           tone: emailTone 
         })
       });
@@ -83,11 +90,17 @@ export default function QuickDemos() {
   };
 
   const handleProductDemo = async () => {
+    if (!productName.trim()) {
+      setGeneratedContent('Please enter a product name first.');
+      return;
+    }
+    
     try {
       const response = await fetch('/api/playground/product', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
+          productName: productName,
           productType: productType,
           features: null
         })
@@ -129,6 +142,7 @@ export default function QuickDemos() {
   const resetDemo = () => {
     setActiveDemo(null);
     setGeneratedContent('');
+    setProductName('');
   };
 
   return (
@@ -172,7 +186,7 @@ export default function QuickDemos() {
                       <select
                         value={emailTone}
                         onChange={(e) => setEmailTone(e.target.value as any)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ai-purple"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                       >
                         <option value="professional">Professional</option>
                         <option value="friendly">Friendly</option>
@@ -181,7 +195,7 @@ export default function QuickDemos() {
                     </div>
                     <button
                       onClick={handleEmailDemo}
-                      className="w-full bg-gradient-to-r from-ai-purple to-trust-blue text-white font-semibold py-2 px-4 rounded-lg hover:opacity-90 transition-opacity"
+                      className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:opacity-90 transition-opacity"
                     >
                       Generate Email
                     </button>
@@ -193,21 +207,35 @@ export default function QuickDemos() {
                   <>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Product type:
+                        Product name:
+                      </label>
+                      <input
+                        type="text"
+                        value={productName}
+                        onChange={(e) => setProductName(e.target.value)}
+                        placeholder="e.g., Wireless Headphones Pro"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Category:
                       </label>
                       <select
                         value={productType}
                         onChange={(e) => setProductType(e.target.value as any)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ai-purple"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       >
-                        <option value="tech">Technology</option>
-                        <option value="retail">Retail</option>
-                        <option value="service">Service</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="clothing">Clothing</option>
+                        <option value="home">Home & Garden</option>
+                        <option value="beauty">Beauty & Health</option>
+                        <option value="sports">Sports & Fitness</option>
                       </select>
                     </div>
                     <button
                       onClick={handleProductDemo}
-                      className="w-full bg-gradient-to-r from-ai-purple to-trust-blue text-white font-semibold py-2 px-4 rounded-lg hover:opacity-90 transition-opacity"
+                      className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold py-2 px-4 rounded-lg hover:opacity-90 transition-opacity"
                     >
                       Generate Description
                     </button>
@@ -229,13 +257,13 @@ export default function QuickDemos() {
                         onChange={(e) => setHoursPerWeek(parseInt(e.target.value))}
                         className="w-full"
                       />
-                      <div className="text-center text-2xl font-bold text-ai-purple mt-2">
+                      <div className="text-center text-2xl font-bold text-purple-600 mt-2">
                         {hoursPerWeek} hours
                       </div>
                     </div>
                     <button
                       onClick={calculateTimeSavings}
-                      className="w-full bg-gradient-to-r from-ai-purple to-trust-blue text-white font-semibold py-2 px-4 rounded-lg hover:opacity-90 transition-opacity"
+                      className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold py-2 px-4 rounded-lg hover:opacity-90 transition-opacity"
                     >
                       Calculate Savings
                     </button>
@@ -249,7 +277,7 @@ export default function QuickDemos() {
                       <span className="text-xs font-medium text-gray-500">GENERATED CONTENT</span>
                       <button
                         onClick={() => navigator.clipboard.writeText(generatedContent)}
-                        className="text-xs text-ai-purple hover:text-ai-purple/80"
+                        className="text-xs text-purple-600 hover:text-purple-700"
                       >
                         Copy 📋
                       </button>

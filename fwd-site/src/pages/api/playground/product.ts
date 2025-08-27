@@ -1,24 +1,27 @@
 import type { APIRoute } from 'astro';
 
+export const prerender = false;
+
 const SYSTEM_PROMPTS = {
-  product: "Write compelling product copy in exactly 40 tokens. Focus on benefits over features. Be persuasive and clear."
+  product: "Write compelling e-commerce product descriptions in exactly 40 tokens. Focus on benefits, quality, and value. Be persuasive and engaging."
 };
 
 const PRODUCT_TEMPLATES = {
-  software: "Revolutionary AI-powered software that automates your workflow, saving 20+ hours weekly while increasing accuracy by 99%. Start your transformation today.",
-  service: "Expert solutions tailored to your unique needs. We handle complexity while you focus on growth. Trusted by 500+ businesses nationwide.",
-  retail: "Premium quality meets unbeatable value. Crafted with meticulous attention to detail, backed by our 100% satisfaction guarantee. Transform your experience.",
-  tech: "Cutting-edge technology that adapts to your business. Reduce costs by 60% while scaling effortlessly. Future-proof your operations today.",
-  general: "Transform your business with our proven solution. Save time, reduce costs, and accelerate growth. Join thousands already seeing results."
+  electronics: "Premium quality tech with cutting-edge features. Free shipping, 2-year warranty, and 30-day returns. Trusted by thousands of satisfied customers.",
+  clothing: "Stylish, comfortable, and sustainably made. Perfect fit guaranteed with free returns. Express yourself with confidence and quality.",
+  home: "Transform your space with elegant design and superior craftsmanship. Durable materials, easy assembly, satisfaction guaranteed.",
+  beauty: "Professional-grade formula with natural ingredients. Visible results in days, dermatologist tested, cruelty-free. Your skin will thank you.",
+  sports: "Performance-engineered for serious athletes. Lightweight, durable, and designed to help you achieve your personal best.",
+  general: "Premium quality meets unbeatable value. Fast shipping, easy returns, and our famous customer service. Shop with confidence today."
 };
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    const { productType, features } = await request.json();
+    const { productName, productType, features } = await request.json();
     
-    if (!productType || typeof productType !== 'string') {
+    if (!productName || typeof productName !== 'string') {
       return new Response(JSON.stringify({ 
-        error: 'Please provide product type.' 
+        error: 'Please provide product name.' 
       }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
@@ -29,7 +32,7 @@ export const POST: APIRoute = async ({ request }) => {
     
     // Use template if no API key
     if (!apiKey || apiKey === 'demo') {
-      const template = selectProductTemplate(productType);
+      const template = selectProductTemplate(productType || productName);
       return new Response(JSON.stringify({ 
         content: template,
         tokens: 40
@@ -40,9 +43,7 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     // Call OpenAI with strict 40 token limit
-    const prompt = features 
-      ? `Product type: ${productType}. Features: ${features}`
-      : `Product type: ${productType}`;
+    const prompt = `Product: ${productName}${productType ? `, Type: ${productType}` : ''}${features ? `, Features: ${features}` : ''}`;
 
     const openAIResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -94,17 +95,20 @@ export const POST: APIRoute = async ({ request }) => {
 function selectProductTemplate(productType: string): string {
   const lower = productType.toLowerCase();
   
-  if (lower.includes('software') || lower.includes('app') || lower.includes('saas')) {
-    return PRODUCT_TEMPLATES.software;
+  if (lower.includes('electronic') || lower.includes('phone') || lower.includes('laptop') || lower.includes('gadget')) {
+    return PRODUCT_TEMPLATES.electronics;
   }
-  if (lower.includes('service') || lower.includes('consulting') || lower.includes('agency')) {
-    return PRODUCT_TEMPLATES.service;
+  if (lower.includes('clothing') || lower.includes('shirt') || lower.includes('dress') || lower.includes('fashion')) {
+    return PRODUCT_TEMPLATES.clothing;
   }
-  if (lower.includes('retail') || lower.includes('product') || lower.includes('goods')) {
-    return PRODUCT_TEMPLATES.retail;
+  if (lower.includes('home') || lower.includes('furniture') || lower.includes('decor') || lower.includes('kitchen')) {
+    return PRODUCT_TEMPLATES.home;
   }
-  if (lower.includes('tech') || lower.includes('ai') || lower.includes('automation')) {
-    return PRODUCT_TEMPLATES.tech;
+  if (lower.includes('beauty') || lower.includes('skincare') || lower.includes('makeup') || lower.includes('cosmetic')) {
+    return PRODUCT_TEMPLATES.beauty;
+  }
+  if (lower.includes('sport') || lower.includes('fitness') || lower.includes('gym') || lower.includes('athletic')) {
+    return PRODUCT_TEMPLATES.sports;
   }
   
   return PRODUCT_TEMPLATES.general;

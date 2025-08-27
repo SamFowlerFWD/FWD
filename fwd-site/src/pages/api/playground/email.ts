@@ -1,15 +1,18 @@
 import type { APIRoute } from 'astro';
 
+export const prerender = false;
+
 const SYSTEM_PROMPTS = {
-  email: "Write a professional email response in exactly 30 tokens. Be direct, actionable, and polite."
+  email: "Write professional customer service email responses in exactly 30 tokens. Be helpful, empathetic, and solution-focused."
 };
 
 const EMAIL_TEMPLATES = {
-  inquiry: "Thank you for your inquiry. I'll review this carefully and respond within 24 hours with detailed information and next steps.",
-  meeting: "I'd be happy to discuss this further. I'm available Tuesday or Thursday afternoon. Please let me know what works best for you.",
-  followup: "Following up on our conversation. I've prepared the requested information and attached it here. Let me know if you need anything else.",
-  apology: "I apologize for the delay. I've prioritized your request and will have a comprehensive response to you by end of day tomorrow.",
-  confirmation: "Perfect, I've confirmed your request and begun processing it. You'll receive an update within 2 business days with the results."
+  inquiry: "Thank you for contacting us! I'll review your question and respond within 24 hours with helpful information and solutions.",
+  order: "Your order has been received and is being processed. You'll receive tracking information within 24 hours via email.",
+  refund: "I understand your concern. Your refund request is being processed and will be completed within 3-5 business days.",
+  complaint: "I sincerely apologize for your experience. I'm escalating this to our team lead for immediate resolution today.",
+  shipping: "Your order shipped today! Tracking number and delivery details have been sent to your email. Thank you for your patience.",
+  confirmation: "Perfect! Your request has been confirmed and processed. You'll receive a confirmation email shortly with all details."
 };
 
 export const POST: APIRoute = async ({ request }) => {
@@ -90,14 +93,17 @@ export const POST: APIRoute = async ({ request }) => {
 function selectEmailTemplate(context: string): string {
   const lower = context.toLowerCase();
   
-  if (lower.includes('sorry') || lower.includes('delay') || lower.includes('apologize')) {
-    return EMAIL_TEMPLATES.apology;
+  if (lower.includes('order') || lower.includes('purchase') || lower.includes('bought')) {
+    return EMAIL_TEMPLATES.order;
   }
-  if (lower.includes('meeting') || lower.includes('discuss') || lower.includes('call')) {
-    return EMAIL_TEMPLATES.meeting;
+  if (lower.includes('refund') || lower.includes('return') || lower.includes('money back')) {
+    return EMAIL_TEMPLATES.refund;
   }
-  if (lower.includes('follow') || lower.includes('previous') || lower.includes('earlier')) {
-    return EMAIL_TEMPLATES.followup;
+  if (lower.includes('complaint') || lower.includes('unhappy') || lower.includes('disappointed')) {
+    return EMAIL_TEMPLATES.complaint;
+  }
+  if (lower.includes('shipping') || lower.includes('delivery') || lower.includes('tracking')) {
+    return EMAIL_TEMPLATES.shipping;
   }
   if (lower.includes('confirm') || lower.includes('received') || lower.includes('process')) {
     return EMAIL_TEMPLATES.confirmation;

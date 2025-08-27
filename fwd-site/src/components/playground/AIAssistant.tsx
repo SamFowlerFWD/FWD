@@ -29,15 +29,7 @@ const INITIAL_QUESTIONS = [
   "What would you do with an extra 20 hours per week?"
 ];
 
-const QUICK_RESPONSES = [
-  "I run a retail business",
-  "I manage a restaurant",
-  "I own a service company",
-  "We do consulting",
-  "I need help with automation",
-  "Our website needs work",
-  "We need a custom app"
-];
+const QUICK_RESPONSES: string[] = [];
 
 export default function AIAssistant() {
   const [messages, setMessages] = useState<Message[]>([
@@ -77,6 +69,12 @@ export default function AIAssistant() {
     setMessageCount(prev => prev + 1);
 
     try {
+      // Prepare conversation history for API
+      const conversationHistory = messages
+        .filter(m => m.role !== 'system')
+        .slice(-4) // Keep last 4 messages for context
+        .map(m => ({ role: m.role, content: m.content }));
+
       // Call the API endpoint
       const response = await fetch('/api/playground/analyze', {
         method: 'POST',
@@ -84,7 +82,8 @@ export default function AIAssistant() {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          problem: input
+          problem: input,
+          conversationHistory
         })
       });
 
@@ -104,18 +103,43 @@ export default function AIAssistant() {
 
       setMessages(prev => [...prev, assistantMessage]);
 
-      // If we've identified a service, add a follow-up
-      if (response.service && messageCount >= 2) {
+      // If we've identified a service and have had enough conversation, add a recommendation
+      if (data.solution && messageCount >= 3) {
         setTimeout(() => {
+          const serviceName = SERVICE_NAMES[data.solution] || data.service;
+          const savingsAmount = data.savings?.toLocaleString() || '25,000';
+          
+          let recommendationMessage = `Based on what you've told me about your `;
+          
+          // Customize based on the business type mentioned
+          const userMessages = messages.filter(m => m.role === 'user').map(m => m.content.toLowerCase()).join(' ');
+          if (userMessages.includes('salon') || userMessages.includes('hair') || userMessages.includes('beauty')) {
+            recommendationMessage += `salon, our ${serviceName} service would be perfect. We've helped similar salons save £${savingsAmount}+ annually by automating appointment bookings and client reminders.`;
+          } else if (userMessages.includes('restaurant')) {
+            recommendationMessage += `restaurant, our ${serviceName} service would transform your operations. We've helped restaurants like yours save £${savingsAmount}+ annually with automated reservations and order management.`;
+          } else if (userMessages.includes('retail') || userMessages.includes('shop')) {
+            recommendationMessage += `retail business, our ${serviceName} service is ideal. Similar shops save £${savingsAmount}+ annually with our AI customer service and inventory management.`;
+          } else if (userMessages.includes('plumb') || userMessages.includes('trade') || userMessages.includes('electric')) {
+            recommendationMessage += `trade business, our ${serviceName} service would streamline everything. Tradespeople save £${savingsAmount}+ annually with automated quotes and job scheduling.`;
+          } else {
+            recommendationMessage += `business challenges, our ${serviceName} service can help you save £${savingsAmount}+ annually through intelligent automation.`;
+          }
+          
+          recommendationMessage += ` Would you like to see exactly how this would work for your business?`;
+          
           setMessages(prev => [...prev, {
             role: 'system',
-            content: `Based on your answers, I recommend our ${SERVICE_NAMES[response.service]} service. This could save you approximately £${response.savings?.toLocaleString() || '30,000'} per year. Would you like to learn more or book a free consultation?`,
+            content: recommendationMessage,
             timestamp: new Date()
           }]);
         }, 1500);
       }
     } catch (error) {
       console.error('Chat error:', error);
+      // Check if it's a network error or API error
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.log('Error details:', errorMessage);
+      
       setMessages(prev => [...prev, {
         role: 'assistant',
         content: "I'm having trouble connecting right now. Based on what you've told me, most businesses like yours save 20+ hours weekly with our automation services. Would you like to learn more?",
@@ -124,10 +148,6 @@ export default function AIAssistant() {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleQuickResponse = (response: string) => {
-    setInput(response);
   };
 
   return (
@@ -155,7 +175,7 @@ export default function AIAssistant() {
               {message.service && (
                 <div className="mt-3 pt-3 border-t border-white/20">
                   <a
-                    href={SERVICE_LINKS[message.service]}
+                    href={SERVICE_LINKS[message.service as keyof typeof SERVICE_LINKS] || '/services'}
                     className="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 px-3 py-1 rounded-lg transition-colors"
                   >
                     <span className="text-sm font-medium">Learn More →</span>
@@ -164,19 +184,24 @@ export default function AIAssistant() {
               )}
               
               {message.role === 'system' && (
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <a
-                    href="/#contact"
-                    className="bg-urgent-amber hover:bg-urgent-amber/90 text-white font-semibold px-4 py-2 rounded-lg transition-all text-sm"
-                  >
-                    Book Free Consultation
-                  </a>
-                  <a
-                    href="/services"
-                    className="bg-white hover:bg-gray-50 text-deep-space font-semibold px-4 py-2 rounded-lg transition-all text-sm border border-gray-200"
-                  >
-                    View Services
-                  </a>
+                <div className="mt-3 space-y-3">
+                  <div className="flex flex-wrap gap-2">
+                    <a
+                      href="/#contact"
+                      className="bg-urgent-amber hover:bg-urgent-amber/90 text-white font-semibold px-4 py-2 rounded-lg transition-all text-sm shadow-lg hover:shadow-xl"
+                    >
+                      Yes, Show Me How →
+                    </a>
+                    <a
+                      href="/services"
+                      className="bg-white hover:bg-gray-50 text-deep-space font-semibold px-4 py-2 rounded-lg transition-all text-sm border border-gray-200"
+                    >
+                      View All Services
+                    </a>
+                  </div>
+                  <p className="text-xs text-gray-600">
+                    💡 <strong>Free consultation includes:</strong> Custom AI strategy for your business • ROI analysis • Implementation roadmap
+                  </p>
                 </div>
               )}
             </div>
@@ -198,26 +223,13 @@ export default function AIAssistant() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Quick Responses */}
-      {messageCount < 3 && (
-        <div className="px-6 py-3 border-t border-gray-100">
-          <p className="text-xs text-gray-500 mb-2">Quick responses:</p>
-          <div className="flex flex-wrap gap-2">
-            {QUICK_RESPONSES.slice(0, 4).map((response) => (
-              <button
-                key={response}
-                onClick={() => handleQuickResponse(response)}
-                className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm px-3 py-1 rounded-lg transition-colors"
-              >
-                {response}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* Input Area */}
       <form onSubmit={handleSubmit} className="p-6 border-t border-gray-100">
+        <div className="mb-3">
+          <p className="text-sm font-medium text-gray-700">
+            What's your biggest business challenge? Or tell me what industry you're in:
+          </p>
+        </div>
         {messageCount >= 5 ? (
           <div className="text-center py-4">
             <p className="text-gray-600 mb-4">

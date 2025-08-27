@@ -8,18 +8,18 @@ interface ChatMessage {
 }
 
 const QUICK_PROMPTS = [
-  "What are your business hours?",
-  "How can I track my order?",
-  "I need technical support",
-  "What's your refund policy?",
-  "Schedule a consultation"
+  "Where is my order?",
+  "I want a refund",
+  "How long is shipping?",
+  "Do you have this in stock?",
+  "What's your return policy?"
 ];
 
 export default function ChatbotDemo() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: 'bot',
-      content: "Hi! I'm an AI assistant. Ask me anything about our services!",
+      content: "Hi! I'm your shopping assistant. How can I help with your order today?",
       timestamp: new Date()
     }
   ]);
@@ -43,10 +43,19 @@ export default function ChatbotDemo() {
     setMessageCount(prev => prev + 1);
 
     try {
+      // Build conversation history for context
+      const conversationHistory = messages.slice(-4).map(msg => ({
+        role: msg.role === 'bot' ? 'assistant' : 'user',
+        content: msg.content
+      }));
+
       const response = await fetch('/api/playground/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: input })
+        body: JSON.stringify({ 
+          message: input,
+          conversationHistory 
+        })
       });
 
       const data = await response.json();
@@ -69,7 +78,7 @@ export default function ChatbotDemo() {
     } catch (error) {
       setMessages(prev => [...prev, {
         role: 'bot',
-        content: "I'm having trouble connecting. Please try again later.",
+        content: "Sorry, I'm having connection issues. Please try again or email support@store.com.",
         timestamp: new Date()
       }]);
     } finally {
@@ -84,8 +93,8 @@ export default function ChatbotDemo() {
   return (
     <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
       <div className="bg-gradient-to-r from-green-500 to-green-600 p-4 text-white">
-        <h3 className="text-lg font-bold">AI Chatbot Demo</h3>
-        <p className="text-sm opacity-90">Experience instant customer support</p>
+        <h3 className="text-lg font-bold">Retail Support Chatbot</h3>
+        <p className="text-sm opacity-90">24/7 customer service assistant</p>
       </div>
 
       <div className="h-64 overflow-y-auto p-4 space-y-3 bg-gray-50">
@@ -97,8 +106,8 @@ export default function ChatbotDemo() {
             <div
               className={`max-w-[70%] px-3 py-2 rounded-lg text-sm ${
                 msg.role === 'user'
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-white text-gray-700 border border-gray-200'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-white text-gray-800 border border-gray-200'
               }`}
             >
               {msg.content}
@@ -159,8 +168,8 @@ export default function ChatbotDemo() {
         </div>
       ) : (
         <div className="p-4 border-t border-gray-100 text-center">
-          <p className="text-sm text-gray-600 mb-3">
-            See how easy customer support can be?
+          <p className="text-sm text-gray-700 mb-3">
+            Automate your customer support with AI
           </p>
           <a
             href="/services/business-process-automation"
