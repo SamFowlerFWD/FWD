@@ -19,6 +19,11 @@ const Navigation: React.FC = () => {
 
   const navLinks: NavLink[] = [
     { 
+      label: 'AI Playground',
+      href: '/playground',
+      badge: 'Try Now'
+    },
+    { 
       label: 'Services', 
       href: '#services',
       dropdown: [
