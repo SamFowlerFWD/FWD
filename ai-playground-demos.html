@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Playground - Interactive Demos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@huggingface/inference@2.6.4/dist/index.js"></script>
+    <style>
+        .demo-card {
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .demo-card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
+        }
+        .loading-dots::after {
+            content: '.';
+            animation: dots 1.5s steps(5, end) infinite;
+        }
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60% { content: '...'; }
+            80%, 100% { content: ''; }
+        }
+        .pulse-bg {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-bold text-gray-900">AI Playground</h1>
+                <div class="flex gap-2">
+                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">Free Demos</span>
+                    <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">No Signup Required</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Industry Selector -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Choose Your Industry</h2>
+            <p class="text-xl text-gray-600">Experience AI solutions tailored to your business</p>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+            <button onclick="selectIndustry('retail')" class="industry-btn p-6 bg-white rounded-lg shadow hover:shadow-lg transition-shadow">
+                <div class="text-4xl mb-2">🛍️</div>
+                <div class="font-semibold">Retail</div>
+            </button>
+            <button onclick="selectIndustry('services')" class="industry-btn p-6 bg-white rounded-lg shadow hover:shadow-lg transition-shadow">
+                <div class="text-4xl mb-2">💼</div>
+                <div class="font-semibold">Services</div>
+            </button>
+            <button onclick="selectIndustry('manufacturing')" class="industry-btn p-6 bg-white rounded-lg shadow hover:shadow-lg transition-shadow">
+                <div class="text-4xl mb-2">🏭</div>
+                <div class="font-semibold">Manufacturing</div>
+            </button>
+            <button onclick="selectIndustry('hospitality')" class="industry-btn p-6 bg-white rounded-lg shadow hover:shadow-lg transition-shadow">
+                <div class="text-4xl mb-2">🍽️</div>
+                <div class="font-semibold">Hospitality</div>
+            </button>
+        </div>
+    </div>
+
+    <!-- Demo Grid -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            <!-- Demo 1: Product Description Generator -->
+            <div class="demo-card bg-white rounded-lg shadow-lg p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-bold">Product Description AI</h3>
+                    <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded text-xs">Retail</span>
+                </div>
+                <p class="text-gray-600 mb-4">Generate compelling product descriptions in seconds</p>
+                
+                <div class="space-y-3">
+                    <input type="text" id="product-name" placeholder="Product name" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <textarea id="product-features" placeholder="Key features (comma separated)" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" rows="2"></textarea>
+                    <select id="product-tone" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option>Professional</option>
+                        <option>Casual</option>
+                        <option>Luxury</option>
+                        <option>Technical</option>
+                    </select>
+                    <button onclick="generateProductDescription()" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
+                        Generate Description
+                    </button>
+                    <div id="product-result" class="hidden">
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-4 mt-4">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-sm font-semibold text-green-800">AI Generated:</span>
+                                <button onclick="copyToClipboard('product-output')" class="text-xs bg-green-600 text-white px-2 py-1 rounded">Copy</button>
+                            </div>
+                            <p id="product-output" class="text-gray-700"></p>
+                            <div class="mt-3 pt-3 border-t border-green-200">
+                                <div class="flex justify-between text-xs text-green-700">
+                                    <span>⚡ Generated in 0.8s</span>
+                                    <span>💰 Saved: 15 minutes</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Demo 2: Email Response Generator -->
+            <div class="demo-card bg-white rounded-lg shadow-lg p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-bold">Smart Email Responder</h3>
+                    <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">All Industries</span>
+                </div>
+                <p class="text-gray-600 mb-4">AI-powered email responses that match your tone</p>
+                
+                <div class="space-y-3">
+                    <textarea id="email-content" placeholder="Paste customer email here..." class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" rows="3"></textarea>
+                    <select id="response-type" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option>Professional</option>
+                        <option>Friendly</option>
+                        <option>Apologetic</option>
+                        <option>Sales-focused</option>
+                    </select>
+                    <button onclick="generateEmailResponse()" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
+                        Generate Response
+                    </button>
+                    <div id="email-result" class="hidden">
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-sm font-semibold text-blue-800">Suggested Response:</span>
+                                <button onclick="copyToClipboard('email-output')" class="text-xs bg-blue-600 text-white px-2 py-1 rounded">Copy</button>
+                            </div>
+                            <p id="email-output" class="text-gray-700 whitespace-pre-line"></p>
+                            <div class="mt-3 pt-3 border-t border-blue-200">
+                                <div class="flex justify-between text-xs text-blue-700">
+                                    <span>📧 Response time: -80%</span>
+                                    <span>⭐ Customer satisfaction: +35%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Demo 3: Invoice OCR -->
+            <div class="demo-card bg-white rounded-lg shadow-lg p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-bold">Invoice Scanner AI</h3>
+                    <span class="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">Services</span>
+                </div>
+                <p class="text-gray-600 mb-4">Extract invoice data instantly from any format</p>
+                
+                <div class="space-y-3">
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+                        <input type="file" id="invoice-file" accept="image/*,application/pdf" class="hidden" onchange="processInvoice(event)">
+                        <label for="invoice-file" class="cursor-pointer">
+                            <div class="text-gray-400">
+                                <svg class="mx-auto h-12 w-12" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                                <p class="mt-2">Click to upload invoice</p>
+                                <p class="text-xs mt-1">or use sample invoice</p>
+                            </div>
+                        </label>
+                    </div>
+                    <button onclick="useSampleInvoice()" class="w-full bg-gray-600 text-white py-2 rounded-lg hover:bg-gray-700 transition">
+                        Use Sample Invoice
+                    </button>
+                    <div id="invoice-result" class="hidden">
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-4 mt-4">
+                            <h4 class="font-semibold text-green-800 mb-2">Extracted Data:</h4>
+                            <div class="space-y-1 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Invoice #:</span>
+                                    <span id="invoice-number" class="font-medium">INV-2024-001</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Date:</span>
+                                    <span id="invoice-date" class="font-medium">2024-01-15</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Total:</span>
+                                    <span id="invoice-total" class="font-medium text-green-600">$2,450.00</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Due Date:</span>
+                                    <span id="invoice-due" class="font-medium">2024-02-15</span>
+                                </div>
+                            </div>
+                            <div class="mt-3 pt-3 border-t border-green-200">
+                                <div class="text-xs text-green-700">
+                                    ⚡ Processing time: 1.2s | 📊 Accuracy: 99.2%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Demo 4: Chatbot Preview -->
+            <div class="demo-card bg-white rounded-lg shadow-lg p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-bold">AI Customer Assistant</h3>
+                    <span class="px-2 py-1 bg-orange-100 text-orange-800 rounded text-xs">All Industries</span>
+                </div>
+                <p class="text-gray-600 mb-4">24/7 intelligent customer support</p>
+                
+                <div class="bg-gray-50 rounded-lg p-4 h-64 overflow-y-auto" id="chat-container">
+                    <div class="space-y-3">
+                        <div class="flex justify-start">
+                            <div class="bg-white rounded-lg p-3 max-w-xs shadow-sm">
+                                <p class="text-sm">Hi! I'm your AI assistant. How can I help you today?</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-3 flex gap-2">
+                    <input type="text" id="chat-input" placeholder="Type your message..." class="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" onkeypress="if(event.key==='Enter') sendChatMessage()">
+                    <button onclick="sendChatMessage()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Send</button>
+                </div>
+                <div class="mt-3 text-xs text-center text-gray-500">
+                    Powered by AI • Responds in under 1 second
+                </div>
+            </div>
+
+            <!-- Demo 5: Demand Forecasting -->
+            <div class="demo-card bg-white rounded-lg shadow-lg p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-bold">Demand Predictor</h3>
+                    <span class="px-2 py-1 bg-red-100 text-red-800 rounded text-xs">Retail</span>
+                </div>
+                <p class="text-gray-600 mb-4">AI-powered inventory forecasting</p>
+                
+                <div class="space-y-3">
+                    <select id="forecast-product" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option>Winter Jackets</option>
+                        <option>Summer Dresses</option>
+                        <option>Running Shoes</option>
+                        <option>Electronics</option>
+                    </select>
+                    <select id="forecast-period" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option>Next 7 days</option>
+                        <option>Next 30 days</option>
+                        <option>Next Quarter</option>
+                    </select>
+                    <button onclick="generateForecast()" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
+                        Generate Forecast
+                    </button>
+                    <div id="forecast-result" class="hidden">
+                        <canvas id="forecast-chart" class="mt-4"></canvas>
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-4">
+                            <div class="text-sm space-y-1">
+                                <div class="flex justify-between">
+                                    <span>Predicted Demand:</span>
+                                    <span class="font-semibold" id="predicted-demand">245 units</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Confidence:</span>
+                                    <span class="font-semibold text-green-600">92%</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Recommended Stock:</span>
+                                    <span class="font-semibold" id="recommended-stock">280 units</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Demo 6: Content Generator -->
+            <div class="demo-card bg-white rounded-lg shadow-lg p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-bold">Social Media AI</h3>
+                    <span class="px-2 py-1 bg-pink-100 text-pink-800 rounded text-xs">Marketing</span>
+                </div>
+                <p class="text-gray-600 mb-4">Create engaging social media content instantly</p>
+                
+                <div class="space-y-3">
+                    <input type="text" id="social-topic" placeholder="What's your post about?" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <select id="social-platform" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option>LinkedIn</option>
+                        <option>Twitter/X</option>
+                        <option>Instagram</option>
+                        <option>Facebook</option>
+                    </select>
+                    <select id="social-tone" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option>Professional</option>
+                        <option>Casual</option>
+                        <option>Humorous</option>
+                        <option>Inspirational</option>
+                    </select>
+                    <button onclick="generateSocialPost()" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
+                        Generate Post
+                    </button>
+                    <div id="social-result" class="hidden">
+                        <div class="bg-pink-50 border border-pink-200 rounded-lg p-4 mt-4">
+                            <p id="social-output" class="text-gray-700 mb-3"></p>
+                            <div class="flex flex-wrap gap-2" id="hashtag-container"></div>
+                            <div class="mt-3 pt-3 border-t border-pink-200">
+                                <div class="flex justify-between text-xs text-pink-700">
+                                    <span>📱 Engagement: +45%</span>
+                                    <span>⏱️ Time saved: 20 mins</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Value Calculator -->
+    <div class="bg-blue-600 text-white py-12 mt-12">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-4">Your Potential Savings</h2>
+            <div class="grid grid-cols-3 gap-8 mt-8">
+                <div>
+                    <div class="text-4xl font-bold" id="time-saved">0</div>
+                    <div class="text-blue-200">Hours Saved/Month</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-bold">$<span id="money-saved">0</span></div>
+                    <div class="text-blue-200">Cost Reduction/Month</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-bold"><span id="efficiency">0</span>%</div>
+                    <div class="text-blue-200">Efficiency Increase</div>
+                </div>
+            </div>
+            <button class="mt-8 bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition">
+                Get This For Your Business →
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Demo interaction tracking
+        let demoInteractions = 0;
+        let totalTimeSaved = 0;
+        let totalMoneySaved = 0;
+
+        // Product Description Generator
+        async function generateProductDescription() {
+            const name = document.getElementById('product-name').value;
+            const features = document.getElementById('product-features').value;
+            const tone = document.getElementById('product-tone').value;
+            
+            if (!name || !features) {
+                alert('Please fill in product name and features');
+                return;
+            }
+            
+            // Show loading state
+            document.getElementById('product-result').classList.remove('hidden');
+            document.getElementById('product-output').innerHTML = '<span class="loading-dots">Generating</span>';
+            
+            // Simulate API call (in production, this would call your backend)
+            setTimeout(() => {
+                const descriptions = {
+                    'Professional': `Introducing the ${name}, a premium solution designed for discerning professionals. This exceptional product features ${features}, delivering unparalleled performance and reliability. Engineered with precision and backed by our commitment to excellence, the ${name} represents the pinnacle of innovation in its category.`,
+                    'Casual': `Meet your new favorite - the ${name}! Packed with ${features}, this awesome product makes life so much easier. Whether you're at home or on the go, the ${name} has got you covered. It's the perfect blend of style and functionality that you've been looking for!`,
+                    'Luxury': `Experience the epitome of sophistication with the ${name}. Meticulously crafted with ${features}, this masterpiece transcends ordinary expectations. Each detail has been thoughtfully considered to provide an unrivaled experience of luxury and refinement. The ${name} is not just a product; it's a statement of impeccable taste.`,
+                    'Technical': `The ${name} incorporates cutting-edge technology with ${features}. Built on advanced engineering principles, this product delivers measurable improvements in efficiency and performance. Technical specifications have been optimized for maximum output while maintaining industry-leading reliability standards.`
+                };
+                
+                document.getElementById('product-output').textContent = descriptions[tone];
+                updateSavings(15, 25); // 15 minutes saved, $25 value
+                demoInteractions++;
+            }, 1500);
+        }
+
+        // Email Response Generator
+        async function generateEmailResponse() {
+            const content = document.getElementById('email-content').value;
+            const type = document.getElementById('response-type').value;
+            
+            if (!content) {
+                alert('Please enter an email to respond to');
+                return;
+            }
+            
+            document.getElementById('email-result').classList.remove('hidden');
+            document.getElementById('email-output').innerHTML = '<span class="loading-dots">Crafting response</span>';
+            
+            setTimeout(() => {
+                const responses = {
+                    'Professional': `Dear Customer,\n\nThank you for reaching out to us. I understand your concern regarding "${content.substring(0, 50)}..."\n\nI'll be happy to assist you with this matter. Our team is committed to providing excellent service, and we'll ensure this is resolved promptly.\n\nPlease let me know if you need any additional information.\n\nBest regards,\n[Your Name]`,
+                    'Friendly': `Hi there!\n\nThanks so much for getting in touch! I totally understand where you're coming from with "${content.substring(0, 50)}..."\n\nLet me help you out with this - I've got some great solutions that I think you'll love!\n\nLooking forward to sorting this out for you!\n\nCheers,\n[Your Name]`,
+                    'Apologetic': `Dear Valued Customer,\n\nI sincerely apologize for the inconvenience you've experienced. Your concern about "${content.substring(0, 50)}..." is completely valid.\n\nWe take full responsibility for this issue and are committed to making it right. I'm personally overseeing the resolution to ensure you receive the service you deserve.\n\nThank you for your patience and understanding.\n\nSincerely,\n[Your Name]`,
+                    'Sales-focused': `Hello!\n\nThank you for your interest! Based on what you've shared about "${content.substring(0, 50)}...", I have the perfect solution for you.\n\nOur premium package addresses exactly these needs and comes with exclusive benefits that will exceed your expectations. I'd love to show you how we can transform your experience.\n\nShall we schedule a quick call to discuss?\n\nBest,\n[Your Name]`
+                };
+                
+                document.getElementById('email-output').textContent = responses[type];
+                updateSavings(10, 15);
+                demoInteractions++;
+            }, 1200);
+        }
+
+        // Invoice OCR Demo
+        function processInvoice(event) {
+            const file = event.target.files[0];
+            if (file) {
+                simulateInvoiceProcessing();
+            }
+        }
+
+        function useSampleInvoice() {
+            simulateInvoiceProcessing();
+        }
+
+        function simulateInvoiceProcessing() {
+            document.getElementById('invoice-result').classList.remove('hidden');
+            
+            // Simulate processing with loading state
+            const fields = ['invoice-number', 'invoice-date', 'invoice-total', 'invoice-due'];
+            fields.forEach(field => {
+                document.getElementById(field).innerHTML = '<span class="pulse-bg inline-block w-20 h-4 rounded"></span>';
+            });
+            
+            setTimeout(() => {
+                document.getElementById('invoice-number').textContent = 'INV-2024-' + Math.floor(Math.random() * 1000);
+                document.getElementById('invoice-date').textContent = new Date().toISOString().split('T')[0];
+                document.getElementById('invoice-total').textContent = '$' + (Math.random() * 5000 + 500).toFixed(2);
+                const dueDate = new Date();
+                dueDate.setDate(dueDate.getDate() + 30);
+                document.getElementById('invoice-due').textContent = dueDate.toISOString().split('T')[0];
+                
+                updateSavings(5, 10);
+                demoInteractions++;
+            }, 1500);
+        }
+
+        // Chat Demo
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            const chatContainer = document.getElementById('chat-container');
+            const chatContent = chatContainer.querySelector('.space-y-3');
+            
+            // Add user message
+            chatContent.innerHTML += `
+                <div class="flex justify-end">
+                    <div class="bg-blue-600 text-white rounded-lg p-3 max-w-xs shadow-sm">
+                        <p class="text-sm">${message}</p>
+                    </div>
+                </div>
+            `;
+            
+            input.value = '';
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            
+            // Simulate AI response
+            setTimeout(() => {
+                const responses = [
+                    "I'd be happy to help you with that! Let me pull up the relevant information for you.",
+                    "Great question! Based on our data, I can provide you with several options.",
+                    "I understand your concern. Let me check our system and find the best solution for you.",
+                    "Absolutely! I can assist you with that right away. Here's what I recommend..."
+                ];
+                
+                const response = responses[Math.floor(Math.random() * responses.length)];
+                
+                chatContent.innerHTML += `
+                    <div class="flex justify-start">
+                        <div class="bg-white rounded-lg p-3 max-w-xs shadow-sm">
+                            <p class="text-sm">${response}</p>
+                        </div>
+                    </div>
+                `;
+                
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+                updateSavings(2, 5);
+                demoInteractions++;
+            }, 1000);
+        }
+
+        // Demand Forecasting
+        function generateForecast() {
+            const product = document.getElementById('forecast-product').value;
+            const period = document.getElementById('forecast-period').value;
+            
+            document.getElementById('forecast-result').classList.remove('hidden');
+            
+            // Generate random forecast data
+            const days = period.includes('7') ? 7 : period.includes('30') ? 30 : 90;
+            const labels = [];
+            const data = [];
+            
+            for (let i = 0; i < Math.min(days, 30); i++) {
+                labels.push(`Day ${i + 1}`);
+                data.push(Math.floor(Math.random() * 50) + 200);
+            }
+            
+            // Update forecast values
+            const totalDemand = data.reduce((a, b) => a + b, 0);
+            document.getElementById('predicted-demand').textContent = totalDemand + ' units';
+            document.getElementById('recommended-stock').textContent = Math.floor(totalDemand * 1.15) + ' units';
+            
+            // Create chart
+            const ctx = document.getElementById('forecast-chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Predicted Demand',
+                        data: data,
+                        borderColor: 'rgb(59, 130, 246)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false
+                        }
+                    }
+                }
+            });
+            
+            updateSavings(30, 200);
+            demoInteractions++;
+        }
+
+        // Social Media Generator
+        function generateSocialPost() {
+            const topic = document.getElementById('social-topic').value;
+            const platform = document.getElementById('social-platform').value;
+            const tone = document.getElementById('social-tone').value;
+            
+            if (!topic) {
+                alert('Please enter a topic for your post');
+                return;
+            }
+            
+            document.getElementById('social-result').classList.remove('hidden');
+            document.getElementById('social-output').innerHTML = '<span class="loading-dots">Creating post</span>';
+            
+            setTimeout(() => {
+                const posts = {
+                    'LinkedIn': {
+                        'Professional': `Excited to share insights on ${topic}! In today's competitive landscape, understanding this area is crucial for business success. Here are three key takeaways that can transform your approach...`,
+                        'Casual': `Just had an amazing experience with ${topic}! 🚀 Sometimes the best insights come from unexpected places. Who else is exploring this space?`,
+                        'Humorous': `They said ${topic} would be boring... They were wrong! 😄 Turns out it's the secret sauce we've all been missing. Drop a 👍 if you agree!`,
+                        'Inspirational': `"Success in ${topic} isn't about perfection, it's about progress." Every small step forward is a victory. What's your next step going to be? 💪`
+                    }
+                };
+                
+                const post = posts[platform][tone] || posts['LinkedIn']['Professional'];
+                document.getElementById('social-output').textContent = post;
+                
+                // Generate hashtags
+                const hashtags = ['#Innovation', '#BusinessGrowth', '#AI', '#Automation', '#Success'];
+                const hashtagContainer = document.getElementById('hashtag-container');
+                hashtagContainer.innerHTML = '';
+                hashtags.forEach(tag => {
+                    hashtagContainer.innerHTML += `<span class="px-2 py-1 bg-pink-200 text-pink-800 rounded text-sm">${tag}</span>`;
+                });
+                
+                updateSavings(20, 30);
+                demoInteractions++;
+            }, 1300);
+        }
+
+        // Update savings calculator
+        function updateSavings(timeMinutes, dollarValue) {
+            totalTimeSaved += timeMinutes;
+            totalMoneySaved += dollarValue;
+            
+            // Animate counter
+            animateValue('time-saved', Math.floor(totalTimeSaved * 4)); // Convert to monthly
+            animateValue('money-saved', totalMoneySaved * 20); // Monthly projection
+            animateValue('efficiency', Math.min(45, demoInteractions * 7.5)); // Efficiency percentage
+        }
+
+        function animateValue(id, end) {
+            const element = document.getElementById(id);
+            const start = parseInt(element.textContent) || 0;
+            const duration = 1000;
+            const startTime = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const current = Math.floor(start + (end - start) * progress);
+                element.textContent = current;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+
+        // Copy to clipboard
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                // Show success feedback
+                event.target.textContent = 'Copied!';
+                setTimeout(() => {
+                    event.target.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+
+        // Industry selector
+        function selectIndustry(industry) {
+            // Highlight selected industry
+            document.querySelectorAll('.industry-btn').forEach(btn => {
+                btn.classList.remove('ring-2', 'ring-blue-500');
+            });
+            event.target.closest('.industry-btn').classList.add('ring-2', 'ring-blue-500');
+            
+            // Filter demos by industry (in production, this would show/hide relevant demos)
+            console.log('Selected industry:', industry);
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add smooth scroll behavior
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

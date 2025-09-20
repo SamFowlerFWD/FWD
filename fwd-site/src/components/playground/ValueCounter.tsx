@@ -84,7 +84,7 @@ export default function ValueCounter() {
         </div>
         
         <div>
-          <div className="text-2xl font-bold text-urgent-amber">
+          <div className="text-2xl font-bold text-gold">
             £{metrics.potentialSavings}
           </div>
           <div className="text-xs text-gray-600">Potential/Year</div>

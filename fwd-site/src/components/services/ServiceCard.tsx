@@ -41,8 +41,8 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
     >
       {/* Competitor Badge */}
       {competitorCount > 0 && (
-        <div className="absolute top-4 right-4 z-10 bg-urgent-amber/10 border border-urgent-amber/20 rounded-full px-3 py-1 animate-pulse-subtle">
-          <span className="text-xs font-medium text-urgent-amber">
+        <div className="absolute top-4 right-4 z-10 bg-gold/10 border border-gold/20 rounded-full px-3 py-1 animate-pulse-subtle">
+          <span className="text-xs font-medium text-gold">
             {competitorCount} competitors have this
           </span>
         </div>

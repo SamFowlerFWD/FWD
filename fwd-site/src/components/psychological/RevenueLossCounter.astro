@@ -14,7 +14,7 @@ const hourlyLoss = Math.round(dailyLoss / 24);
 const minuteLoss = Math.round(hourlyLoss / 60);
 ---
 
-<div class="revenue-loss-counter bg-gradient-to-br from-urgent-amber/5 to-urgent-amber/10 rounded-2xl p-6 border border-urgent-amber/20">
+<div class="revenue-loss-counter bg-gradient-to-br from-gold/5 to-gold/10 rounded-2xl p-6 border border-gold/20">
   <div class="flex items-center justify-between mb-4">
     <h3 class="text-lg font-bold text-deep-space">Cost of Waiting</h3>
     <span class="text-xs text-gray-500">Real-time calculation</span>
@@ -23,7 +23,7 @@ const minuteLoss = Math.round(hourlyLoss / 60);
   <div class="space-y-4">
     <div>
       <p class="text-sm text-gray-600 mb-1">Since you opened this page:</p>
-      <div class="text-4xl font-bold text-urgent-amber">
+      <div class="text-4xl font-bold text-gold">
         £<span class="loss-counter" data-minute-loss={minuteLoss}>0</span>
       </div>
       <p class="text-xs text-gray-500 mt-1">Lost to inefficiency</p>
@@ -97,7 +97,7 @@ const minuteLoss = Math.round(hourlyLoss / 60);
     // Visual warning at 5 minutes
     setTimeout(() => {
       const warning = document.createElement('div');
-      warning.className = 'mt-3 p-2 bg-urgent-amber text-white text-sm rounded-lg animate-slide-up';
+      warning.className = 'mt-3 p-2 bg-gold text-white text-sm rounded-lg animate-slide-up';
       warning.textContent = '⚠️ You\'ve already lost enough for a coffee. Imagine a year...';
       counter.parentElement?.parentElement?.appendChild(warning);
     }, 300000); // 5 minutes

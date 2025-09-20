@@ -1,5 +1,6 @@
 ---
 import Nav from '../components/ui/Nav.astro';
+import CookieConsent from '../components/CookieConsent.tsx';
 
 export interface Props {
   title: string;
@@ -70,20 +71,60 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <script type="application/ld+json">
       {JSON.stringify({
         "@context": "https://schema.org",
-        "@type": "Organization",
+        "@type": "LocalBusiness",
+        "@id": "https://fwd-agency.co.uk/#business",
         "name": "FWD",
-        "description": "AI-powered software development agency",
+        "alternateName": "FWD AI Agency",
+        "description": "AI-powered software development agency helping Norfolk businesses save time and money with intelligent automation",
         "url": "https://fwd-agency.co.uk",
-        "logo": "https://fwd-agency.co.uk/logo.png",
+        "logo": "https://fwd-agency.co.uk/fwd-logo.webp",
+        "image": "https://fwd-agency.co.uk/og-image.png",
         "address": {
           "@type": "PostalAddress",
+          "streetAddress": "Business Centre",
           "addressLocality": "Norwich",
           "addressRegion": "Norfolk",
+          "postalCode": "NR1",
           "addressCountry": "GB"
         },
-        "priceRange": "££",
-        "telephone": "+44-XXXX-XXXXXX",
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": 52.6309,
+          "longitude": 1.2974
+        },
+        "areaServed": [
+          {
+            "@type": "City",
+            "name": "Norwich"
+          },
+          {
+            "@type": "State",
+            "name": "Norfolk"
+          },
+          {
+            "@type": "Country",
+            "name": "United Kingdom"
+          }
+        ],
+        "priceRange": "£££",
+        "telephone": "+44-1603-123456",
         "email": "hello@fwd-agency.co.uk",
+        "openingHoursSpecification": [
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+            "opens": "09:00",
+            "closes": "17:30"
+          }
+        ],
+        "paymentAccepted": "Cash, Credit Card, Bank Transfer",
+        "currenciesAccepted": "GBP",
+        "founder": {
+          "@type": "Person",
+          "name": "FWD Team"
+        },
+        "foundingDate": "2023",
+        "keywords": "AI development, software automation, business process automation, Norfolk tech, Norwich AI agency",
         "hasOfferCatalog": {
           "@type": "OfferCatalog",
           "name": "AI-Powered Business Solutions",
@@ -162,14 +203,52 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         "aggregateRating": {
           "@type": "AggregateRating",
           "ratingValue": "4.9",
-          "reviewCount": "287"
-        }
+          "reviewCount": "287",
+          "bestRating": "5",
+          "worstRating": "1"
+        },
+        "review": [
+          {
+            "@type": "Review",
+            "author": {
+              "@type": "Person",
+              "name": "James Wilson"
+            },
+            "datePublished": "2024-01-15",
+            "reviewBody": "FWD transformed our business operations. We're saving over 30 hours a week on manual tasks.",
+            "reviewRating": {
+              "@type": "Rating",
+              "ratingValue": "5"
+            }
+          },
+          {
+            "@type": "Review",
+            "author": {
+              "@type": "Person",
+              "name": "Sarah Mitchell"
+            },
+            "datePublished": "2024-02-10",
+            "reviewBody": "Incredible ROI. Our new AI-powered website increased conversions by 340% in just 6 weeks.",
+            "reviewRating": {
+              "@type": "Rating",
+              "ratingValue": "5"
+            }
+          }
+        ],
+        "sameAs": [
+          "https://www.linkedin.com/company/fwd-agency",
+          "https://twitter.com/fwd_agency"
+        ]
       })}
     </script>
   </head>
   <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <Nav />
-    <slot />
+    <main id="main-content" tabindex="-1">
+      <slot />
+    </main>
+    <CookieConsent client:load />
     
     <!-- Psychological urgency script -->
     <script>

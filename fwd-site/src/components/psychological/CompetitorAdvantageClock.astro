@@ -16,7 +16,7 @@ const hoursPassed = Math.floor((now.getTime() - startDate.getTime()) / increment
 const currentCompetitors = initialCompetitors + hoursPassed;
 ---
 
-<div class="competitor-clock glass-premium rounded-2xl p-6 shadow-urgent" data-increment-rate={incrementRate}>
+<div class="competitor-clock rounded-2xl p-6 shadow-xl" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3);" data-increment-rate={incrementRate}>
   <div class="flex items-center justify-between mb-4">
     <h3 class="text-lg font-bold text-deep-space">While You Read This...</h3>
     <span class="urgency-badge">
@@ -40,8 +40,8 @@ const currentCompetitors = initialCompetitors + hoursPassed;
       <span class="text-2xl font-bold text-success-green">70%</span>
     </div>
     
-    <div class="bg-urgent-amber/10 rounded-lg p-3 border border-urgent-amber/20">
-      <p class="text-sm font-medium text-urgent-amber">
+    <div class="bg-gold/10 rounded-lg p-3 border border-gold/20">
+      <p class="text-sm font-medium text-gold-dark">
         Your competitors gained <span class="font-bold">3 hours</span> today while you decided
       </p>
     </div>

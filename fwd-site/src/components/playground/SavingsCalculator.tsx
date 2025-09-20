@@ -172,7 +172,7 @@ export default function SavingsCalculator() {
               </div>
             </div>
 
-            <div className="bg-gradient-to-r from-success-green/10 to-urgent-amber/10 rounded-lg p-6">
+            <div className="bg-gradient-to-r from-success-green/10 to-gold/10 rounded-lg p-6">
               <div className="text-4xl font-bold text-success-green mb-2">
                 £{calculation.yearlySavings.toLocaleString()}
               </div>
@@ -182,7 +182,7 @@ export default function SavingsCalculator() {
 
               <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200">
                 <div>
-                  <div className="text-2xl font-bold text-urgent-amber">
+                  <div className="text-2xl font-bold text-gold">
                     {calculation.roi}%
                   </div>
                   <div className="text-sm text-gray-600">First Year ROI</div>
@@ -204,7 +204,7 @@ export default function SavingsCalculator() {
               <div className="flex gap-3">
                 <a
                   href="/#contact"
-                  className="flex-1 text-center bg-urgent-amber hover:bg-urgent-amber/90 text-deep-space font-bold py-3 px-4 rounded-lg transition-all"
+                  className="flex-1 text-center bg-gold hover:bg-gold/90 text-deep-space font-bold py-3 px-4 rounded-lg transition-all"
                 >
                   Get Started Today
                 </a>

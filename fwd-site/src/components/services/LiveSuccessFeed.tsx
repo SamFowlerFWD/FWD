@@ -130,7 +130,7 @@ const LiveSuccessFeed: React.FC = () => {
     switch (type) {
       case 'automation': return 'from-ai-purple to-trust-blue';
       case 'website': return 'from-success-green to-trust-blue';
-      case 'app': return 'from-urgent-amber to-ai-purple';
+      case 'app': return 'from-gold to-ai-purple';
       case 'hosting': return 'from-trust-blue to-success-green';
       default: return 'from-gray-400 to-gray-600';
     }

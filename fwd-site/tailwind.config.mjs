@@ -5,10 +5,12 @@ export default {
     extend: {
       colors: {
         'deep-space': '#0A0E27',
-        'ai-purple': '#8B5CF6',
-        'success-green': '#10B981',
-        'trust-blue': '#3B82F6',
-        'urgent-amber': '#F59E0B',
+        'ai-purple': '#7C3AED', /* Darker purple for better contrast */
+        'success-green': '#059669', /* Darker green for WCAG AAA */
+        'trust-blue': '#2563EB', /* Darker blue for better contrast */
+        'gold': '#F7D00B', /* Bright vibrant gold */
+        'goldLight': '#FFE43A', /* Lighter gold for hover states */
+        'goldDark': '#C5A000', /* Darker gold for text contrast */
         'norfolk-sand': '#F3E8DC',
         'premium-gray': '#1F2937',
         'soft-white': '#FAFAFA',
@@ -77,7 +79,7 @@ export default {
       boxShadow: {
         'premium': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
         'trust': '0 0 0 3px rgba(59, 130, 246, 0.1)',
-        'urgent': '0 0 20px rgba(245, 158, 11, 0.3)',
+        'urgent': '0 0 20px rgba(247, 208, 11, 0.3)',
         'success': '0 0 20px rgba(16, 185, 129, 0.3)'
       }
     },

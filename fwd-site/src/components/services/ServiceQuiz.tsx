@@ -235,7 +235,7 @@ const ServiceQuiz: React.FC = () => {
           <p className="text-gray-600 mb-2">
             Get a personalized recommendation based on your business needs
           </p>
-          <p className="text-sm text-urgent-amber font-medium">
+          <p className="text-sm text-gold font-medium">
             Takes 30 seconds • See exact savings • No email required
           </p>
         </div>
@@ -285,8 +285,8 @@ const ServiceQuiz: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-urgent-amber/10 border border-urgent-amber/20 rounded-lg p-3 mb-6">
-            <p className="text-sm text-urgent-amber font-medium text-center">
+          <div className="bg-gold/10 border border-gold/20 rounded-lg p-3 mb-6">
+            <p className="text-sm text-gold font-medium text-center">
               ⚠️ {recommendation.urgency}
             </p>
           </div>
@@ -294,7 +294,7 @@ const ServiceQuiz: React.FC = () => {
           <div className="flex flex-col sm:flex-row gap-3">
             <a
               href={recommendation.href}
-              className="flex-1 text-center bg-urgent-amber hover:bg-urgent-amber/90 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-200"
+              className="flex-1 text-center bg-gold hover:bg-gold/90 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-200"
             >
               Get Started Now →
             </a>

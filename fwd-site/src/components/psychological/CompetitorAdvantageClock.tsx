@@ -97,8 +97,8 @@ const CompetitorAdvantageClock: React.FC<Props> = ({
           <span className="text-2xl font-bold text-success-green">70%</span>
         </div>
         
-        <div className="bg-urgent-amber/10 rounded-lg p-3 border border-urgent-amber/20">
-          <p className="text-sm font-medium text-urgent-amber">
+        <div className="bg-gold/10 rounded-lg p-3 border border-gold/20">
+          <p className="text-sm font-medium text-gold">
             Your competitors gained <span className="font-bold">3 hours</span> today while you decided
           </p>
         </div>

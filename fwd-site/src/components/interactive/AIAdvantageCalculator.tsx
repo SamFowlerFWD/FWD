@@ -195,7 +195,7 @@ const AIAdvantageCalculator: React.FC = () => {
               />
               <div className="flex justify-between text-sm text-gray-500 mt-1">
                 <span>1 hour</span>
-                <span className="text-lg font-bold text-urgent-amber">{inputs.hoursWasted} hours</span>
+                <span className="text-lg font-bold text-gold">{inputs.hoursWasted} hours</span>
                 <span>6 hours</span>
               </div>
             </div>
@@ -214,7 +214,7 @@ const AIAdvantageCalculator: React.FC = () => {
               />
               <div className="flex justify-between text-sm text-gray-500 mt-1">
                 <span>10%</span>
-                <span className="text-lg font-bold text-urgent-amber">{inputs.errorRate}%</span>
+                <span className="text-lg font-bold text-gold">{inputs.errorRate}%</span>
                 <span>70%</span>
               </div>
             </div>
@@ -279,8 +279,8 @@ const AIAdvantageCalculator: React.FC = () => {
                     <div className="text-sm text-gray-600">Months to ROI</div>
                   </div>
                   
-                  <div className="bg-gradient-to-br from-urgent-amber/10 to-urgent-amber/5 p-4 rounded-lg border border-urgent-amber/20">
-                    <div className="text-3xl font-bold text-urgent-amber mb-1">
+                  <div className="bg-gradient-to-br from-gold/10 to-gold/5 p-4 rounded-lg border border-gold/20">
+                    <div className="text-3xl font-bold text-gold mb-1">
                       {results.efficiencyGain}%
                     </div>
                     <div className="text-sm text-gray-600">Efficiency Gain</div>
@@ -297,7 +297,7 @@ const AIAdvantageCalculator: React.FC = () => {
                 </div>
 
                 <div className="space-y-3">
-                  <button className="w-full bg-urgent-amber hover:bg-urgent-amber/90 text-white font-bold py-4 px-4 rounded-lg transition-all duration-200 text-lg">
+                  <button className="w-full bg-gold hover:bg-gold/90 text-white font-bold py-4 px-4 rounded-lg transition-all duration-200 text-lg">
                     Get Your Personalized AI Strategy →
                   </button>
                   <button

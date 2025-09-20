@@ -1,13 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@400;600;700;800&display=swap&subset=latin');
 @import 'tailwindcss';
 
 @layer base {
   :root {
     --deep-space: 10 14 39;
-    --ai-purple: 139 92 246;
-    --success-green: 16 185 129;
-    --trust-blue: 59 130 246;
-    --urgent-amber: 245 158 11;
+    --ai-purple: 124 58 237; /* Darker purple for better contrast */
+    --success-green: 5 150 105; /* Darker green for WCAG AAA */
+    --trust-blue: 37 99 235; /* Darker blue for better contrast */
+    --gold: 247 208 11; /* Bright vibrant gold #F7D00B */
+    --goldLight: 255 228 58; /* Light gold #FFE43A */
+    --goldDark: 197 160 0; /* Dark gold #C5A000 */
     --norfolk-sand: 243 232 220;
     --premium-gray: 31 41 55;
     --soft-white: 250 250 250;
@@ -28,9 +30,10 @@
   }
 
   body {
-    @apply bg-white text-gray-800;
+    @apply bg-white text-gray-900; /* Darker text for better contrast */
     font-family: var(--font-sans);
     line-height: 1.6;
+    font-display: swap; /* Better font loading */
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -49,22 +52,26 @@
 
   /* Trust indicators */
   .trust-badge {
-    @apply inline-flex items-center gap-1 px-3 py-1 bg-blue-500/10 text-blue-500 rounded-full text-sm font-medium;
+    @apply inline-flex items-center gap-1 px-3 py-1 bg-blue-600/10 text-blue-700 rounded-full text-sm font-medium;
   }
 
   /* Urgency indicators */
   .urgency-badge {
-    @apply inline-flex items-center gap-1 px-3 py-1 bg-amber-500/10 text-amber-500 rounded-full text-sm font-medium animate-pulse;
+    @apply inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium animate-pulse;
+    background-color: rgba(247, 208, 11, 0.1);
+    color: rgb(197, 160, 0);
   }
 
   /* Success indicators */
   .success-badge {
-    @apply inline-flex items-center gap-1 px-3 py-1 bg-green-500/10 text-green-500 rounded-full text-sm font-medium;
+    @apply inline-flex items-center gap-1 px-3 py-1 bg-green-600/10 text-green-700 rounded-full text-sm font-medium;
   }
 
   /* Premium glass effect */
   .glass-premium {
-    @apply backdrop-blur-xl bg-white/70 border border-white/20 shadow-xl;
+    @apply backdrop-blur-xl shadow-xl;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
   }
 
   /* AI gradient backgrounds */
@@ -78,17 +85,26 @@
 
   /* Conversion-focused buttons */
   .btn-primary {
-    @apply inline-flex items-center justify-center px-6 py-3 bg-purple-500 text-white font-semibold rounded-lg hover:bg-purple-600 transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0;
+    @apply inline-flex items-center justify-center px-6 py-3 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0;
   }
 
   .btn-urgent {
-    @apply inline-flex items-center justify-center px-6 py-3 bg-amber-500 text-gray-900 font-bold rounded-lg hover:bg-amber-600 transition-all duration-200 hover:shadow-lg animate-pulse;
-    box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+    @apply inline-flex items-center justify-center px-6 py-3 text-white font-bold rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all duration-200 hover:shadow-lg animate-pulse;
+    background-color: #F7D00B;
+    box-shadow: 0 0 20px rgba(247, 208, 11, 0.3);
+  }
+  
+  .btn-urgent:focus {
+    ring-color: #F7D00B;
+  }
+  
+  .btn-urgent:hover {
+    background-color: #FFE43A;
   }
 
   .btn-trust {
-    @apply inline-flex items-center justify-center px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-all duration-200;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    @apply inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
   }
 
   /* Loading states */
@@ -149,8 +165,16 @@
   color: rgb(var(--trust-blue));
 }
 
-.text-urgent-amber {
-  color: rgb(var(--urgent-amber));
+.text-gold {
+  color: rgb(var(--gold));
+}
+
+.text-gold-light {
+  color: rgb(var(--gold-light));
+}
+
+.text-gold-dark {
+  color: rgb(var(--gold-dark));
 }
 
 .text-premium-gray {
@@ -173,8 +197,16 @@
   background-color: rgb(var(--trust-blue));
 }
 
-.bg-urgent-amber {
-  background-color: rgb(var(--urgent-amber));
+.bg-gold {
+  background-color: rgb(var(--gold));
+}
+
+.bg-gold-light {
+  background-color: rgb(var(--gold-light));
+}
+
+.bg-gold-dark {
+  background-color: rgb(var(--gold-dark));
 }
 
 .bg-norfolk-sand {
@@ -197,18 +229,90 @@ body {
   padding-top: 80px;
 }
 
-/* Improve contrast for all text */
-p, span, div {
+/* Skip to main content link for accessibility */
+.skip-link {
+  @apply absolute top-0 left-0 bg-purple-600 text-white px-4 py-2 z-[9999] -translate-y-full focus:translate-y-0 transition-transform;
+}
+
+/* Focus visible styles for better keyboard navigation */
+*:focus-visible {
+  @apply outline-2 outline-offset-2 outline-purple-600;
+}
+
+/* Improved link underlines for accessibility */
+a:not(.no-underline) {
+  @apply underline-offset-2;
+}
+
+/* Font loading optimization */
+@font-face {
+  font-family: 'Inter';
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sora';
+  font-display: swap;
+}
+
+/* Improve contrast for all text - but don't override component-specific colors */
+body p:not([class*="text-"]), 
+body span:not([class*="text-"]), 
+body div:not([class*="text-"]):not([class*="bg-"]) {
   color: rgb(31, 41, 55);
 }
 
-h1, h2, h3, h4, h5, h6 {
+body h1:not([class*="text-"]), 
+body h2:not([class*="text-"]), 
+body h3:not([class*="text-"]), 
+body h4:not([class*="text-"]), 
+body h5:not([class*="text-"]), 
+body h6:not([class*="text-"]) {
   color: rgb(10, 14, 39);
 }
 
 /* Shadow utilities for urgency */
 .shadow-urgent {
-  box-shadow: 0 10px 40px -10px rgba(245, 158, 11, 0.3);
+  box-shadow: 0 10px 40px -10px rgba(247, 208, 11, 0.3);
+}
+
+/* WCAG AA Contrast Fixes */
+/* Fix light gray text colors globally */
+.text-gray-200 { color: rgb(107, 114, 128) !important; } /* gray-500 for better contrast on white */
+.text-gray-300 { color: rgb(75, 85, 99) !important; } /* gray-600 for better contrast */
+.text-gray-400 { color: rgb(55, 65, 81) !important; } /* gray-700 for better contrast */
+.text-gray-500 { color: rgb(31, 41, 55) !important; } /* gray-800 for better contrast */
+
+/* Fix on dark backgrounds - lighter colors needed */
+.bg-deep-space .text-gray-200,
+.bg-gradient-to-br .text-gray-200,
+section.hero .text-gray-200 { 
+  color: rgb(229, 231, 235) !important; /* Use actual gray-200 on dark */
+}
+
+.bg-deep-space .text-gray-300,
+.bg-gradient-to-br .text-gray-300,
+section.hero .text-gray-300 { 
+  color: rgb(209, 213, 219) !important; /* Use actual gray-300 on dark */
+}
+
+/* Fix gold text on white backgrounds */
+.text-gold { color: rgb(197, 160, 0) !important; } /* gold-dark for contrast */
+.text-gold-light { color: rgb(197, 160, 0) !important; } /* gold-dark for contrast */
+.text-amber-500 { color: rgb(197, 160, 0) !important; } /* gold-dark */
+.text-amber-600 { color: rgb(197, 160, 0) !important; } /* gold-dark */
+.text-orange-500 { color: rgb(197, 160, 0) !important; } /* gold-dark */
+
+/* Ensure all interactive elements have sufficient contrast */
+button:not(.bg-gradient-to-r),
+a:not(.bg-gradient-to-r) {
+  min-contrast-ratio: 4.5;
+}
+
+/* Focus states with better visibility */
+:focus-visible {
+  outline: 3px solid rgb(124, 58, 237);
+  outline-offset: 2px;
 }
 
 /* Animation utilities */

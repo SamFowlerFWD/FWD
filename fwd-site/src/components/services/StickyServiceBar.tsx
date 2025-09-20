@@ -105,25 +105,25 @@ const StickyServiceBar: React.FC = () => {
           </div>
 
           {/* Bundle Offer */}
-          <div className="hidden md:flex items-center gap-3 ml-4 px-4 py-2 bg-gradient-to-r from-urgent-amber/10 to-urgent-amber/5 rounded-lg border border-urgent-amber/20">
+          <div className="hidden md:flex items-center gap-3 ml-4 px-4 py-2 bg-gradient-to-r from-gold/10 to-gold/5 rounded-lg border border-gold/20">
             <div>
               <p className="text-xs text-gray-700">Bundle & Save</p>
-              <p className="text-sm font-bold text-urgent-amber">35% OFF</p>
+              <p className="text-sm font-bold text-gold">35% OFF</p>
             </div>
-            <svg className="w-5 h-5 text-urgent-amber animate-pulse" fill="currentColor" viewBox="0 0 20 20">
+            <svg className="w-5 h-5 text-gold animate-pulse" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
             </svg>
           </div>
 
           {/* CTA Button */}
-          <button className="ml-4 bg-urgent-amber hover:bg-urgent-amber/90 text-white font-bold py-2 px-4 rounded-lg shadow-lg transition-all duration-200 whitespace-nowrap animate-pulse-subtle">
+          <button className="ml-4 bg-gold hover:bg-gold/90 text-white font-bold py-2 px-4 rounded-lg shadow-lg transition-all duration-200 whitespace-nowrap animate-pulse-subtle">
             Get Free Quote
           </button>
         </div>
 
         {/* Urgency Message - Mobile Only */}
         <div className="md:hidden mt-3 text-center">
-          <p className="text-xs text-urgent-amber font-medium">
+          <p className="text-xs text-gold font-medium">
             🔥 17 Norfolk businesses automated this week
           </p>
         </div>

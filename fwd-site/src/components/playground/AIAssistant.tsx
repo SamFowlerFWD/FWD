@@ -166,7 +166,7 @@ export default function AIAssistant() {
                 message.role === 'user'
                   ? 'bg-gradient-to-r from-ai-purple to-trust-blue text-white rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl'
                   : message.role === 'system'
-                  ? 'bg-urgent-amber/10 border border-urgent-amber/30 text-deep-space rounded-tr-2xl rounded-br-2xl rounded-bl-2xl'
+                  ? 'bg-gold/10 border border-gold/30 text-deep-space rounded-tr-2xl rounded-br-2xl rounded-bl-2xl'
                   : 'bg-gray-100 text-deep-space rounded-tr-2xl rounded-br-2xl rounded-bl-2xl'
               } px-4 py-3`}
             >
@@ -188,7 +188,7 @@ export default function AIAssistant() {
                   <div className="flex flex-wrap gap-2">
                     <a
                       href="/#contact"
-                      className="bg-urgent-amber hover:bg-urgent-amber/90 text-white font-semibold px-4 py-2 rounded-lg transition-all text-sm shadow-lg hover:shadow-xl"
+                      className="bg-gold hover:bg-gold/90 text-white font-semibold px-4 py-2 rounded-lg transition-all text-sm shadow-lg hover:shadow-xl"
                     >
                       Yes, Show Me How →
                     </a>

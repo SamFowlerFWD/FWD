@@ -66,7 +66,7 @@ const RevenueLossCounter: React.FC<Props> = ({
 
   return (
     <div 
-      className="revenue-loss-counter bg-gradient-to-br from-urgent-amber/5 to-urgent-amber/10 rounded-2xl p-6 border border-urgent-amber/20"
+      className="revenue-loss-counter bg-gradient-to-br from-gold/5 to-gold/10 rounded-2xl p-6 border border-gold/20"
       data-component="revenue-counter"
     >
       <div className="flex items-center justify-between mb-4">
@@ -77,7 +77,7 @@ const RevenueLossCounter: React.FC<Props> = ({
       <div className="space-y-4">
         <div>
           <p className="text-sm text-gray-600 mb-1">Since you opened this page:</p>
-          <div className="text-4xl font-bold text-urgent-amber">
+          <div className="text-4xl font-bold text-gold">
             £<span 
               className={`loss-counter inline-block transition-transform ${isAnimating ? 'scale-110' : 'scale-100'}`}
               data-minute-loss={minuteLoss}
@@ -114,14 +114,14 @@ const RevenueLossCounter: React.FC<Props> = ({
         </div>
         
         {showWarning && (
-          <div className="mt-3 p-2 bg-urgent-amber text-white text-sm rounded-lg animate-slide-up">
+          <div className="mt-3 p-2 bg-gold text-white text-sm rounded-lg animate-slide-up">
             ⚠️ You've already lost £{(totalLossPence / 100).toFixed(2)}. That's a coffee. Imagine a year...
           </div>
         )}
         
         <button 
           onClick={handleCalculateSavings}
-          className="btn-urgent w-full group flex items-center justify-center bg-urgent-amber hover:bg-urgent-amber/90 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200"
+          className="btn-urgent w-full group flex items-center justify-center bg-gold hover:bg-gold/90 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200"
         >
           <span>Calculate Your Savings</span>
           <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">

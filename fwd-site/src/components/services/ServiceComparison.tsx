@@ -168,7 +168,7 @@ const ServiceComparison: React.FC<ServiceComparisonProps> = ({ serviceName, comp
         <p className="text-sm text-gray-600 mb-4">
           17 businesses in Norfolk switched to FWD this week. Don't let them get ahead.
         </p>
-        <button className="bg-urgent-amber hover:bg-urgent-amber/90 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-200 animate-pulse-subtle">
+        <button className="bg-gold hover:bg-gold/90 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-200 animate-pulse-subtle">
           See Your Exact Savings →
         </button>
       </div>
