@@ -1,5 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import PostCard from '../components/blog/PostCard.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
 ---
 
 <Layout
@@ -137,6 +143,45 @@ import Layout from '../layouts/Layout.astro';
       </div>
     </div>
   </section>
+
+  <!-- Blog Section -->
+  {posts.length > 0 && (
+    <section class="py-24 bg-white">
+      <div class="container mx-auto px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-12" data-animate>
+          <h2 class="text-4xl lg:text-5xl font-bold text-slate-900 mb-4">
+            From the Blog
+          </h2>
+          <p class="text-xl text-gray-600">
+            Case studies and insights from recent projects.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto" data-stagger>
+          {posts.map(post => (
+            <PostCard
+              title={post.data.title}
+              description={post.data.description}
+              pubDate={post.data.pubDate}
+              heroImage={post.data.heroImage}
+              heroImageAlt={post.data.heroImageAlt}
+              category={post.data.category}
+              slug={post.id}
+            />
+          ))}
+        </div>
+
+        <div class="text-center mt-10" data-animate>
+          <a href="/blog" class="inline-flex items-center gap-2 text-ai-purple font-semibold hover:underline text-lg">
+            View all posts
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+  )}
 
   <!-- CTA Section -->
   <section class="py-24 bg-gradient-to-br from-purple-700 via-purple-600 to-blue-600 text-white overflow-hidden relative">
