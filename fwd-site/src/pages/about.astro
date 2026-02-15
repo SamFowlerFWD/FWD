@@ -1,0 +1,203 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const techStack = {
+  "Frontend": ["React", "Astro", "TypeScript", "Tailwind CSS"],
+  "Backend": ["Node.js", "Python", "Firebase", "PostgreSQL"],
+  "Mobile": ["iOS (Swift)", "React Native"],
+  "Integrations": ["Stripe", "OpenAI", "Paxton", "Various APIs"],
+  "Hosting": ["Cloudflare", "Hostinger", "Custom VPS"]
+};
+
+const stats = [
+  { value: "14+", label: "Projects Delivered" },
+  { value: "8+", label: "Industries Served" },
+  { value: "5.0", label: "Client Rating" },
+  { value: "UK-wide", label: "Clients Served" }
+];
+---
+
+<Layout
+  title="About - Sam Fowler & FWD Thinking Solutions"
+  description="About Sam Fowler and FWD Thinking Solutions. Web development, automation and custom software from Norwich, Norfolk. 14+ projects across 8+ industries."
+  keywords="about fwd thinking solutions, sam fowler developer, norwich web developer, norfolk software developer"
+>
+  <!-- Hero Section -->
+  <section class="relative py-20 bg-slate-900">
+    <div class="absolute inset-0 bg-ai-mesh opacity-20"></div>
+    <div class="container relative z-10 mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto text-center text-white">
+        <h1 class="text-5xl lg:text-6xl font-bold mb-6">
+          About <span class="text-amber-400">FWD</span>
+        </h1>
+        <p class="text-xl text-gray-100 mb-8">
+          Practical technology solutions for businesses that want to work smarter.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Who I Am -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl font-bold text-slate-900 mb-6" data-animate>Who I Am</h2>
+        <p class="text-gray-600 leading-relaxed mb-4" data-animate>
+          I'm Sam Fowler, a software developer based in Norwich, Norfolk. I run FWD Thinking Solutions, a web development and business automation agency that helps businesses work smarter with technology.
+        </p>
+        <p class="text-gray-600 leading-relaxed mb-4" data-animate>
+          I focus on practical solutions that save time and money. Whether that's building a website, automating repetitive tasks, creating a custom booking system, or developing a mobile app, I work directly with business owners to understand their needs and deliver something that genuinely helps.
+        </p>
+        <p class="text-gray-600 leading-relaxed" data-animate>
+          With 14+ projects delivered across 8+ industries, I've worked with businesses ranging from sole traders to companies with established teams. Every project gets the same level of care regardless of size.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why FWD Exists -->
+  <section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl font-bold text-slate-900 mb-6" data-animate>Why FWD Exists</h2>
+        <p class="text-gray-600 leading-relaxed mb-4" data-animate>
+          I started FWD because I saw too many small businesses, especially rural and trade businesses, paying over the odds for basic technology, or going without it entirely because agencies were too expensive or too complicated to deal with.
+        </p>
+        <p class="text-gray-600 leading-relaxed mb-4" data-animate>
+          My approach is straightforward: understand the problem, build the solution, support it afterwards. No middlemen, no jargon, no overselling. I give honest advice about what you need (and what you don't), provide fixed pricing where possible so there are no surprises, and I'm always available when you need help.
+        </p>
+        <p class="text-gray-600 leading-relaxed" data-animate>
+          Whether you need a simple website or a complex application, the process is the same. We talk, I build, you grow.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- How I Work -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl font-bold text-slate-900 mb-6" data-animate>How I Work</h2>
+        <div class="grid md:grid-cols-2 gap-6" data-stagger>
+          {[
+            {
+              title: "Direct Communication",
+              description: "You deal with me directly, the person who actually builds your project. No account managers, no middlemen."
+            },
+            {
+              title: "End-to-End",
+              description: "I handle everything from design and development to hosting and ongoing support. One point of contact for everything."
+            },
+            {
+              title: "Honest Advice",
+              description: "I'll tell you what you need and what you don't. If a simpler solution works better, that's what I'll recommend."
+            },
+            {
+              title: "Fixed Pricing",
+              description: "Where possible, I provide fixed quotes so you know exactly what you're paying before we start. No hourly surprises."
+            }
+          ].map(item => (
+            <div class="bg-gray-50 rounded-xl p-6" data-animate>
+              <h3 class="text-lg font-bold text-slate-900 mb-2">{item.title}</h3>
+              <p class="text-gray-600 text-sm">{item.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What I Work With -->
+  <section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl font-bold text-slate-900 mb-8 text-center" data-animate>What I Work With</h2>
+        <div class="space-y-6" data-stagger>
+          {Object.entries(techStack).map(([category, techs]) => (
+            <div class="bg-white rounded-xl p-6 shadow-sm" data-animate>
+              <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">{category}</h3>
+              <div class="flex flex-wrap gap-2">
+                {techs.map(tech => (
+                  <span class="bg-slate-100 text-slate-700 text-sm font-medium px-3 py-1.5 rounded-lg">{tech}</span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Track Record -->
+  <section class="py-20 bg-slate-900 text-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto text-center">
+        <h2 class="text-3xl font-bold mb-8" data-animate>Track Record</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6" data-stagger>
+          {stats.map(stat => (
+            <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20" data-animate>
+              <div class="text-3xl font-bold text-amber-400 mb-1">{stat.value}</div>
+              <div class="text-sm text-gray-300">{stat.label}</div>
+            </div>
+          ))}
+        </div>
+        <p class="text-gray-300 mt-8 text-sm" data-animate>
+          Clients across equestrian, manufacturing, pet services, sports, technology, retail, professional services, and construction.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-6 lg:px-8 text-center">
+      <div class="max-w-2xl mx-auto" data-animate>
+        <h2 class="text-4xl font-bold text-slate-900 mb-6">
+          Let's Work Together
+        </h2>
+        <p class="text-xl text-gray-600 mb-8">
+          Whether you need a website, an app, or automation, I'd be happy to chat about how I can help.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="/portfolio" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-lg transition-colors shadow-lg inline-block">
+            View Our Work
+          </a>
+          <a href="/services" class="border-2 border-slate-900 text-slate-900 font-bold py-4 px-8 rounded-lg hover:bg-slate-900 hover:text-white transition-all inline-block">
+            View Services
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Person Schema -->
+  <script type="application/ld+json">
+    {JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Sam Fowler",
+      "jobTitle": "Founder & Developer",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "FWD Thinking Solutions",
+        "url": "https://f-w-d.co.uk"
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Norwich",
+        "addressRegion": "Norfolk",
+        "addressCountry": "GB"
+      },
+      "knowsAbout": [
+        "Web Development",
+        "Business Automation",
+        "Custom Software",
+        "Mobile App Development",
+        "React",
+        "Node.js",
+        "TypeScript"
+      ],
+      "url": "https://f-w-d.co.uk/about"
+    })}
+  </script>
+</Layout>

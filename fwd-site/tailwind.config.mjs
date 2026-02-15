@@ -5,12 +5,12 @@ export default {
     extend: {
       colors: {
         'deep-space': '#0A0E27',
-        'ai-purple': '#7C3AED', /* Darker purple for better contrast */
-        'success-green': '#059669', /* Darker green for WCAG AAA */
-        'trust-blue': '#2563EB', /* Darker blue for better contrast */
-        'gold': '#F7D00B', /* Bright vibrant gold */
-        'goldLight': '#FFE43A', /* Lighter gold for hover states */
-        'goldDark': '#C5A000', /* Darker gold for text contrast */
+        'ai-purple': '#6D28D9', /* Purple-700 - WCAG AA compliant */
+        'success-green': '#065F46', /* Emerald-800 - WCAG AA compliant (5.9:1) */
+        'trust-blue': '#1D4ED8', /* Blue-700 - WCAG AA compliant */
+        'gold': '#92400E', /* Amber-800 - WCAG AA compliant (6.4:1) for text */
+        'gold-bg': '#F59E0B', /* Amber-500 - for backgrounds with dark text */
+        'gold-light': '#FCD34D', /* Amber-300 - light gold for hover on dark */
         'norfolk-sand': '#F3E8DC',
         'premium-gray': '#1F2937',
         'soft-white': '#FAFAFA',

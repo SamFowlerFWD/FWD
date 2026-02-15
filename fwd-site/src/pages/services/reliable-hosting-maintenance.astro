@@ -1,427 +1,341 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import AIAdvantageCalculator from '../../components/interactive/AIAdvantageCalculator.astro';
-import CompetitorAdvantageClock from '../../components/psychological/CompetitorAdvantageClock.astro';
-import LocalProofFeed from '../../components/trust/LocalProofFeed.astro';
+
+const faqs = [
+  {
+    question: "What does hosting include?",
+    answer: "All hosting plans include daily backups, security updates, SSL certificates, performance monitoring, and email support. Higher-tier plans add priority support, performance optimisation, and more storage. I keep your site running so you don't have to think about it."
+  },
+  {
+    question: "How much does hosting cost?",
+    answer: "Plans start from £99/month for small websites with up to 10GB storage. The Professional plan at £199/month suits most business websites, and Enterprise at £399/month is for high-traffic sites needing dedicated resources. No contracts, cancel anytime."
+  },
+  {
+    question: "Can you host a website you didn't build?",
+    answer: "Yes. I can host and maintain websites regardless of who built them. I offer free migration to move your site over with no downtime. Once migrated, your site gets the same level of care as one I built from scratch."
+  },
+  {
+    question: "What happens if my website goes down?",
+    answer: "I monitor sites regularly and aim to resolve issues as quickly as possible. Most problems are caught and fixed before you even notice them. For urgent issues, I prioritise getting your site back online. All plans include daily backups, so your data is always safe."
+  },
+  {
+    question: "Do you handle security updates?",
+    answer: "Yes, security updates are included in all plans. I handle core updates, plugin updates, and security patches. Updates are tested first to make sure they won't cause issues with your site. I also monitor for potential security threats and take preventive action."
+  }
+];
 ---
 
-<Layout 
-  title="Reliable Hosting & Maintenance - Keep Your Website Running Smoothly"
-  description="Reliable website hosting and maintenance services. 99.9% uptime, regular updates, quick support. Norfolk's trusted hosting solution from £99/month."
+<Layout
+  title="Reliable Hosting & Maintenance - FWD Thinking Solutions"
+  description="Reliable website hosting and maintenance in Norwich, Norfolk. Backups, security updates and support from £99/month."
   keywords="website hosting norfolk, website maintenance uk, managed hosting norwich, website support, reliable hosting"
 >
   <!-- Hero Section -->
-  <section class="relative py-20 bg-gradient-to-br from-deep-space via-deep-space/95 to-success-green/20">
+  <section class="relative py-20 bg-slate-900">
     <div class="absolute inset-0 bg-ai-mesh opacity-20"></div>
     <div class="container relative z-10 mx-auto px-6 lg:px-8">
-      <div class="max-w-4xl mx-auto text-center text-white">
-        <!-- Reliability Badge -->
-        <div class="inline-flex items-center gap-2 bg-success-green/20 backdrop-blur-sm border border-success-green/30 rounded-full px-4 py-2 mb-6">
-          <div class="w-2 h-2 bg-success-green rounded-full animate-pulse"></div>
-          <span class="text-sm font-medium text-success-green">99.9% Uptime Guaranteed</span>
-        </div>
-        
+      <div class="max-w-3xl mx-auto text-center text-white">
         <h1 class="text-5xl lg:text-6xl font-bold mb-6">
-          Hosting That <span class="ai-gradient-text">Just Works</span>
+          Hosting & <span class="text-amber-400">Maintenance</span>
         </h1>
-        
-        <p class="text-xl lg:text-2xl text-gray-300 mb-8">
-          Stop worrying about your website. We keep it running smoothly with reliable hosting, regular updates, and quick support when you need it.
+        <p class="text-xl text-gray-100 mb-8">
+          Reliable hosting with regular backups, security updates, and support when you need it. I keep your website running smoothly so you don't have to think about it.
         </p>
-        
-        <div class="grid grid-cols-4 gap-4 max-w-3xl mx-auto mb-8">
-          <div class="bg-white/10 backdrop-blur-sm rounded-lg p-3">
-            <div class="text-2xl font-bold text-success-green">99.9%</div>
-            <div class="text-xs text-gray-300">Uptime</div>
-          </div>
-          <div class="bg-white/10 backdrop-blur-sm rounded-lg p-3">
-            <div class="text-2xl font-bold text-ai-purple">Daily</div>
-            <div class="text-xs text-gray-300">Backups</div>
-          </div>
-          <div class="bg-white/10 backdrop-blur-sm rounded-lg p-3">
-            <div class="text-2xl font-bold text-trust-blue">24/7</div>
-            <div class="text-xs text-gray-300">Monitoring</div>
-          </div>
-          <div class="bg-white/10 backdrop-blur-sm rounded-lg p-3">
-            <div class="text-2xl font-bold text-white">< 2hr</div>
-            <div class="text-xs text-gray-300">Response</div>
-          </div>
-        </div>
-        
+        <p class="text-lg text-amber-400 font-semibold mb-8">From £99/month</p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <a href="#pricing" class="btn-urgent text-lg px-8 py-4">
-            View Hosting Plans
+          <a href="/#services" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-lg transition-colors shadow-lg inline-block">
+            Get in Touch
           </a>
-          <button class="bg-white/10 backdrop-blur-sm border border-white/20 text-white px-8 py-4 rounded-lg font-semibold hover:bg-white/20 transition-all duration-200">
-            Check Our Uptime
-          </button>
+          <a href="#pricing" class="bg-white/10 backdrop-blur-sm border-2 border-white text-white font-bold py-4 px-8 rounded-lg hover:bg-white hover:text-slate-900 transition-all inline-block">
+            View Plans
+          </a>
         </div>
-        
-        <p class="text-sm text-gray-400 mt-4">
-          From £99/month • No setup fees • Free migration
-        </p>
       </div>
     </div>
   </section>
-  
-  <!-- Why Good Hosting Matters -->
+
+  <!-- What's Included -->
   <section class="py-20 bg-white">
     <div class="container mx-auto px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-4xl font-bold text-deep-space mb-4">
-          Your Website Is Your <span class="text-gold">24/7 Salesperson</span>
-        </h2>
-        <p class="text-xl text-gray-700">
-          Every minute of downtime costs you customers and reputation
-        </p>
-      </div>
-      
-      <div class="max-w-5xl mx-auto">
-        <!-- Cost of Poor Hosting -->
-        <div class="bg-gradient-to-br from-gold/5 to-gold/10 rounded-2xl p-8 mb-8 border border-gold/20">
-          <h3 class="text-2xl font-bold text-deep-space mb-6 text-center">The Real Cost of Poor Hosting</h3>
-          
-          <div class="grid lg:grid-cols-3 gap-6 mb-6">
-            <div class="text-center">
-              <div class="text-3xl font-bold text-gold mb-2">60%</div>
-              <div class="text-sm text-gray-700">of visitors leave if a site takes over 3 seconds to load</div>
-            </div>
-            <div class="text-center">
-              <div class="text-3xl font-bold text-gold mb-2">£125</div>
-              <div class="text-sm text-gray-700">average lost per hour of downtime</div>
-            </div>
-            <div class="text-center">
-              <div class="text-3xl font-bold text-gold mb-2">88%</div>
-              <div class="text-sm text-gray-700">won't return after a bad experience</div>
-            </div>
-          </div>
-          
-          <div class="bg-white rounded-lg p-4">
-            <p class="text-center text-gray-700">
-              With cheap hosting, you're not saving money - you're losing customers
-            </p>
-          </div>
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-4xl font-bold text-slate-900 mb-4">
+            What's Included
+          </h2>
+          <p class="text-xl text-gray-600">
+            Everything your website needs to stay healthy and secure.
+          </p>
         </div>
-        
-        <!-- Comparison -->
-        <div class="grid lg:grid-cols-2 gap-8">
-          <div class="space-y-4">
-            <h3 class="text-xl font-bold text-red-600 mb-4">❌ Cheap Hosting Problems</h3>
-            {[
-              "Regular downtime and outages",
-              "Slow loading speeds",
-              "No real support when needed",
-              "Security vulnerabilities",
-              "Lost data from no backups",
-              "Hidden fees and surprises"
-            ].map(item => (
-              <div class="flex items-center gap-3 p-3 bg-red-50 rounded-lg">
-                <svg class="w-5 h-5 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                </svg>
-                <span class="text-gray-700">{item}</span>
-              </div>
-            ))}
-          </div>
-          
-          <div class="space-y-4">
-            <h3 class="text-xl font-bold text-success-green mb-4">✅ Our Reliable Hosting</h3>
-            {[
-              "99.9% uptime guarantee",
-              "Fast loading on all devices",
-              "Quick support response",
-              "Regular security updates",
-              "Daily automatic backups",
-              "Transparent, simple pricing"
-            ].map(item => (
-              <div class="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
-                <svg class="w-5 h-5 text-success-green flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                </svg>
-                <span class="text-gray-700">{item}</span>
-              </div>
-            ))}
-          </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          {[
+            {
+              icon: "\u{1F4BE}",
+              title: "Daily Backups",
+              description: "Automatic daily backups stored securely, so your data is always safe."
+            },
+            {
+              icon: "\u{1F512}",
+              title: "Security Updates",
+              description: "Regular security patches and updates to keep your site protected."
+            },
+            {
+              icon: "\u{1F680}",
+              title: "Performance",
+              description: "Fast servers and optimisation to keep your site loading quickly."
+            },
+            {
+              icon: "\u{1F4CA}",
+              title: "Monitoring",
+              description: "I keep an eye on your site and fix issues before they become problems."
+            },
+            {
+              icon: "\u{1F6E1}\u{FE0F}",
+              title: "SSL Certificate",
+              description: "Free SSL certificate included for secure connections."
+            },
+            {
+              icon: "\u{1F4E7}",
+              title: "Support",
+              description: "Email support when you need help or have questions about your site."
+            }
+          ].map(feature => (
+            <div class="bg-gray-50 rounded-xl p-6">
+              <div class="text-3xl mb-3">{feature.icon}</div>
+              <h3 class="text-lg font-bold text-slate-900 mb-2">{feature.title}</h3>
+              <p class="text-gray-600 text-sm">{feature.description}</p>
+            </div>
+          ))}
         </div>
       </div>
     </div>
   </section>
-  
-  <!-- What's Included -->
-  <section class="py-20 bg-gray-50">
+
+  <!-- Who Is This For? -->
+  <section class="py-16 bg-gray-50">
     <div class="container mx-auto px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-4xl font-bold text-deep-space mb-4">
-          Everything Your Website <span class="ai-gradient-text">Needs to Thrive</span>
-        </h2>
-        <p class="text-xl text-gray-700">
-          Complete hosting and maintenance solution
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl font-bold text-slate-900 mb-6">Who Is This For?</h2>
+        <p class="text-gray-600 leading-relaxed mb-4">
+          Hosting and maintenance is for any business that wants their website looked after properly without having to worry about the technical side. Whether I built your site or someone else did, I can take care of backups, updates, and security so you can focus on running your business.
         </p>
-      </div>
-      
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-        {[
-          {
-            icon: "🚀",
-            title: "Fast Performance",
-            description: "Optimized servers ensure your site loads quickly for every visitor"
-          },
-          {
-            icon: "🔒",
-            title: "Security Updates",
-            description: "Regular security patches to protect against threats"
-          },
-          {
-            icon: "💾",
-            title: "Daily Backups",
-            description: "Automatic daily backups so you never lose your data"
-          },
-          {
-            icon: "🛡️",
-            title: "SSL Certificate",
-            description: "Free SSL certificate for secure connections"
-          },
-          {
-            icon: "📊",
-            title: "Uptime Monitoring",
-            description: "24/7 monitoring to catch issues before they affect you"
-          },
-          {
-            icon: "🔧",
-            title: "Regular Maintenance",
-            description: "Software updates and performance optimization"
-          },
-          {
-            icon: "📧",
-            title: "Email Support",
-            description: "Quick response when you need help"
-          },
-          {
-            icon: "📈",
-            title: "Traffic Reports",
-            description: "Monthly reports on your website performance"
-          },
-          {
-            icon: "🌍",
-            title: "CDN Included",
-            description: "Global content delivery for faster loading worldwide"
-          }
-        ].map(feature => (
-          <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-lg transition-shadow">
-            <div class="text-3xl mb-3">{feature.icon}</div>
-            <h3 class="text-lg font-bold text-deep-space mb-2">{feature.title}</h3>
-            <p class="text-gray-600 text-sm">{feature.description}</p>
-          </div>
-        ))}
+        <p class="text-gray-600 leading-relaxed">
+          This service is particularly popular with small business owners across Norwich, Norfolk and the UK who don't have an in-house IT team. Rather than paying hourly when something breaks, a monthly plan means your site is proactively maintained and issues are caught early.
+        </p>
       </div>
     </div>
   </section>
-  
+
   <!-- Pricing Plans -->
   <section id="pricing" class="py-20 bg-white">
     <div class="container mx-auto px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-4xl font-bold text-deep-space mb-4">
-          Simple Monthly <span class="ai-gradient-text">Hosting Plans</span>
-        </h2>
-        <p class="text-xl text-gray-700">
-          No contracts, cancel anytime, upgrade or downgrade as needed
-        </p>
-      </div>
-      
-      <div class="grid lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
-        <!-- Essential Plan -->
-        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
-          <div class="text-center mb-6">
-            <h3 class="text-2xl font-bold text-deep-space mb-2">Essential</h3>
-            <p class="text-gray-600 mb-4">For small websites</p>
-            <div class="text-5xl font-bold text-deep-space mb-2">£99</div>
-            <p class="text-gray-500">per month</p>
-          </div>
-          
-          <ul class="space-y-3 mb-8">
-            {[
-              "Up to 10GB storage",
-              "50GB bandwidth",
-              "Daily backups",
-              "SSL certificate",
-              "99.9% uptime",
-              "Email support",
-              "Monthly reports"
-            ].map(item => (
-              <li class="flex items-start gap-2">
-                <svg class="w-5 h-5 text-success-green mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                </svg>
-                <span class="text-gray-700">{item}</span>
-              </li>
-            ))}
-          </ul>
-          
-          <button class="w-full bg-deep-space text-white font-semibold py-3 rounded-lg hover:bg-deep-space/90 transition-colors">
-            Get Started
-          </button>
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-4xl font-bold text-slate-900 mb-4">
+            Hosting Plans
+          </h2>
+          <p class="text-xl text-gray-600">
+            Simple monthly pricing. No contracts, cancel anytime.
+          </p>
         </div>
-        
-        <!-- Professional Plan -->
-        <div class="bg-gradient-to-br from-gold/5 to-gold/10 rounded-2xl shadow-xl border-2 border-gold p-8 relative">
-          <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-gold text-white text-sm font-semibold px-4 py-1 rounded-full">
-            MOST POPULAR
-          </div>
-          
-          <div class="text-center mb-6">
-            <h3 class="text-2xl font-bold text-deep-space mb-2">Professional</h3>
-            <p class="text-gray-600 mb-4">For business websites</p>
-            <div class="text-5xl font-bold text-deep-space mb-2">£199</div>
-            <p class="text-gray-500">per month</p>
-          </div>
-          
-          <ul class="space-y-3 mb-8">
-            {[
-              "Up to 50GB storage",
-              "Unlimited bandwidth",
-              "Real-time backups",
-              "Premium SSL",
-              "99.99% uptime",
-              "Priority support",
-              "Weekly reports",
-              "Performance optimization"
-            ].map(item => (
-              <li class="flex items-start gap-2">
-                <svg class="w-5 h-5 text-success-green mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                </svg>
-                <span class="text-gray-700">{item}</span>
-              </li>
-            ))}
-          </ul>
-          
-          <button class="w-full bg-gold text-white font-semibold py-3 rounded-lg hover:bg-gold-dark transition-colors">
-            Get Started
-          </button>
-        </div>
-        
-        <!-- Enterprise Plan -->
-        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
-          <div class="text-center mb-6">
-            <h3 class="text-2xl font-bold text-deep-space mb-2">Enterprise</h3>
-            <p class="text-gray-600 mb-4">For high-traffic sites</p>
-            <div class="text-5xl font-bold text-deep-space mb-2">£399</div>
-            <p class="text-gray-500">per month</p>
-          </div>
-          
-          <ul class="space-y-3 mb-8">
-            {[
-              "Unlimited storage",
-              "Unlimited bandwidth",
-              "Continuous backups",
-              "Advanced security",
-              "100% uptime SLA",
-              "24/7 phone support",
-              "Daily reports",
-              "Dedicated resources"
-            ].map(item => (
-              <li class="flex items-start gap-2">
-                <svg class="w-5 h-5 text-success-green mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                </svg>
-                <span class="text-gray-700">{item}</span>
-              </li>
-            ))}
-          </ul>
-          
-          <button class="w-full bg-deep-space text-white font-semibold py-3 rounded-lg hover:bg-deep-space/90 transition-colors">
-            Contact Us
-          </button>
-        </div>
-      </div>
-      
-      <div class="mt-12 bg-gradient-to-r from-trust-blue/10 to-ai-purple/10 rounded-2xl p-8 max-w-3xl mx-auto">
-        <h3 class="text-2xl font-bold text-deep-space mb-4 text-center">
-          Free Migration Service
-        </h3>
-        <p class="text-gray-700 text-center mb-6">
-          We'll move your website from your current host for free. No downtime, no hassle, no stress.
-        </p>
-        <div class="flex justify-center">
-          <button class="bg-gradient-to-r from-trust-blue to-ai-purple text-white font-semibold py-3 px-8 rounded-lg hover:shadow-lg transition-shadow">
-            Get Free Migration Quote
-          </button>
-        </div>
-      </div>
-    </div>
-  </section>
-  
-  <!-- FAQ Section -->
-  <section class="py-20 bg-gray-50">
-    <div class="container mx-auto px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-4xl font-bold text-deep-space mb-4">
-          Common <span class="ai-gradient-text">Questions</span>
-        </h2>
-      </div>
-      
-      <div class="max-w-3xl mx-auto space-y-6">
-        {[
-          {
-            question: "What happens if my website goes down?",
-            answer: "Our monitoring systems alert us immediately if there's an issue. Most problems are resolved within minutes, often before you even notice. With our 99.9% uptime guarantee, downtime is extremely rare."
-          },
-          {
-            question: "Can I upgrade or downgrade my plan?",
-            answer: "Yes! You can change your plan at any time. Upgrades take effect immediately, and downgrades apply from your next billing cycle. No penalties or fees."
-          },
-          {
-            question: "Do you handle WordPress updates?",
-            answer: "Yes, we handle all core WordPress updates, plugin updates, and security patches. We test updates in a staging environment first to ensure they won't break your site."
-          },
-          {
-            question: "What's included in the backups?",
-            answer: "We backup your entire website including all files, databases, emails, and configurations. Backups are stored securely offsite and can be restored quickly if needed."
-          },
-          {
-            question: "How quickly do you respond to support requests?",
-            answer: "Essential plans receive responses within 24 hours, Professional within 4 hours, and Enterprise within 1 hour. Emergency issues are prioritized for all plans."
-          }
-        ].map(item => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-100 group">
-            <summary class="p-6 cursor-pointer list-none flex items-center justify-between hover:bg-gray-50">
-              <span class="font-semibold text-deep-space pr-4">{item.question}</span>
-              <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-              </svg>
-            </summary>
-            <div class="px-6 pb-6">
-              <p class="text-gray-600">{item.answer}</p>
+
+        <div class="grid lg:grid-cols-3 gap-8">
+          <!-- Essential -->
+          <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+            <div class="text-center mb-6">
+              <h3 class="text-2xl font-bold text-slate-900 mb-2">Essential</h3>
+              <p class="text-gray-600 mb-4">For small websites</p>
+              <div class="text-4xl font-bold text-slate-900 mb-2">£99</div>
+              <p class="text-gray-500 text-sm">per month</p>
             </div>
-          </details>
-        ))}
+            <ul class="space-y-3 mb-8">
+              {[
+                "Up to 10GB storage",
+                "Daily backups",
+                "SSL certificate",
+                "Security updates",
+                "Email support",
+                "Monthly reports"
+              ].map(item => (
+                <li class="flex items-start gap-2">
+                  <svg class="w-5 h-5 text-success-green mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                  </svg>
+                  <span class="text-gray-700">{item}</span>
+                </li>
+              ))}
+            </ul>
+            <a href="/#services" class="block w-full text-center bg-slate-900 text-white font-semibold py-3 rounded-lg hover:bg-slate-800 transition-colors">
+              Get Started
+            </a>
+          </div>
+
+          <!-- Professional -->
+          <div class="bg-white rounded-2xl shadow-xl border-2 border-amber-500 p-8 relative">
+            <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-amber-500 text-white text-sm font-semibold px-4 py-1 rounded-full">
+              MOST POPULAR
+            </div>
+            <div class="text-center mb-6">
+              <h3 class="text-2xl font-bold text-slate-900 mb-2">Professional</h3>
+              <p class="text-gray-600 mb-4">For business websites</p>
+              <div class="text-4xl font-bold text-slate-900 mb-2">£199</div>
+              <p class="text-gray-500 text-sm">per month</p>
+            </div>
+            <ul class="space-y-3 mb-8">
+              {[
+                "Up to 50GB storage",
+                "Daily backups",
+                "Premium SSL",
+                "Priority support",
+                "Performance optimisation",
+                "Weekly reports"
+              ].map(item => (
+                <li class="flex items-start gap-2">
+                  <svg class="w-5 h-5 text-success-green mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                  </svg>
+                  <span class="text-gray-700">{item}</span>
+                </li>
+              ))}
+            </ul>
+            <a href="/#services" class="block w-full text-center bg-amber-500 text-white font-semibold py-3 rounded-lg hover:bg-amber-600 transition-colors">
+              Get Started
+            </a>
+          </div>
+
+          <!-- Enterprise -->
+          <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+            <div class="text-center mb-6">
+              <h3 class="text-2xl font-bold text-slate-900 mb-2">Enterprise</h3>
+              <p class="text-gray-600 mb-4">For high-traffic sites</p>
+              <div class="text-4xl font-bold text-slate-900 mb-2">£399</div>
+              <p class="text-gray-500 text-sm">per month</p>
+            </div>
+            <ul class="space-y-3 mb-8">
+              {[
+                "Unlimited storage",
+                "Continuous backups",
+                "Advanced security",
+                "Priority support",
+                "Dedicated resources",
+                "Daily reports"
+              ].map(item => (
+                <li class="flex items-start gap-2">
+                  <svg class="w-5 h-5 text-success-green mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                  </svg>
+                  <span class="text-gray-700">{item}</span>
+                </li>
+              ))}
+            </ul>
+            <a href="/#services" class="block w-full text-center bg-slate-900 text-white font-semibold py-3 rounded-lg hover:bg-slate-800 transition-colors">
+              Get in Touch
+            </a>
+          </div>
+        </div>
+
+        <div class="mt-8 text-center">
+          <p class="text-gray-600 text-sm">
+            Already hosted elsewhere? I offer free migration to move your site over with no downtime.
+          </p>
+        </div>
       </div>
     </div>
   </section>
-  
-  <!-- CTA Section -->
-  <section class="py-20 bg-gradient-to-r from-deep-space to-success-green text-white">
+
+  <!-- Related Services -->
+  <section class="py-12 bg-gray-50 border-t border-gray-100">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-2xl font-bold text-slate-900 mb-6">Related Services</h2>
+        <div class="grid sm:grid-cols-3 gap-4">
+          <a href="/services/professional-websites" class="bg-white rounded-lg p-4 hover:bg-gray-50 transition-colors group shadow-sm">
+            <h3 class="font-semibold text-slate-900 group-hover:text-ai-purple transition-colors">Professional Websites</h3>
+            <p class="text-sm text-gray-600 mt-1">Need a new website to host?</p>
+          </a>
+          <a href="/services/business-process-automation" class="bg-white rounded-lg p-4 hover:bg-gray-50 transition-colors group shadow-sm">
+            <h3 class="font-semibold text-slate-900 group-hover:text-ai-purple transition-colors">Business Automation</h3>
+            <p class="text-sm text-gray-600 mt-1">Automate your business processes</p>
+          </a>
+          <a href="/services/custom-app-development" class="bg-white rounded-lg p-4 hover:bg-gray-50 transition-colors group shadow-sm">
+            <h3 class="font-semibold text-slate-900 group-hover:text-ai-purple transition-colors">Custom App Development</h3>
+            <p class="text-sm text-gray-600 mt-1">Build a custom application</p>
+          </a>
+        </div>
+        <p class="text-sm text-gray-500 mt-4">
+          <a href="/portfolio" class="text-ai-purple hover:underline">View hosted projects in our portfolio &rarr;</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-4xl font-bold text-slate-900 mb-4">
+            Frequently Asked Questions
+          </h2>
+        </div>
+
+        <div class="space-y-4">
+          {faqs.map(item => (
+            <details class="bg-gray-50 rounded-lg border border-gray-100 group">
+              <summary class="p-6 cursor-pointer list-none flex items-center justify-between hover:bg-gray-100 rounded-lg">
+                <span class="font-semibold text-slate-900 pr-4">{item.question}</span>
+                <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </summary>
+              <div class="px-6 pb-6">
+                <p class="text-gray-600">{item.answer}</p>
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-20 bg-slate-900 text-white">
     <div class="container mx-auto px-6 lg:px-8 text-center">
-      <h2 class="text-4xl lg:text-5xl font-bold mb-6">
-        Stop Worrying About Your Website
-      </h2>
-      <p class="text-xl text-gray-200 mb-8 max-w-2xl mx-auto">
-        Let us handle the technical stuff while you focus on your business. Reliable hosting that just works.
-      </p>
-      
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="/contact" class="bg-white text-deep-space hover:bg-gray-100 font-semibold py-4 px-8 rounded-lg transition-colors">
-          Start Free Trial
-        </a>
-        <a href="#pricing" class="bg-white/20 backdrop-blur-sm border border-white/30 hover:bg-white/30 text-white font-semibold py-4 px-8 rounded-lg transition-colors">
-          Compare Plans
-        </a>
+      <div class="max-w-2xl mx-auto">
+        <h2 class="text-4xl font-bold mb-6 text-white">
+          Stop Worrying About Your Website
+        </h2>
+        <p class="text-xl text-gray-100 mb-8">
+          Let me handle the hosting and maintenance while you focus on running your business.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="/#services" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-lg transition-colors shadow-lg inline-block">
+            Get in Touch
+          </a>
+          <a href="/portfolio" class="bg-white/10 backdrop-blur-sm border-2 border-white text-white font-bold py-4 px-8 rounded-lg hover:bg-white hover:text-slate-900 transition-all inline-block">
+            View Portfolio
+          </a>
+        </div>
+        <p class="text-sm text-gray-300 mt-6">
+          Based in Norwich, Norfolk. Working with businesses across the UK.
+        </p>
       </div>
-      
-      <p class="text-sm text-gray-300 mt-6">
-        30-day money-back guarantee • No setup fees • Cancel anytime
-      </p>
     </div>
   </section>
+
+  <!-- FAQPage Schema -->
+  <script type="application/ld+json">
+    {JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": faqs.map(faq => ({
+        "@type": "Question",
+        "name": faq.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": faq.answer
+        }
+      }))
+    })}
+  </script>
 </Layout>

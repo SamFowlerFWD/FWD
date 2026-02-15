@@ -1,36 +1,20 @@
 import { defineCollection, z } from 'astro:content';
+import { glob } from 'astro/loaders';
 
-const caseStudies = defineCollection({
-  type: 'content',
+const blog = defineCollection({
+  loader: glob({ pattern: '**/*.mdx', base: './src/content/blog' }),
   schema: z.object({
     title: z.string(),
-    client: z.string(),
-    industry: z.string(),
-    location: z.string(),
-    savings: z.string(),
-    timeframe: z.string(),
-    technologies: z.array(z.string()),
-    results: z.array(z.string()),
-    testimonial: z.string().optional(),
-    image: z.string().optional(),
+    description: z.string(),
+    pubDate: z.coerce.date(),
+    updatedDate: z.coerce.date().optional(),
+    heroImage: z.string(),
+    heroImageAlt: z.string(),
+    category: z.enum(['case-studies', 'tips', 'news']),
+    tags: z.array(z.string()).optional(),
+    featured: z.boolean().default(false),
+    draft: z.boolean().default(false),
   }),
 });
 
-const testimonials = defineCollection({
-  type: 'content',
-  schema: z.object({
-    author: z.string(),
-    role: z.string(),
-    company: z.string(),
-    location: z.string(),
-    rating: z.number().min(1).max(5),
-    quote: z.string(),
-    savings: z.string().optional(),
-    date: z.date(),
-  }),
-});
-
-export const collections = { 
-  'case-studies': caseStudies,
-  'testimonials': testimonials,
-};
+export const collections = { blog };

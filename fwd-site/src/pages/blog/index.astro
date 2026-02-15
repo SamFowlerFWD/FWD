@@ -1,0 +1,79 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PostCard from '../../components/blog/PostCard.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<Layout
+  title="Blog"
+  description="Web development case studies, tips, and insights from FWD Thinking Solutions in Norwich, Norfolk."
+  keywords="web development blog, business automation tips, norfolk tech, case studies, software development insights"
+>
+  <!-- Hero -->
+  <section class="relative py-20 bg-slate-900">
+    <div class="absolute inset-0 bg-ai-mesh opacity-20"></div>
+    <div class="container relative z-10 mx-auto px-6 lg:px-8">
+      <div class="max-w-4xl mx-auto text-center text-white">
+        <div class="inline-flex items-center gap-2 bg-gold/20 backdrop-blur-sm border border-gold/30 rounded-full px-4 py-2 mb-6">
+          <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+          </svg>
+          <span class="text-sm font-medium text-gold">Insights & Case Studies</span>
+        </div>
+
+        <h1 class="text-5xl lg:text-6xl font-bold mb-6">
+          The FWD <span class="text-amber-400">Blog</span>
+        </h1>
+        <p class="text-xl text-white">
+          Case studies, tips, and lessons from building software for UK businesses.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Posts Grid -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      {posts.length === 0 ? (
+        <div class="text-center py-16">
+          <p class="text-gray-500 text-lg">No posts yet. Check back soon.</p>
+        </div>
+      ) : (
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto" data-stagger>
+          {posts.map(post => (
+            <PostCard
+              title={post.data.title}
+              description={post.data.description}
+              pubDate={post.data.pubDate}
+              heroImage={post.data.heroImage}
+              heroImageAlt={post.data.heroImageAlt}
+              category={post.data.category}
+              slug={post.id}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-20 bg-gray-100">
+    <div class="container mx-auto px-6 lg:px-8 text-center">
+      <h2 class="text-4xl lg:text-5xl font-bold mb-6 text-slate-900">Got a Project in Mind?</h2>
+      <p class="text-xl text-gray-700 mb-8 max-w-2xl mx-auto">
+        We'd love to hear about it. Get in touch to discuss how we can help.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/services" class="inline-block bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-lg transition-colors shadow-lg hover:shadow-xl">
+          View Our Services
+        </a>
+        <a href="/portfolio" class="inline-block border-2 border-slate-900 text-slate-900 font-bold py-4 px-8 rounded-lg hover:bg-slate-900 hover:text-white transition-all">
+          See Our Work
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>

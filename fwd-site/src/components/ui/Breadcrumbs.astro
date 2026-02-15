@@ -1,0 +1,61 @@
+---
+export interface Props {
+  path: string;
+}
+
+const { path } = Astro.props;
+
+const labels: Record<string, string> = {
+  'services': 'Services',
+  'business-process-automation': 'Business Automation',
+  'professional-websites': 'Professional Websites',
+  'custom-app-development': 'Custom App Development',
+  'reliable-hosting-maintenance': 'Hosting & Maintenance',
+  'blog': 'Blog',
+  'portfolio': 'Portfolio',
+  'about': 'About',
+  'privacy-policy': 'Privacy Policy',
+};
+
+const segments = path.replace(/^\/|\/$/g, '').split('/').filter(Boolean);
+
+const breadcrumbs = [
+  { name: 'Home', href: '/' },
+  ...segments.map((segment, index) => ({
+    name: labels[segment] || segment.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
+    href: '/' + segments.slice(0, index + 1).join('/'),
+  })),
+];
+
+const schemaItems = breadcrumbs.map((item, index) => ({
+  "@type": "ListItem",
+  "position": index + 1,
+  "name": item.name,
+  "item": `https://f-w-d.co.uk${item.href === '/' ? '' : item.href}`
+}));
+---
+
+<nav aria-label="Breadcrumb" class="container mx-auto px-6 lg:px-8 py-3">
+  <ol class="flex items-center gap-2 text-sm text-gray-500">
+    {breadcrumbs.map((crumb, index) => (
+      <li class="flex items-center gap-2">
+        {index > 0 && (
+          <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        )}
+        {index === breadcrumbs.length - 1 ? (
+          <span class="text-gray-700 font-medium" aria-current="page">{crumb.name}</span>
+        ) : (
+          <a href={crumb.href} class="hover:text-slate-900 transition-colors">{crumb.name}</a>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": schemaItems
+})} />

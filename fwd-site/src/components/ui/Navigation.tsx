@@ -18,43 +18,38 @@ const Navigation: React.FC = () => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   const navLinks: NavLink[] = [
-    { 
-      label: 'AI Playground',
-      href: '/playground',
-      badge: 'Try Now'
-    },
-    { 
-      label: 'Services', 
-      href: '#services',
+    {
+      label: 'Services',
+      href: '/services',
       dropdown: [
-        { 
-          label: 'Business Process Automation', 
+        {
+          label: 'Business Process Automation',
           href: '/services/business-process-automation',
           description: 'Turn 40-hour weeks into 4-hour oversight',
-          badge: 'Hot'
+          badge: 'Popular'
         },
-        { 
-          label: 'Professional Websites', 
+        {
+          label: 'Professional Websites',
           href: '/services/professional-websites',
           description: 'Modern websites built efficiently'
         },
-        { 
-          label: 'Custom App Development', 
+        {
+          label: 'Custom App Development',
           href: '/services/custom-app-development',
           description: 'Bespoke apps for your business'
         },
-        { 
-          label: 'Reliable Hosting & Maintenance', 
+        {
+          label: 'Reliable Hosting & Maintenance',
           href: '/services/reliable-hosting-maintenance',
           description: 'Keep your site running smoothly',
           badge: 'From £99/mo'
         }
       ]
     },
-    { label: 'Industries', href: '#industries' },
-    { label: 'Case Studies', href: '#case-studies' },
-    { label: 'About', href: '#about' },
-    { label: 'Pricing', href: '#pricing', badge: 'From £299' }
+    { label: 'Portfolio', href: '/portfolio', badge: 'View Work' },
+    { label: 'Blog', href: '/blog' },
+    { label: 'About', href: '/about' },
+    { label: 'Contact', href: '/#services' }
   ];
 
   useEffect(() => {
@@ -90,14 +85,14 @@ const Navigation: React.FC = () => {
         <div className="flex items-center justify-between h-32 py-4">
           {/* Logo */}
           <div className="flex items-center">
-            <a href="/" className="flex items-center gap-3" aria-label="FWD home page">
-              <img 
-                src="/fwd-logo.webp" 
-                alt="FWD - AI Solutions Agency" 
+            <a href="/" className="flex items-center gap-3" aria-label="FWD Thinking Solutions home page">
+              <img
+                src="/fwd-logo.webp"
+                alt="FWD Thinking Solutions"
                 className="h-[120px] w-auto"
                 loading="lazy"
               />
-              <span className="hidden sm:inline text-sm text-gray-800 font-medium">AI Agency</span>
+              <span className="hidden sm:inline text-sm text-gray-800 font-medium">Thinking Solutions</span>
             </a>
           </div>
 
@@ -124,7 +119,7 @@ const Navigation: React.FC = () => {
                     </svg>
                   )}
                   {link.badge && (
-                    <span className="absolute -top-2 -right-12 bg-gold text-white text-xs px-2 py-0.5 rounded-full whitespace-nowrap">
+                    <span className="absolute -top-2 -right-12 bg-amber-500 text-white text-xs font-semibold px-2 py-0.5 rounded-full whitespace-nowrap">
                       {link.badge}
                     </span>
                   )}
@@ -148,7 +143,7 @@ const Navigation: React.FC = () => {
                             )}
                           </div>
                           {item.badge && (
-                            <span className="bg-gold text-white text-xs px-2 py-0.5 rounded-full">
+                            <span className="bg-amber-500 text-white text-xs font-semibold px-2 py-0.5 rounded-full">
                               {item.badge}
                             </span>
                           )}
@@ -159,16 +154,6 @@ const Navigation: React.FC = () => {
                 )}
               </div>
             ))}
-          </div>
-
-          {/* CTA Buttons */}
-          <div className="hidden lg:flex items-center gap-3">
-            <button className="text-gray-800 hover:text-ai-purple transition-colors font-medium" aria-label="Sign in to your account">
-              Sign In
-            </button>
-            <button className="bg-gradient-to-r from-ai-purple to-trust-blue hover:from-ai-purple/90 hover:to-trust-blue/90 text-white font-semibold py-2 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl" aria-label="Get started with FWD for free">
-              Get Started Free
-            </button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -222,7 +207,7 @@ const Navigation: React.FC = () => {
                           <div className="font-medium text-deep-space flex items-center gap-2">
                             {item.label}
                             {item.badge && (
-                              <span className="bg-gold text-white text-xs px-2 py-0.5 rounded-full">
+                              <span className="bg-amber-500 text-white text-xs font-semibold px-2 py-0.5 rounded-full">
                                 {item.badge}
                               </span>
                             )}
@@ -242,7 +227,7 @@ const Navigation: React.FC = () => {
                   >
                     {link.label}
                     {link.badge && (
-                      <span className="ml-2 bg-gold text-white text-xs px-2 py-0.5 rounded-full">
+                      <span className="ml-2 bg-amber-500 text-white text-xs font-semibold px-2 py-0.5 rounded-full">
                         {link.badge}
                       </span>
                     )}
@@ -252,20 +237,6 @@ const Navigation: React.FC = () => {
             ))}
           </div>
           
-          <div className="mt-8 pt-8 border-t border-gray-200 space-y-3">
-            <button className="w-full text-gray-800 hover:text-ai-purple transition-colors font-medium py-3 border border-gray-300 rounded-lg" aria-label="Sign in to your account">
-              Sign In
-            </button>
-            <button className="w-full bg-gradient-to-r from-ai-purple to-trust-blue hover:from-ai-purple/90 hover:to-trust-blue/90 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-lg" aria-label="Get started with FWD for free">
-              Get Started Free
-            </button>
-          </div>
-
-          <div className="mt-8 p-4 bg-gold/10 rounded-lg border border-gold/20">
-            <p className="text-sm text-gold-dark font-medium">
-              🔥 Limited Time: Get 30% off your first 3 months
-            </p>
-          </div>
         </div>
       </div>
     </nav>

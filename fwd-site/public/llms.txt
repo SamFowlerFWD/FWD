@@ -1,0 +1,34 @@
+# FWD Thinking Solutions
+
+> Web development, business automation, and custom software for UK businesses. Based in Norwich, Norfolk.
+
+## About
+
+FWD Thinking Solutions is a web development and business automation agency run by Sam Fowler from Norwich, Norfolk. We help UK businesses, especially small and rural ones, get access to quality technology without the agency markup.
+
+## Services
+
+- **Professional Websites**: Fast, mobile-friendly websites from £299
+- **Business Process Automation**: Automate invoicing, emails, data entry from £799
+- **Custom App Development**: Booking systems, dashboards, mobile apps from £1,299
+- **Hosting & Maintenance**: Backups, security updates, support from £99/month
+
+## Location
+
+Norwich, Norfolk, United Kingdom. Working with businesses across the UK.
+
+## Portfolio
+
+14+ projects delivered across 8+ industries including equestrian, manufacturing, pet services, sports, technology, retail, professional services, and construction.
+
+## Blog
+
+Case studies, tips, and insights from building software for UK businesses. Read at: https://f-w-d.co.uk/blog
+
+## Contact
+
+Website: https://f-w-d.co.uk
+
+## Full Version
+
+For detailed information, see: https://f-w-d.co.uk/llms-full.txt

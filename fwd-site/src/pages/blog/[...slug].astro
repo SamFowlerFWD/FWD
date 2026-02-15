@@ -1,0 +1,140 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map(post => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const { title, description, pubDate, updatedDate, heroImage, heroImageAlt, category, tags } = post.data;
+
+const categoryStyles: Record<string, { bg: string; text: string; label: string }> = {
+  'case-studies': { bg: 'bg-amber-500/10', text: 'text-amber-700', label: 'Case Study' },
+  'tips': { bg: 'bg-purple-500/10', text: 'text-ai-purple', label: 'Tips & Tricks' },
+  'news': { bg: 'bg-blue-500/10', text: 'text-trust-blue', label: 'News' },
+};
+const style = categoryStyles[category];
+
+const formattedDate = pubDate.toLocaleDateString('en-GB', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+
+const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-GB', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+
+// Reading time estimate
+const wordCount = post.body ? post.body.split(/\s+/).length : 0;
+const readingTime = Math.max(1, Math.ceil(wordCount / 230));
+
+const siteUrl = 'https://f-w-d.co.uk';
+---
+
+<Layout
+  title={title}
+  description={description}
+  ogImage={heroImage}
+>
+  <!-- Hero Image -->
+  <section class="relative h-72 md:h-96 -mt-3">
+    <img
+      src={heroImage}
+      alt={heroImageAlt}
+      class="w-full h-full object-cover"
+      width="1200"
+      height="400"
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-white via-white/30 to-transparent"></div>
+  </section>
+
+  <!-- Article Header -->
+  <article class="container mx-auto px-6 lg:px-8 max-w-3xl -mt-24 relative z-10">
+    <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 mb-10">
+      <div class="flex flex-wrap items-center gap-3 mb-4">
+        <span class={`${style.bg} ${style.text} text-xs font-semibold px-2.5 py-1 rounded-full`}>{style.label}</span>
+        <time datetime={pubDate.toISOString()} class="text-sm text-gray-500">{formattedDate}</time>
+        {formattedUpdatedDate && (
+          <span class="text-sm text-gray-400">(Updated {formattedUpdatedDate})</span>
+        )}
+        <span class="text-sm text-gray-400">&middot; {readingTime} min read</span>
+      </div>
+
+      <h1 class="text-3xl md:text-4xl font-bold text-deep-space mb-4">{title}</h1>
+      <p class="text-lg text-gray-600 mb-6">{description}</p>
+
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-gradient-to-br from-ai-purple to-trust-blue rounded-full flex items-center justify-center text-white font-bold text-sm">
+          SF
+        </div>
+        <div>
+          <div class="font-medium text-deep-space text-sm">Sam Fowler</div>
+          <div class="text-xs text-gray-500">FWD Thinking Solutions</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="prose mb-12">
+      <Content />
+    </div>
+
+    <!-- Tags -->
+    {tags && tags.length > 0 && (
+      <div class="flex flex-wrap gap-2 mb-12">
+        {tags.map(tag => (
+          <span class="bg-gray-100 text-gray-600 text-sm font-medium px-3 py-1.5 rounded-full">
+            {tag}
+          </span>
+        ))}
+      </div>
+    )}
+
+    <!-- CTA Card -->
+    <div class="bg-slate-900 rounded-2xl p-8 text-center mb-20">
+      <h2 class="text-2xl font-bold text-white mb-3">Interested in something similar?</h2>
+      <p class="text-gray-300 mb-6">Let's talk about how we can help your business.</p>
+      <a href="/services" class="inline-block bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-8 rounded-lg transition-colors shadow-lg hover:shadow-xl">
+        View Our Services
+      </a>
+    </div>
+  </article>
+
+  <!-- BlogPosting Schema.org -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": title,
+    "description": description,
+    "image": heroImage.startsWith('http') ? heroImage : `${siteUrl}${heroImage}`,
+    "datePublished": pubDate.toISOString(),
+    "dateModified": (updatedDate || pubDate).toISOString(),
+    "author": {
+      "@type": "Person",
+      "name": "Sam Fowler",
+      "url": siteUrl
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "FWD Thinking Solutions",
+      "logo": {
+        "@type": "ImageObject",
+        "url": `${siteUrl}/fwd-logo.webp`
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `${siteUrl}/blog/${post.id}`
+    }
+  })} />
+</Layout>

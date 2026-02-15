@@ -1,11 +1,13 @@
-# FWD Agency Robots.txt
-# https://fwd-agency.co.uk
+# FWD Thinking Solutions Robots.txt
+# https://f-w-d.co.uk
 
 # Allow all search engines
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /_astro/
 
-# Specific rules for major search engines
+# Major search engines
 User-agent: Googlebot
 Allow: /
 Crawl-delay: 0
@@ -14,7 +16,34 @@ User-agent: Bingbot
 Allow: /
 Crawl-delay: 1
 
-# Block bad bots
+User-agent: Slurp
+Allow: /
+Crawl-delay: 1
+
+User-agent: DuckDuckBot
+Allow: /
+Crawl-delay: 1
+
+# AI crawlers - explicitly allowed
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Block aggressive SEO scrapers
 User-agent: AhrefsBot
 Disallow: /
 
@@ -27,25 +56,5 @@ Disallow: /
 User-agent: MJ12bot
 Disallow: /
 
-# Protect API endpoints
-User-agent: *
-Disallow: /api/
-Disallow: /_astro/
-
-# Protect admin areas (if any in future)
-User-agent: *
-Disallow: /admin/
-Disallow: /login/
-Disallow: /dashboard/
-
-# Point to sitemap
-Sitemap: https://fwd-agency.co.uk/sitemap-index.xml
-
-# Additional UK search engines
-User-agent: Slurp
-Allow: /
-Crawl-delay: 1
-
-User-agent: DuckDuckBot
-Allow: /
-Crawl-delay: 1
+# Sitemap
+Sitemap: https://f-w-d.co.uk/sitemap-index.xml

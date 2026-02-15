@@ -1,0 +1,77 @@
+---
+title: "Building Fakenham Dog Field: A Booking System with Automated Access Control"
+description: "How we built a secure online booking system with Stripe payments and automated Paxton gate access codes for a private dog field in Norfolk."
+pubDate: 2025-06-10
+heroImage: "/portfolio/fakenham-dog-field.webp"
+heroImageAlt: "Fakenham Dog Field online booking system showing calendar and payment screen"
+category: "case-studies"
+tags: ["booking system", "Stripe", "automation", "Norfolk", "Cloudflare"]
+featured: true
+draft: false
+---
+
+## The Challenge
+
+Fakenham Dog Field needed a way for customers to book private sessions at their secure dog exercise field at Fakenham Racecourse. The field is accessed through a Paxton-controlled gate, meaning customers need a valid access code to enter.
+
+Before the system was built, bookings were managed manually — phone calls, messages, and someone physically sharing gate codes. This was time-consuming for the owner and inconvenient for customers who wanted to book outside of working hours.
+
+The brief was straightforward:
+
+- Let customers book and pay online, any time of day
+- Automatically generate and send a gate access code after payment
+- Keep things simple — no app downloads, no account creation
+
+## The Solution
+
+We built a custom booking system from scratch, deployed on Cloudflare Pages for speed and reliability. The system handles the entire journey from browsing available slots to receiving an access code, with no manual intervention needed.
+
+### How It Works
+
+1. **Customer picks a date and time** — the calendar shows available slots based on operating hours and existing bookings
+2. **Customer enters their details** — name, email, and phone number
+3. **Payment via Stripe** — secure card payment with no account needed
+4. **Access code generated** — the system communicates with the Paxton access control API to create a time-limited code
+5. **Confirmation sent** — customer receives an email with their booking details and gate code
+
+The entire flow takes under two minutes.
+
+## Key Features
+
+**Smart availability checking** — the system prevents double-bookings by checking existing reservations and blocked dates in real-time. Operating hours are configurable per day of the week.
+
+**Stripe integration** — payments are handled securely through Stripe, with webhook confirmation to ensure the booking is only confirmed after successful payment.
+
+**Paxton API integration** — this was the interesting part. The Paxton access control system manages the physical gate lock. After payment, the system calls the Paxton API to generate a unique access code that's only valid for the booked time window.
+
+**Admin dashboard** — the field owner can view bookings, manage availability, block dates for maintenance, and see revenue reports.
+
+**Email notifications** — automated confirmation emails with booking details and the gate access code, plus reminders before the session.
+
+## Results
+
+The system has been running reliably since launch:
+
+- **Zero manual bookings** — everything is self-service
+- **24/7 availability** — customers book whenever it suits them
+- **No access issues** — automated codes work every time
+- **Owner time saved** — hours per week freed up from admin
+
+## Tech Stack
+
+The project was built with a focus on speed, reliability, and low running costs:
+
+- **Frontend**: Custom-built with modern JavaScript
+- **Hosting**: Cloudflare Pages (fast, global CDN, free tier)
+- **Payments**: Stripe (checkout sessions + webhooks)
+- **Access Control**: Paxton Net2 API integration
+- **Database**: Serverless database for bookings and availability
+- **Email**: Transactional email service for confirmations
+
+The whole system runs with minimal hosting costs thanks to Cloudflare's generous free tier and serverless architecture.
+
+---
+
+This project is a good example of how a well-scoped custom build can solve a real business problem more effectively than an off-the-shelf solution. The Paxton integration alone — automating physical access control from an online booking — isn't something you'd find in a standard booking plugin.
+
+If you've got a similar workflow that involves manual steps between online actions and physical systems, [get in touch](/services/custom-app-development) — there's a good chance it can be automated.

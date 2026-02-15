@@ -31,10 +31,10 @@ test.describe('Performance Tests', () => {
   });
   
   test('service page loads quickly', async ({ page }) => {
-    await page.goto('/services/ai-software-development');
-    
+    await page.goto('/services/custom-app-development');
+
     // Check page loads
-    await expect(page).toHaveTitle(/AI Software Development/);
+    await expect(page).toHaveTitle(/Custom App Development/);
     
     // Check main content is visible
     await expect(page.locator('h1')).toBeVisible();

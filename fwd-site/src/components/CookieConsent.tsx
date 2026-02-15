@@ -142,7 +142,7 @@ const CookieConsent: React.FC = () => {
                         type="checkbox"
                         checked={preferences.necessary}
                         disabled
-                        className="mt-1 mr-3 h-4 w-4 text-gray-400"
+                        className="mt-1 mr-3 h-4 w-4 text-gray-200"
                         aria-label="Necessary cookies (required)"
                       />
                       <div>

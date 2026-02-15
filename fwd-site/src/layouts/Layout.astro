@@ -1,6 +1,9 @@
 ---
 import Nav from '../components/ui/Nav.astro';
+import Footer from '../components/ui/Footer.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import CookieConsent from '../components/CookieConsent.tsx';
+import '../styles/global.css';
 
 export interface Props {
   title: string;
@@ -8,17 +11,20 @@ export interface Props {
   keywords?: string;
   ogImage?: string;
   noindex?: boolean;
+  hideBreadcrumbs?: boolean;
 }
 
-const { 
-  title, 
-  description = "FWD - AI-powered software development agency helping UK SMBs save 70% on custom software costs. Transform your business with intelligent automation.",
-  keywords = "ai software development, custom app development, norwich software agency, uk sme software, affordable custom software, business automation",
+const {
+  title,
+  description = "Professional web development and business automation in Norwich, Norfolk. Websites, apps, booking systems and hosting for UK businesses.",
+  keywords = "web development norwich, custom app development, business automation norfolk, website hosting uk",
   ogImage = "/og-image.png",
-  noindex = false
+  noindex = false,
+  hideBreadcrumbs = false
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const isHomepage = Astro.url.pathname === '/' || Astro.url.pathname === '';
 ---
 
 <!DOCTYPE html>
@@ -30,58 +36,54 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <link rel="alternate icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" sizes="180x180" href="/fwd-logo.webp" />
     <meta name="generator" content={Astro.generator} />
-    
+
     <!-- Primary Meta Tags -->
-    <title>{title} | FWD - AI Software Development Agency</title>
-    <meta name="title" content={`${title} | FWD - AI Software Development Agency`} />
+    <title>{title} | FWD Thinking Solutions</title>
+    <meta name="title" content={`${title} | FWD Thinking Solutions`} />
     <meta name="description" content={description} />
     <meta name="keywords" content={keywords} />
-    
+
     <!-- Canonical URL -->
     <link rel="canonical" href={canonicalURL} />
-    
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalURL} />
-    <meta property="og:title" content={`${title} | FWD`} />
+    <meta property="og:title" content={`${title} | FWD Thinking Solutions`} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImage} />
     <meta property="og:locale" content="en_GB" />
-    <meta property="og:site_name" content="FWD - AI Software Development Agency" />
-    
+    <meta property="og:site_name" content="FWD Thinking Solutions" />
+
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content={canonicalURL} />
-    <meta property="twitter:title" content={`${title} | FWD`} />
+    <meta property="twitter:title" content={`${title} | FWD Thinking Solutions`} />
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={ogImage} />
-    
+
     <!-- Robots -->
     {noindex && <meta name="robots" content="noindex, nofollow" />}
-    
+
     <!-- Performance hints -->
     <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    
-    <!-- Global CSS -->
-    <link rel="stylesheet" href="/src/styles/global.css" />
-    
+
     <!-- Schema.org markup for Google -->
     <script type="application/ld+json">
       {JSON.stringify({
         "@context": "https://schema.org",
-        "@type": "LocalBusiness",
-        "@id": "https://fwd-agency.co.uk/#business",
-        "name": "FWD",
-        "alternateName": "FWD AI Agency",
-        "description": "AI-powered software development agency helping Norfolk businesses save time and money with intelligent automation",
-        "url": "https://fwd-agency.co.uk",
-        "logo": "https://fwd-agency.co.uk/fwd-logo.webp",
-        "image": "https://fwd-agency.co.uk/og-image.png",
+        "@type": ["ProfessionalService", "LocalBusiness"],
+        "@id": "https://f-w-d.co.uk/#business",
+        "name": "FWD Thinking Solutions",
+        "alternateName": "FWD",
+        "description": "Web development and business automation agency helping businesses in Norfolk and across the UK save time and money with practical technology solutions",
+        "url": "https://f-w-d.co.uk",
+        "logo": "https://f-w-d.co.uk/fwd-logo.webp",
+        "image": "https://f-w-d.co.uk/og-image.png",
         "address": {
           "@type": "PostalAddress",
-          "streetAddress": "Business Centre",
           "addressLocality": "Norwich",
           "addressRegion": "Norfolk",
           "postalCode": "NR1",
@@ -106,9 +108,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
             "name": "United Kingdom"
           }
         ],
-        "priceRange": "£££",
-        "telephone": "+44-1603-123456",
-        "email": "hello@fwd-agency.co.uk",
+        "priceRange": "££",
         "openingHoursSpecification": [
           {
             "@type": "OpeningHoursSpecification",
@@ -121,21 +121,21 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         "currenciesAccepted": "GBP",
         "founder": {
           "@type": "Person",
-          "name": "FWD Team"
+          "name": "Sam Fowler"
         },
         "foundingDate": "2023",
-        "keywords": "AI development, software automation, business process automation, Norfolk tech, Norwich AI agency",
+        "knowsAbout": ["Web Development", "Business Automation", "Custom Software", "Mobile App Development", "SEO"],
         "hasOfferCatalog": {
           "@type": "OfferCatalog",
-          "name": "AI-Powered Business Solutions",
+          "name": "Web Development & Business Solutions",
           "itemListElement": [
             {
               "@type": "Offer",
               "itemOffered": {
                 "@type": "Service",
                 "name": "Business Process Automation",
-                "description": "Turn 40-hour weeks into 4-hour oversight with AI automation",
-                "url": "https://fwd-agency.co.uk/services/business-process-automation"
+                "description": "Automate repetitive business tasks including invoicing, emails, data entry and scheduling",
+                "url": "https://f-w-d.co.uk/services/business-process-automation"
               },
               "price": "799",
               "priceCurrency": "GBP",
@@ -150,17 +150,17 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
               "@type": "Offer",
               "itemOffered": {
                 "@type": "Service",
-                "name": "AI-Powered Websites",
-                "description": "Websites that convert 3x more visitors with AI optimization",
-                "url": "https://fwd-agency.co.uk/services/ai-powered-websites"
+                "name": "Professional Websites",
+                "description": "Fast, mobile-friendly, SEO-optimised websites for businesses",
+                "url": "https://f-w-d.co.uk/services/professional-websites"
               },
-              "price": "2999",
+              "price": "299",
               "priceCurrency": "GBP",
               "priceSpecification": {
                 "@type": "PriceSpecification",
-                "price": "2999",
+                "price": "299",
                 "priceCurrency": "GBP",
-                "minPrice": "2999"
+                "minPrice": "299"
               }
             },
             {
@@ -168,25 +168,25 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
               "itemOffered": {
                 "@type": "Service",
                 "name": "Custom App Development",
-                "description": "Enterprise software at SMB prices - 70% cheaper than traditional development",
-                "url": "https://fwd-agency.co.uk/services/custom-app-development"
+                "description": "Bespoke web and mobile applications including booking systems, dashboards and internal tools",
+                "url": "https://f-w-d.co.uk/services/custom-app-development"
               },
-              "price": "15000",
+              "price": "1299",
               "priceCurrency": "GBP",
               "priceSpecification": {
                 "@type": "PriceSpecification",
-                "price": "15000",
+                "price": "1299",
                 "priceCurrency": "GBP",
-                "minPrice": "15000"
+                "minPrice": "1299"
               }
             },
             {
               "@type": "Offer",
               "itemOffered": {
                 "@type": "Service",
-                "name": "AI Hosting & Maintenance",
-                "description": "Hosting that prevents problems before they happen with AI monitoring",
-                "url": "https://fwd-agency.co.uk/services/ai-hosting-maintenance"
+                "name": "Hosting & Maintenance",
+                "description": "Reliable hosting with daily backups, security updates, performance monitoring and support",
+                "url": "https://f-w-d.co.uk/services/reliable-hosting-maintenance"
               },
               "price": "99",
               "priceCurrency": "GBP",
@@ -202,20 +202,19 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         },
         "aggregateRating": {
           "@type": "AggregateRating",
-          "ratingValue": "4.9",
-          "reviewCount": "287",
-          "bestRating": "5",
-          "worstRating": "1"
+          "ratingValue": "5.0",
+          "reviewCount": "2",
+          "bestRating": "5"
         },
         "review": [
           {
             "@type": "Review",
             "author": {
               "@type": "Person",
-              "name": "James Wilson"
+              "name": "Anna Kidd"
             },
             "datePublished": "2024-01-15",
-            "reviewBody": "FWD transformed our business operations. We're saving over 30 hours a week on manual tasks.",
+            "reviewBody": "Sam really listens to the client's brief and adds value to their ideas. He is naturally creative and takes time to understand and produce amazing outcomes. Highly recommended.",
             "reviewRating": {
               "@type": "Rating",
               "ratingValue": "5"
@@ -225,20 +224,17 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
             "@type": "Review",
             "author": {
               "@type": "Person",
-              "name": "Sarah Mitchell"
+              "name": "Matt Miller"
             },
             "datePublished": "2024-02-10",
-            "reviewBody": "Incredible ROI. Our new AI-powered website increased conversions by 340% in just 6 weeks.",
+            "reviewBody": "We're on the first page of Google in the UK for 'used gym equipment'. For website building and general techy scheming, Sam knows what he's doing!",
             "reviewRating": {
               "@type": "Rating",
               "ratingValue": "5"
             }
           }
         ],
-        "sameAs": [
-          "https://www.linkedin.com/company/fwd-agency",
-          "https://twitter.com/fwd_agency"
-        ]
+        "sameAs": []
       })}
     </script>
   </head>
@@ -246,33 +242,24 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <a href="#main-content" class="skip-link">Skip to main content</a>
     <Nav />
     <main id="main-content" tabindex="-1">
+      {!isHomepage && !hideBreadcrumbs && <Breadcrumbs path={Astro.url.pathname} />}
       <slot />
     </main>
+    <Footer />
     <CookieConsent client:load />
-    
-    <!-- Psychological urgency script -->
+
+    <!-- Scroll-reveal animation observer -->
     <script>
-      // Track time on page for urgency messaging
-      let timeOnPage = 0;
-      setInterval(() => {
-        timeOnPage++;
-        if (timeOnPage === 30) {
-          // Trigger exit intent after 30 seconds
-          document.dispatchEvent(new CustomEvent('timeBasedUrgency'));
-        }
-      }, 1000);
-      
-      // Track scroll depth for engagement
-      let maxScroll = 0;
-      window.addEventListener('scroll', () => {
-        const scrollPercentage = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
-        if (scrollPercentage > maxScroll) {
-          maxScroll = scrollPercentage;
-          if (maxScroll > 70) {
-            document.dispatchEvent(new CustomEvent('deepEngagement'));
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
           }
-        }
-      });
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+      document.querySelectorAll('[data-animate]').forEach(el => observer.observe(el));
     </script>
   </body>
 </html>

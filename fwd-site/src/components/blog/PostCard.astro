@@ -1,0 +1,54 @@
+---
+export interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  heroImage: string;
+  heroImageAlt: string;
+  category: 'case-studies' | 'tips' | 'news';
+  slug: string;
+}
+
+const { title, description, pubDate, heroImage, heroImageAlt, category, slug } = Astro.props;
+
+const categoryStyles: Record<string, { bg: string; text: string; label: string }> = {
+  'case-studies': { bg: 'bg-amber-500/10', text: 'text-amber-700', label: 'Case Study' },
+  'tips': { bg: 'bg-purple-500/10', text: 'text-ai-purple', label: 'Tips & Tricks' },
+  'news': { bg: 'bg-blue-500/10', text: 'text-trust-blue', label: 'News' },
+};
+
+const style = categoryStyles[category];
+
+const formattedDate = pubDate.toLocaleDateString('en-GB', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+---
+
+<a href={`/blog/${slug}`} class="block bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden card-hover group" data-animate>
+  <div class="h-48 relative overflow-hidden">
+    <img
+      src={heroImage}
+      alt={heroImageAlt}
+      class="w-full h-full object-cover object-top img-zoom"
+      width="400"
+      height="192"
+      loading="lazy"
+    />
+  </div>
+  <div class="p-6">
+    <div class="flex items-center gap-3 mb-3">
+      <span class={`${style.bg} ${style.text} text-xs font-semibold px-2.5 py-1 rounded-full`}>{style.label}</span>
+      <time datetime={pubDate.toISOString()} class="text-xs text-gray-500">{formattedDate}</time>
+    </div>
+    <h3 class="text-xl font-bold text-deep-space mb-2 group-hover:text-ai-purple transition-colors">{title}</h3>
+    <p class="text-gray-600 text-sm mb-4 line-clamp-2">{description}</p>
+    <span class="inline-flex items-center gap-2 text-ai-purple font-semibold text-sm">
+      Read more
+      <svg class="w-4 h-4 arrow-slide" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+      </svg>
+    </span>
+  </div>
+</a>

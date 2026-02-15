@@ -1,0 +1,416 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const projects = [
+  {
+    name: "Hoofflix",
+    description: "Ongoing growth & IT partnership with the leading equestrian video streaming platform. Creating content, streamlining systems, optimising operations, and exploring new revenue channels.",
+    services: ["Growth Partnership", "Content Strategy", "System Optimisation", "Revenue Development"],
+    url: "https://hoofflix.com",
+    image: "/portfolio/hoofflix.webp",
+    alt: "Hoofflix equestrian video streaming platform with course library and user dashboard",
+    industry: "Equestrian / Media",
+    featured: true
+  },
+  {
+    name: "Fakenham Dog Field",
+    description: "Secure dog field booking system with Stripe payments and automated Paxton gate access codes. Book online, pay securely, receive instant access code.",
+    services: ["Booking System", "Payment Integration", "Access Control", "Custom Build"],
+    url: "https://fakenham-dog-field.pages.dev",
+    image: "/portfolio/fakenham-dog-field.webp",
+    alt: "Fakenham Dog Field online booking system with calendar and Stripe payments",
+    industry: "Pet Services",
+    featured: true
+  },
+  {
+    name: "The Balanced Horse",
+    description: "Lightweight LMS video platform for equestrian education. User authentication, video course delivery, and progress tracking for professional trainers.",
+    services: ["LMS Platform", "Video Streaming", "User Authentication", "Custom Build"],
+    url: "#",
+    image: "/portfolio/balanced-horse.webp",
+    alt: "The Balanced Horse equestrian training video platform with progress tracking",
+    industry: "Equestrian",
+    featured: true
+  },
+  {
+    name: "Norwich Canoe Club",
+    description: "Volunteer project building club-specific systems to reduce admin load. Membership management, event bookings, and communication tools for this inclusive racing club.",
+    services: ["Club Systems", "Membership Management", "Event Booking", "Volunteer Project"],
+    url: "https://norwichcanoeclub.co.uk",
+    image: "/portfolio/norwich-canoe-club.webp",
+    alt: "Norwich Canoe Club membership and event booking website",
+    industry: "Sports & Recreation",
+    featured: true
+  },
+  {
+    name: "Ask Stephen",
+    description: "Business mentorship platform with AI coaching, habit tracking, and the 4 Corners framework. 2,000+ active members.",
+    services: ["iOS App", "AI Integration", "Backend Development"],
+    url: "https://askstephen.app",
+    image: "/portfolio/ask-stephen.webp",
+    alt: "Ask Stephen business mentorship app with AI coaching and habit tracking",
+    industry: "Technology",
+    featured: true
+  },
+  {
+    name: "Wee Horsebox Hire",
+    description: "Bespoke booking system built from scratch. Handles availability, payments, and customer management automatically.",
+    services: ["Booking System", "Payment Integration", "Website Build", "SEO"],
+    url: "https://www.wee-horseboxhire.co.uk",
+    image: "/portfolio/wee-horsebox-hire.webp",
+    alt: "Wee Horsebox Hire booking system with availability calendar and payments",
+    industry: "Equestrian",
+    featured: true
+  },
+  {
+    name: "J Taylor Horseboxes",
+    description: "Horsebox manufacturer. Modernised website with time-saving features. End-to-end build including SEO and hosting.",
+    services: ["Website Build", "SEO", "Hosting", "Maintenance"],
+    url: "https://www.jthltd.co.uk",
+    image: "/portfolio/jth-horseboxes.webp",
+    alt: "J Taylor Horseboxes manufacturer website with product showcase",
+    industry: "Manufacturing"
+  },
+  {
+    name: "Harford Attachments",
+    description: "Excavator attachments manufacturer. Website build with ongoing hosting, SEO and support.",
+    services: ["Website Build", "Hosting", "SEO", "Support"],
+    url: "https://www.harfordattachments.co.uk",
+    image: "/portfolio/harford-attachments.webp",
+    alt: "Harford Attachments excavator equipment website with product catalogue",
+    industry: "Manufacturing"
+  },
+  {
+    name: "Farriers Choice",
+    description: "Webshop and product catalogue. Ongoing project with build, hosting, maintenance and SEO.",
+    services: ["E-commerce", "Catalogue", "Hosting", "SEO"],
+    url: "https://www.farrierschoice.uk",
+    image: "/portfolio/farriers-choice.webp",
+    alt: "Farriers Choice farriery supplies webshop with product catalogue",
+    industry: "Equestrian"
+  },
+  {
+    name: "Britten Farriery",
+    description: "Premium local farriery business. Website build with hosting, basic email setup and SEO.",
+    services: ["Website Build", "Hosting", "Email Setup", "SEO"],
+    url: "https://masterfarrier.co.uk",
+    image: "/portfolio/britten-farriery.webp",
+    alt: "Britten Farriery local farrier business website",
+    industry: "Equestrian"
+  },
+  {
+    name: "Mill Saddlery",
+    description: "Mobile saddlery business with booking request feature. Website build, hosting and SEO.",
+    services: ["Website Build", "Booking Feature", "Hosting", "SEO"],
+    url: "https://www.millsaddlery.co.uk",
+    image: "/portfolio/mill-saddlery.webp",
+    alt: "Mill Saddlery mobile saddlery website with booking requests",
+    industry: "Equestrian"
+  },
+  {
+    name: "Serene Safety",
+    description: "Health & Safety Practitioner. Website build with ongoing maintenance and SEO.",
+    services: ["Website Build", "Maintenance", "SEO"],
+    url: "https://serenesafety.co.uk",
+    image: "/portfolio/serene-safety.webp",
+    alt: "Serene Safety health and safety consultancy website",
+    industry: "Professional Services"
+  },
+  {
+    name: "JDB Carpentry & Building",
+    description: "Local builder specialising in Heritage & Listed Properties. Website build, hosting and SEO.",
+    services: ["Website Build", "Hosting", "SEO"],
+    url: "https://jdbcarpentryandbuilding.co.uk",
+    image: "/portfolio/jdb-carpentry.webp",
+    alt: "JDB Carpentry heritage building specialist website",
+    industry: "Construction"
+  },
+  {
+    name: "Millers Fitness",
+    description: "Used gym equipment supplier. First page of Google UK for 'used gym equipment'.",
+    services: ["Website Build", "SEO", "Google Presence"],
+    url: "https://www.millersfitness.net",
+    image: "/portfolio/millers-fitness.webp",
+    alt: "Millers Fitness used gym equipment online store",
+    industry: "Retail"
+  }
+];
+
+const industries = [...new Set(projects.map(p => p.industry))];
+const featuredProjects = projects.filter(p => p.featured);
+const regularProjects = projects.filter(p => !p.featured);
+
+const testimonials = [
+  {
+    quote: "Sam really listens to the client's brief and adds value to their ideas. He is naturally creative and takes time to understand and produce amazing outcomes. Highly recommended as someone who listens and adds value to businesses he works with.",
+    name: "Anna Kidd",
+    company: "Harford Attachments Ltd",
+    role: "Director"
+  },
+  {
+    quote: "We're on the first page of Google in the UK for 'used gym equipment'. For website building and general techy scheming, Sam knows what he's doing!",
+    name: "Matt Miller",
+    company: "Millers Fitness",
+    role: "Owner"
+  }
+];
+
+const stats = [
+  { value: `${projects.length}+`, label: "Projects Delivered" },
+  { value: `${industries.length}`, label: "Industries Served" },
+  { value: "100%", label: "Client Satisfaction" },
+  { value: "5+", label: "Years Experience" }
+];
+---
+
+<Layout
+  title="Portfolio - Client Work & Case Studies"
+  description="Portfolio of websites, apps and digital solutions for UK businesses. 14+ projects across 8+ industries. Based in Norwich, Norfolk."
+  keywords="web development portfolio, norfolk web design, uk business websites, booking system development, e-commerce websites"
+>
+  <!-- Hero Section -->
+  <section class="relative py-20 bg-slate-900">
+    <div class="absolute inset-0 bg-ai-mesh opacity-20"></div>
+    <div class="container relative z-10 mx-auto px-6 lg:px-8">
+      <div class="max-w-4xl mx-auto text-center text-white">
+        <div class="inline-flex items-center gap-2 bg-gold/20 backdrop-blur-sm border border-gold/30 rounded-full px-4 py-2 mb-6">
+          <svg class="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+          </svg>
+          <span class="text-sm font-medium text-gold">Proven Track Record</span>
+        </div>
+
+        <h1 class="text-5xl lg:text-6xl font-bold mb-6">
+          Our <span class="text-amber-400">Portfolio</span>
+        </h1>
+        <p class="text-xl text-white mb-8">
+          Real projects. Real results. See what we've built for businesses like yours.
+        </p>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto" data-stagger>
+          {stats.map(stat => (
+            <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20" data-animate="pop">
+              <div class="text-3xl font-bold text-amber-400">{stat.value}</div>
+              <div class="text-sm text-white">{stat.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Projects -->
+  {featuredProjects.length > 0 && (
+    <section class="py-16 bg-gradient-to-b from-ai-purple/5 to-white">
+      <div class="container mx-auto px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <span class="bg-gold/10 text-gold-dark text-sm font-semibold px-4 py-2 rounded-full">Featured Work</span>
+          <h2 class="text-3xl font-bold text-deep-space mt-4">Highlight Projects</h2>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto" data-stagger>
+          {featuredProjects.map(project => (
+            <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden card-hover group" data-animate>
+              <div class="h-48 relative overflow-hidden">
+                <img
+                  src={project.image}
+                  alt={project.alt || `${project.name} website`}
+                  class="w-full h-full object-cover object-top img-zoom"
+                  width="400"
+                  height="192"
+                  loading="lazy"
+                />
+                <div class="absolute top-4 right-4 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                  Featured
+                </div>
+              </div>
+              <div class="p-6">
+                <div class="flex flex-wrap items-center gap-2 mb-3">
+                  <span class="bg-deep-space/10 text-deep-space text-xs font-semibold px-2 py-1 rounded-full">{project.industry}</span>
+                </div>
+                <h3 class="text-xl font-bold text-deep-space mb-2">{project.name}</h3>
+                <p class="text-gray-600 text-sm mb-4">{project.description}</p>
+                <div class="flex flex-wrap gap-1 mb-4">
+                  {project.services.slice(0, 3).map(service => (
+                    <span class="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">{service}</span>
+                  ))}
+                </div>
+                <a href={project.url} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-ai-purple font-semibold hover:underline">
+                  View Live Site
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Industry Tags -->
+  <section class="py-8 bg-white border-b border-gray-100">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="flex flex-wrap items-center justify-center gap-3">
+        <span class="text-sm text-gray-500 mr-2">Industries:</span>
+        {industries.map(industry => (
+          <span class="bg-gray-100 text-gray-700 text-sm font-medium px-4 py-2 rounded-full hover:bg-ai-purple/10 hover:text-ai-purple transition-colors cursor-pointer">
+            {industry}
+          </span>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- All Projects Grid -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-deep-space mb-4">
+          All <span class="ai-gradient-text">Projects</span>
+        </h2>
+        <p class="text-gray-600">Websites, apps, and digital solutions delivered</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6" data-stagger>
+        {regularProjects.map(project => (
+          <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden card-hover group" data-animate>
+            <div class="h-40 relative overflow-hidden">
+              <img
+                src={project.image}
+                alt={project.alt || `${project.name} website`}
+                class="w-full h-full object-cover object-top img-zoom"
+                width="300"
+                height="160"
+                loading="lazy"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            </div>
+            <div class="p-4">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="bg-deep-space/10 text-deep-space text-xs font-semibold px-2 py-0.5 rounded-full">{project.industry}</span>
+              </div>
+              <h3 class="text-lg font-bold text-deep-space mb-1">{project.name}</h3>
+              <p class="text-gray-600 text-sm mb-3 line-clamp-2">{project.description}</p>
+              <a href={project.url} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-ai-purple font-semibold hover:underline text-sm">
+                View Live
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Provided -->
+  <section class="py-16 bg-gradient-to-b from-norfolk-sand/20 to-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-deep-space mb-4">Services We Deliver</h2>
+        <p class="text-gray-600">End-to-end solutions for every project</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto" data-stagger>
+        {[
+          { icon: "🌐", title: "Website Build", desc: "Modern, responsive websites" },
+          { icon: "🛒", title: "E-commerce", desc: "Online shops & catalogues" },
+          { icon: "📅", title: "Booking Systems", desc: "Custom booking solutions" },
+          { icon: "📈", title: "SEO", desc: "Get found on Google" },
+          { icon: "🔧", title: "Maintenance", desc: "Ongoing support & updates" },
+          { icon: "☁️", title: "Hosting", desc: "Reliable, fast hosting" },
+          { icon: "📱", title: "App Development", desc: "iOS & Android apps" },
+          { icon: "🤖", title: "AI Integration", desc: "Smart automation" }
+        ].map(service => (
+          <div class="bg-white rounded-xl p-6 text-center shadow-sm border border-gray-100 card-hover" data-animate>
+            <div class="text-4xl mb-3">{service.icon}</div>
+            <h3 class="font-bold text-deep-space mb-1">{service.title}</h3>
+            <p class="text-sm text-gray-600">{service.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="py-20 bg-deep-space text-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold mb-4 text-amber-400">What Clients Say</h2>
+        <p class="text-gray-100">Real feedback from real businesses</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto" data-stagger>
+        {testimonials.map(testimonial => (
+          <div class="bg-white/5 backdrop-blur-sm rounded-xl p-8 border border-white/10 card-hover" data-animate>
+            <div class="flex gap-1 mb-4">
+              {[1,2,3,4,5].map(_ => (
+                <svg class="w-5 h-5 text-gold" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+              ))}
+            </div>
+            <blockquote class="text-white mb-6 text-lg leading-relaxed">"{testimonial.quote}"</blockquote>
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 bg-gradient-to-br from-ai-purple to-trust-blue rounded-full flex items-center justify-center text-white font-bold">
+                {testimonial.name.split(' ').map(n => n[0]).join('')}
+              </div>
+              <div>
+                <div class="font-semibold text-white">{testimonial.name}</div>
+                <div class="text-sm text-gray-100">{testimonial.role}, {testimonial.company}</div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-20 bg-gray-100">
+    <div class="container mx-auto px-6 lg:px-8 text-center">
+      <h2 class="text-4xl lg:text-5xl font-bold mb-6 text-slate-900">Ready to Join Our Portfolio?</h2>
+      <p class="text-xl text-gray-700 mb-8 max-w-2xl mx-auto">
+        Let's discuss your project and see how we can help your business.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/#services" class="inline-block bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-lg transition-colors shadow-lg hover:shadow-xl">
+          View Our Services
+        </a>
+        <a href="/services" class="inline-block border-2 border-slate-900 text-slate-900 font-bold py-4 px-8 rounded-lg hover:bg-slate-900 hover:text-white transition-all">
+          View Services
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Schema Markup -->
+  <script type="application/ld+json">
+    {JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "FWD Thinking Solutions Portfolio",
+      "description": "Portfolio of websites, apps, and digital solutions for UK businesses",
+      "provider": {
+        "@type": "Organization",
+        "name": "FWD Thinking Solutions",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Norwich",
+          "addressRegion": "Norfolk",
+          "addressCountry": "GB"
+        }
+      },
+      "hasPart": projects.map(p => ({
+        "@type": "CreativeWork",
+        "name": p.name,
+        "description": p.description,
+        "url": p.url
+      }))
+    })}
+  </script>
+</Layout>

@@ -1,800 +1,367 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import AIAdvantageCalculator from '../../components/interactive/AIAdvantageCalculator.astro';
-import CompetitorAdvantageClock from '../../components/psychological/CompetitorAdvantageClock.astro';
-import LocalProofFeed from '../../components/trust/LocalProofFeed.astro';
+
+const faqs = [
+  {
+    question: "How much does a custom app cost?",
+    answer: "Custom apps start from £1,299 for simpler projects like MVPs and straightforward tools. Full-featured applications with multiple integrations, user roles, and complex business logic start from £5,000. Every project gets a fixed quote before we start, so you know exactly what you're paying."
+  },
+  {
+    question: "How long does app development take?",
+    answer: "It depends on the complexity. Simpler projects typically take 3-5 weeks, while full-featured applications with complex requirements take 6-12 weeks. I share progress regularly so you can see the app taking shape and provide feedback throughout the build."
+  },
+  {
+    question: "Do you build mobile apps?",
+    answer: "Yes. I build cross-platform mobile apps for iOS and Android, as well as web applications that work in any browser. The right approach depends on your needs. Sometimes a responsive web app is better than a native app, and I'll advise honestly on what makes sense for your project."
+  },
+  {
+    question: "Will I own the code?",
+    answer: "Yes, absolutely. You get full source code ownership with every project. There's no vendor lock-in. If you ever want to move to a different developer, you can take everything with you. I also provide documentation so anyone can pick up where I left off."
+  },
+  {
+    question: "Do you provide ongoing support after launch?",
+    answer: "Yes. Every project includes a post-launch support period. After that, I offer hosting and maintenance plans from £99/month that cover updates, bug fixes, and new features as your business grows. Many of my clients have been with me for years."
+  }
+];
 ---
 
-<Layout 
-  title="Custom App Development - Bespoke Applications for Your Business"
-  description="Custom applications built efficiently using modern development practices. Mobile apps, web apps, business tools. Norfolk's trusted app development partner. Starting from £15,000."
-  keywords="custom app development norwich, app development uk, mobile app developers norfolk, business app development, bespoke software"
+<Layout
+  title="Custom App Development - FWD Thinking Solutions"
+  description="Custom app development in Norwich, Norfolk. Booking systems, dashboards and mobile apps from £1,299. FWD Thinking Solutions."
+  keywords="custom app development norwich, bespoke software norfolk, web app development uk, mobile app development"
 >
   <!-- Hero Section -->
-  <section class="relative py-20 bg-gradient-to-br from-deep-space via-deep-space/95 to-ai-purple/20">
+  <section class="relative py-20 bg-slate-900">
     <div class="absolute inset-0 bg-ai-mesh opacity-20"></div>
     <div class="container relative z-10 mx-auto px-6 lg:px-8">
-      <div class="max-w-4xl mx-auto text-center text-white">
-        <!-- Disruption Badge -->
-        <div class="inline-flex items-center gap-2 bg-ai-purple/20 backdrop-blur-sm border border-ai-purple/30 rounded-full px-4 py-2 mb-6">
-          <svg class="w-4 h-4 text-ai-purple" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/>
-          </svg>
-          <span class="text-sm font-medium text-ai-purple">Modern tools for faster delivery</span>
-        </div>
-        
+      <div class="max-w-3xl mx-auto text-center text-white">
         <h1 class="text-5xl lg:text-6xl font-bold mb-6">
-          Custom Apps Built <span class="ai-gradient-text">Efficiently</span> <br/>
-          From £15,000
+          Custom App <span class="text-amber-400">Development</span>
         </h1>
-        
-        <p class="text-xl lg:text-2xl text-gray-300 mb-8">
-          Get custom software without the agency markup. We use modern development practices to deliver quality applications faster and more affordably.
+        <p class="text-xl text-gray-100 mb-8">
+          When off-the-shelf software doesn't fit, I build custom applications tailored to how your business actually works. Booking systems, dashboards, internal tools, customer portals, whatever you need.
         </p>
-        
-        <div class="grid grid-cols-3 gap-4 max-w-2xl mx-auto mb-8">
-          <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-            <div class="text-3xl font-bold text-white">Faster</div>
-            <div class="text-sm text-gray-300">Than Agencies</div>
-          </div>
-          <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-            <div class="text-3xl font-bold text-success-green">Fair</div>
-            <div class="text-sm text-gray-300">Pricing</div>
-          </div>
-          <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-            <div class="text-3xl font-bold text-ai-purple">100%</div>
-            <div class="text-sm text-gray-300">Custom Built</div>
-          </div>
-        </div>
-        
+        <p class="text-lg text-amber-400 font-semibold mb-8">From £1,299</p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <a href="#calculator" class="btn-urgent text-lg px-8 py-4">
-            Calculate Your App Cost
+          <a href="/#services" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-lg transition-colors shadow-lg inline-block">
+            Get in Touch
           </a>
-          <button class="bg-white/10 backdrop-blur-sm border border-white/20 text-white px-8 py-4 rounded-lg font-semibold hover:bg-white/20 transition-all duration-200">
-            View App Portfolio
-          </button>
-        </div>
-        
-        <p class="text-sm text-gray-400 mt-4">
-          From £15,000 • 8-12 week delivery • UK-based team • Ongoing support available
-        </p>
-      </div>
-    </div>
-  </section>
-  
-  <!-- Cost Comparison -->
-  <section class="py-20 bg-white">
-    <div class="container mx-auto px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-4xl font-bold text-deep-space mb-4">
-          Why Pay <span class="text-gold">Agency Markups</span>?
-        </h2>
-        <p class="text-xl text-gray-700">
-          Get the same quality software at a fair price
-        </p>
-      </div>
-      
-      <div class="max-w-5xl mx-auto">
-        <div class="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-8 shadow-xl">
-          <div class="grid lg:grid-cols-2 gap-8">
-            <!-- Traditional Development -->
-            <div>
-              <h3 class="text-2xl font-bold text-gold mb-6">❌ Traditional Agencies</h3>
-              <div class="space-y-4">
-                {[
-                  { item: "Discovery & Planning", time: "4-6 weeks", cost: "£15,000" },
-                  { item: "UI/UX Design", time: "3-4 weeks", cost: "£12,000" },
-                  { item: "Backend Development", time: "12-16 weeks", cost: "£45,000" },
-                  { item: "Frontend Development", time: "8-10 weeks", cost: "£28,000" },
-                  { item: "Testing & QA", time: "4-6 weeks", cost: "£15,000" },
-                  { item: "Deployment", time: "2 weeks", cost: "£5,000" }
-                ].map(phase => (
-                  <div class="flex items-center justify-between p-3 bg-red-50 rounded-lg">
-                    <span class="text-gray-700">{phase.item}</span>
-                    <div class="text-right">
-                      <div class="text-gold font-semibold">{phase.cost}</div>
-                      <div class="text-xs text-gray-500">{phase.time}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div class="mt-6 p-4 bg-gold/10 rounded-lg border border-gold/20">
-                <div class="flex justify-between items-center">
-                  <span class="font-semibold text-deep-space">Total:</span>
-                  <div class="text-right">
-                    <div class="text-2xl font-bold text-gold">£120,000</div>
-                    <div class="text-sm text-gray-600">6-9 months</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <!-- AI Development -->
-            <div>
-              <h3 class="text-2xl font-bold text-success-green mb-6">✅ Our Efficient Approach</h3>
-              <div class="space-y-4">
-                {[
-                  { item: "Planning & Architecture", time: "1 week", cost: "£2,000" },
-                  { item: "UI/UX Design", time: "1-2 weeks", cost: "£3,000" },
-                  { item: "Backend Development", time: "3-4 weeks", cost: "£6,000" },
-                  { item: "Frontend Development", time: "2-3 weeks", cost: "£5,000" },
-                  { item: "Testing & QA", time: "1 week", cost: "£2,000" },
-                  { item: "Deployment & Launch", time: "3 days", cost: "£1,000" }
-                ].map(phase => (
-                  <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                    <span class="text-gray-700">{phase.item}</span>
-                    <div class="text-right">
-                      <div class="text-success-green font-semibold">{phase.cost}</div>
-                      <div class="text-xs text-gray-500">{phase.time}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div class="mt-6 p-4 bg-success-green/10 rounded-lg border border-success-green/20">
-                <div class="flex justify-between items-center">
-                  <span class="font-semibold text-deep-space">Total:</span>
-                  <div class="text-right">
-                    <div class="text-2xl font-bold text-success-green">£15,000+</div>
-                    <div class="text-sm text-gray-600">8-12 weeks</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div class="mt-8 text-center">
-            <div class="inline-flex items-center gap-2 bg-ai-purple/10 rounded-lg px-6 py-3">
-              <svg class="w-6 h-6 text-ai-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-              </svg>
-              <span class="text-lg font-semibold text-deep-space">
-                You Save: <span class="text-ai-purple">£105,000</span> and <span class="text-ai-purple">5 months</span>
-              </span>
-            </div>
-          </div>
+          <a href="/portfolio" class="bg-white/10 backdrop-blur-sm border-2 border-white text-white font-bold py-4 px-8 rounded-lg hover:bg-white hover:text-slate-900 transition-all inline-block">
+            View Portfolio
+          </a>
         </div>
       </div>
     </div>
   </section>
-  
-  <!-- App Types -->
-  <section class="py-20 bg-gradient-to-b from-norfolk-sand/10 to-white">
-    <div class="container mx-auto px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-4xl font-bold text-deep-space mb-4">
-          Any App You Can Imagine, <span class="ai-gradient-text">We Can Build</span>
-        </h2>
-        <p class="text-xl text-gray-700">
-          From simple tools to complex platforms, all built with AI efficiency
-        </p>
-      </div>
-      
-      <div class="grid lg:grid-cols-3 gap-8">
-        {[
-          {
-            type: "Business Management Apps",
-            icon: "💼",
-            examples: [
-              "CRM & Customer Management",
-              "Inventory & Stock Control",
-              "Project Management Tools",
-              "HR & Staff Management",
-              "Booking & Scheduling Systems"
-            ],
-            typical: "£8k-15k",
-            timeline: "3-5 weeks",
-            savings: "vs £40-80k traditional"
-          },
-          {
-            type: "Customer-Facing Apps",
-            icon: "📱",
-            examples: [
-              "E-commerce & Marketplaces",
-              "Service Booking Apps",
-              "Community Platforms",
-              "Learning Management Systems",
-              "Loyalty & Reward Apps"
-            ],
-            typical: "£12k-25k",
-            timeline: "4-6 weeks",
-            savings: "vs £60-120k traditional"
-          },
-          {
-            type: "SaaS Platforms",
-            icon: "☁️",
-            examples: [
-              "Subscription Services",
-              "Analytics Dashboards",
-              "Workflow Automation",
-              "Multi-tenant Platforms",
-              "API-First Applications"
-            ],
-            typical: "£20k-40k",
-            timeline: "6-8 weeks",
-            savings: "vs £100-200k traditional"
-          },
-          {
-            type: "Mobile Apps",
-            icon: "📲",
-            examples: [
-              "iOS & Android Native",
-              "Cross-platform Apps",
-              "Progressive Web Apps",
-              "Offline-First Apps",
-              "Real-time Collaboration"
-            ],
-            typical: "£10k-20k",
-            timeline: "4-5 weeks",
-            savings: "vs £50-100k traditional"
-          },
-          {
-            type: "AI-Enhanced Apps",
-            icon: "🤖",
-            examples: [
-              "Chatbot Interfaces",
-              "Predictive Analytics",
-              "Computer Vision Apps",
-              "Natural Language Processing",
-              "Recommendation Engines"
-            ],
-            typical: "£1,299-15k",
-            timeline: "5-7 weeks",
-            savings: "vs £80-150k traditional"
-          },
-          {
-            type: "Integration Platforms",
-            icon: "🔗",
-            examples: [
-              "API Aggregators",
-              "Data Sync Tools",
-              "Middleware Solutions",
-              "Webhook Managers",
-              "ETL Pipelines"
-            ],
-            typical: "£8k-18k",
-            timeline: "3-4 weeks",
-            savings: "vs £40-90k traditional"
-          }
-        ].map(category => (
-          <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all border border-gray-100">
-            <div class="text-4xl mb-4">{category.icon}</div>
-            <h3 class="text-xl font-bold text-deep-space mb-4">{category.type}</h3>
-            
-            <ul class="space-y-2 mb-6">
-              {category.examples.map(example => (
-                <li class="flex items-start gap-2 text-sm text-gray-700">
-                  <svg class="w-4 h-4 text-ai-purple mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"/>
-                  </svg>
-                  {example}
-                </li>
-              ))}
-            </ul>
-            
-            <div class="space-y-2 pt-4 border-t">
-              <div class="flex justify-between text-sm">
-                <span class="text-gray-600">AI Price:</span>
-                <span class="font-semibold text-success-green">{category.typical}</span>
-              </div>
-              <div class="flex justify-between text-sm">
-                <span class="text-gray-600">Delivery:</span>
-                <span class="font-semibold text-deep-space">{category.timeline}</span>
-              </div>
-              <div class="text-xs text-gold mt-2">{category.savings}</div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-  
-  <!-- Pricing Packages -->
+
+  <!-- What I Build -->
   <section class="py-20 bg-white">
     <div class="container mx-auto px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-4xl font-bold text-deep-space mb-4">
-          Enterprise Apps at <span class="ai-gradient-text">Startup Prices</span>
-        </h2>
-        <p class="text-xl text-gray-700">
-          Choose your package or get a custom quote in 24 hours
-        </p>
-      </div>
-      
-      <div class="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-        {[
-          {
-            name: "MVP Builder",
-            price: "£1,299",
-            range: "£1,299-£4,999",
-            timeline: "3-4 weeks",
-            perfect: "Startups & idea validation",
-            includes: [
-              "Core feature development",
-              "Basic UI/UX design",
-              "Mobile responsive",
-              "User authentication",
-              "Basic database setup",
-              "Cloud deployment",
-              "30-day support",
-              "Maintenance from £99/month"
-            ],
-            tech: "React, Node.js, PostgreSQL",
-            users: "Up to 1,000 users",
-            popular: false
-          },
-          {
-            name: "Business Pro",
-            price: "£5,000",
-            range: "£5,000-£15,000",
-            timeline: "5-7 weeks",
-            perfect: "Growing businesses ready to scale",
-            includes: [
-              "Full feature suite",
-              "Custom UI/UX design",
-              "iOS & Android apps",
-              "Advanced integrations",
-              "Analytics dashboard",
-              "Payment processing",
-              "API development",
-              "90-day support",
-              "Maintenance from £299/month"
-            ],
-            tech: "Full stack + Mobile",
-            users: "Up to 10,000 users",
-            popular: true
-          },
-          {
-            name: "Enterprise",
-            price: "£15,000+",
-            range: "Custom pricing",
-            timeline: "8-12 weeks",
-            perfect: "Complex platforms & SaaS products",
-            includes: [
-              "Unlimited features",
-              "Multi-tenant architecture",
-              "Advanced AI integration",
-              "Custom infrastructure",
-              "Load balancing",
-              "Security audit",
-              "12-month support",
-              "Dedicated team",
-              "Maintenance from £599/month"
-            ],
-            tech: "Custom tech stack",
-            users: "Unlimited scalability",
-            popular: false
-          }
-        ].map(tier => (
-          <div class={`relative rounded-2xl p-8 ${
-            tier.popular 
-              ? 'bg-gradient-to-b from-ai-purple/10 to-trust-blue/10 border-2 border-ai-purple shadow-xl scale-105 z-10' 
-              : 'bg-white border border-gray-200'
-          }`}>
-            {tier.popular && (
-              <div class="absolute -top-4 left-1/2 -translate-x-1/2">
-                <span class="bg-gradient-to-r from-ai-purple to-trust-blue text-white text-sm font-semibold px-4 py-1 rounded-full">
-                  MOST POPULAR - 87% CHOOSE THIS
-                </span>
-              </div>
-            )}
-            
-            <div class="text-center mb-6">
-              <h3 class="text-2xl font-bold text-deep-space mb-2">{tier.name}</h3>
-              <div class="text-4xl font-bold ai-gradient-text mb-1">
-                {tier.price === "£25,000+" ? "From £25k" : `From ${tier.price}`}
-              </div>
-              <div class="text-sm text-gray-600">{tier.range}</div>
-              <div class="text-xs text-ai-purple mt-1">{tier.timeline} delivery</div>
-            </div>
-            
-            <div class="text-sm text-gray-700 mb-6 text-center bg-gray-50 rounded-lg py-2">
-              {tier.perfect}
-            </div>
-            
-            <ul class="space-y-2 mb-6">
-              {tier.includes.map(feature => (
-                <li class="flex items-start gap-2 text-sm">
-                  <svg class="w-4 h-4 text-success-green mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                  </svg>
-                  <span class="text-gray-700">{feature}</span>
-                </li>
-              ))}
-            </ul>
-            
-            <div class="space-y-2 mb-6 pt-4 border-t">
-              <div class="flex justify-between text-sm">
-                <span class="text-gray-600">Technology:</span>
-                <span class="font-medium text-deep-space">{tier.tech}</span>
-              </div>
-              <div class="flex justify-between text-sm">
-                <span class="text-gray-600">Scalability:</span>
-                <span class="font-medium text-deep-space">{tier.users}</span>
-              </div>
-            </div>
-            
-            <button class={`w-full py-3 rounded-lg font-semibold transition-all ${
-              tier.popular 
-                ? 'bg-gradient-to-r from-ai-purple to-trust-blue text-white hover:shadow-lg' 
-                : 'bg-deep-space text-white hover:bg-deep-space/90'
-            }`}>
-              Start Building →
-            </button>
-            
-            <p class="text-xs text-center text-gray-600 mt-4">
-              Fixed price • No hidden costs
-            </p>
-          </div>
-        ))}
-      </div>
-      
-      <div class="mt-12 text-center">
-        <div class="inline-flex flex-wrap gap-3 justify-center">
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-4xl font-bold text-slate-900 mb-4">
+            What I Build
+          </h2>
+          <p class="text-xl text-gray-600">
+            Every project is different. Here are some common types of applications I develop.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[
-            "✅ Source code included",
-            "✅ No vendor lock-in",
-            "✅ Scalable architecture",
-            "✅ CI/CD pipeline",
-            "✅ Documentation",
-            "✅ Training included"
-          ].map(feature => (
-            <span class="bg-gray-100 text-gray-700 px-4 py-2 rounded-full text-sm">
-              {feature}
-            </span>
+            {
+              icon: "\u{1F4C5}",
+              title: "Booking Systems",
+              description: "Online booking, availability management, payments, and customer notifications."
+            },
+            {
+              icon: "\u{1F4CA}",
+              title: "Business Dashboards",
+              description: "Custom dashboards that pull together your important data in one place."
+            },
+            {
+              icon: "\u{1F465}",
+              title: "Customer Portals",
+              description: "Let your customers manage their accounts, track orders, or access services online."
+            },
+            {
+              icon: "\u{1F4F1}",
+              title: "Mobile Apps",
+              description: "Cross-platform mobile apps that work on both iOS and Android."
+            },
+            {
+              icon: "\u{1F517}",
+              title: "System Integrations",
+              description: "Connect your existing tools together so data flows automatically between them."
+            },
+            {
+              icon: "\u{1F6E0}\u{FE0F}",
+              title: "Internal Tools",
+              description: "Staff management, inventory tracking, and reporting tools built around your workflow."
+            }
+          ].map(item => (
+            <div class="bg-gray-50 rounded-xl p-6">
+              <div class="text-3xl mb-3">{item.icon}</div>
+              <h3 class="text-lg font-bold text-slate-900 mb-2">{item.title}</h3>
+              <p class="text-gray-600 text-sm">{item.description}</p>
+            </div>
           ))}
         </div>
       </div>
     </div>
   </section>
-  
-  <!-- Development Process -->
-  <section class="py-20 bg-gradient-to-b from-gray-50 to-white">
+
+  <!-- How It Works -->
+  <section class="py-20 bg-gray-50">
     <div class="container mx-auto px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-4xl font-bold text-deep-space mb-4">
-          How AI Builds Apps <span class="ai-gradient-text">5x Faster</span>
-        </h2>
-        <p class="text-xl text-gray-700">
-          Our AI-accelerated process eliminates months of manual coding
-        </p>
-      </div>
-      
-      <div class="grid lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
-        <div>
-          <h3 class="text-2xl font-bold text-deep-space mb-6">Our AI Process</h3>
-          <div class="space-y-4">
-            {[
-              {
-                step: "AI Architecture Design",
-                description: "AI analyses requirements and generates optimal architecture in hours",
-                time: "2 hours",
-                icon: "🏗️"
-              },
-              {
-                step: "Automated Code Generation",
-                description: "AI writes 80% of boilerplate code instantly",
-                time: "1 day",
-                icon: "⚡"
-              },
-              {
-                step: "Smart UI Creation",
-                description: "AI builds responsive interfaces from descriptions",
-                time: "2 days",
-                icon: "🎨"
-              },
-              {
-                step: "Automated Testing",
-                description: "AI generates and runs comprehensive test suites",
-                time: "1 day",
-                icon: "✅"
-              },
-              {
-                step: "Instant Deployment",
-                description: "AI configures and deploys to cloud automatically",
-                time: "2 hours",
-                icon: "🚀"
-              }
-            ].map((item, index) => (
-              <div class="flex gap-4">
-                <div class="flex-shrink-0">
-                  <div class="w-10 h-10 bg-gradient-to-br from-ai-purple to-trust-blue rounded-full flex items-center justify-center text-xl">
-                    {item.icon}
-                  </div>
-                </div>
-                <div class="flex-1">
-                  <h4 class="font-semibold text-deep-space mb-1">{item.step}</h4>
-                  <p class="text-sm text-gray-600 mb-1">{item.description}</p>
-                  <span class="text-xs text-success-green font-medium">{item.time}</span>
-                </div>
-              </div>
-            ))}
-          </div>
+      <div class="max-w-3xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-4xl font-bold text-slate-900 mb-4">
+            How It Works
+          </h2>
         </div>
-        
-        <div>
-          <h3 class="text-2xl font-bold text-deep-space mb-6">What You Get</h3>
-          <div class="space-y-4">
-            {[
-              {
-                feature: "Clean, Maintainable Code",
-                detail: "AI writes better code than most developers - consistent, documented, tested",
-                icon: "📝"
-              },
-              {
-                feature: "Modern Tech Stack",
-                detail: "Latest frameworks and best practices built-in from day one",
-                icon: "💻"
-              },
-              {
-                feature: "Scalable Architecture",
-                detail: "Built to handle growth from 10 to 10 million users",
-                icon: "📈"
-              },
-              {
-                feature: "Security First",
-                detail: "OWASP compliance, encryption, secure authentication built-in",
-                icon: "🔒"
-              },
-              {
-                feature: "Full Ownership",
-                detail: "You own everything - code, IP, infrastructure. No lock-in",
-                icon: "🔑"
-              }
-            ].map(item => (
-              <div class="flex gap-4">
-                <div class="flex-shrink-0">
-                  <div class="w-10 h-10 bg-success-green/10 rounded-lg flex items-center justify-center text-xl">
-                    {item.icon}
-                  </div>
-                </div>
-                <div class="flex-1">
-                  <h4 class="font-semibold text-deep-space mb-1">{item.feature}</h4>
-                  <p class="text-sm text-gray-600">{item.detail}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  
-  <!-- Calculator -->
-  <section id="calculator" class="py-20 bg-white">
-    <div class="container mx-auto px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-4xl font-bold text-deep-space mb-4">
-          Calculate Your <span class="ai-gradient-text">App Development Savings</span>
-        </h2>
-        <p class="text-xl text-gray-700">
-          See how much you'll save with AI-powered development
-        </p>
-      </div>
-      
-      <AIAdvantageCalculator title="App Development Cost Calculator" />
-      
-      <div class="mt-12">
-        <CompetitorAdvantageClock />
-      </div>
-    </div>
-  </section>
-  
-  <!-- Portfolio & Case Studies -->
-  <section class="py-20 bg-gradient-to-b from-norfolk-sand/10 to-white">
-    <div class="container mx-auto px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-4xl font-bold text-deep-space mb-4">
-          Apps We've Built for <span class="ai-gradient-text">Norfolk Businesses</span>
-        </h2>
-      </div>
-      
-      <div class="grid lg:grid-cols-2 gap-8">
-        <LocalProofFeed />
-        
+
         <div class="space-y-6">
-          <!-- Featured Case Study -->
-          <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
-            <div class="flex items-start gap-4 mb-4">
-              <div class="w-12 h-12 bg-ai-purple/10 rounded-lg flex items-center justify-center">
-                <svg class="w-6 h-6 text-ai-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                </svg>
+          {[
+            {
+              step: "1",
+              title: "We Discuss Your Needs",
+              description: "I learn about your business, what problem you're trying to solve, and what a good solution looks like for you."
+            },
+            {
+              step: "2",
+              title: "I Design and Build",
+              description: "I plan the architecture, design the interface, and build your application. You get regular updates and can provide feedback throughout."
+            },
+            {
+              step: "3",
+              title: "Testing and Launch",
+              description: "Thorough testing to make sure everything works properly, then we launch. I provide training and documentation so your team is comfortable."
+            },
+            {
+              step: "4",
+              title: "Ongoing Support",
+              description: "After launch, I'm available for updates, fixes, and new features as your business grows."
+            }
+          ].map(item => (
+            <div class="flex gap-4">
+              <div class="w-10 h-10 bg-amber-500 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">
+                {item.step}
               </div>
               <div>
-                <h3 class="font-bold text-deep-space">Norwich Logistics App</h3>
-                <p class="text-sm text-gray-600">Fleet Management Platform</p>
+                <h3 class="text-lg font-bold text-slate-900 mb-1">{item.title}</h3>
+                <p class="text-gray-600">{item.description}</p>
               </div>
             </div>
-            
-            <p class="text-gray-700 mb-4">
-              Custom fleet tracking and route optimization app. Replaced £180k quote from London agency.
-            </p>
-            
-            <div class="grid grid-cols-2 gap-4 mb-4">
-              <div class="bg-gray-50 rounded-lg p-3">
-                <div class="text-2xl font-bold text-success-green">£22k</div>
-                <div class="text-xs text-gray-600">Our Price</div>
-              </div>
-              <div class="bg-gray-50 rounded-lg p-3">
-                <div class="text-2xl font-bold text-ai-purple">5 weeks</div>
-                <div class="text-xs text-gray-600">Delivery Time</div>
-              </div>
-            </div>
-            
-            <div class="flex items-center justify-between pt-4 border-t">
-              <span class="text-sm text-gray-600">Saved £158k vs traditional</span>
-              <button class="text-ai-purple font-semibold text-sm hover:underline">
-                View Case Study →
-              </button>
-            </div>
-          </div>
-          
-          <!-- Stats Grid -->
-          <div class="grid grid-cols-2 gap-4">
-            <div class="bg-gradient-to-br from-success-green/5 to-success-green/10 rounded-xl p-4 border border-success-green/20">
-              <div class="text-3xl font-bold text-success-green">47</div>
-              <div class="text-sm text-gray-700">Apps Delivered</div>
-            </div>
-            <div class="bg-gradient-to-br from-ai-purple/5 to-ai-purple/10 rounded-xl p-4 border border-ai-purple/20">
-              <div class="text-3xl font-bold text-ai-purple">£2.1M</div>
-              <div class="text-sm text-gray-700">Client Savings</div>
-            </div>
-            <div class="bg-gradient-to-br from-trust-blue/5 to-trust-blue/10 rounded-xl p-4 border border-trust-blue/20">
-              <div class="text-3xl font-bold text-trust-blue">4.2 weeks</div>
-              <div class="text-sm text-gray-700">Avg Delivery</div>
-            </div>
-            <div class="bg-gradient-to-br from-gold/5 to-gold/10 rounded-xl p-4 border border-gold/20">
-              <div class="text-3xl font-bold text-gold">100%</div>
-              <div class="text-sm text-gray-700">On Budget</div>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </div>
   </section>
-  
-  <!-- FAQ -->
-  <section class="py-20 bg-white">
+
+  <!-- Who Is This For? -->
+  <section class="py-16 bg-white">
     <div class="container mx-auto px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-4xl font-bold text-deep-space mb-4">
-          Custom App Development Questions
-        </h2>
-      </div>
-      
-      <div class="max-w-3xl mx-auto space-y-6">
-        {[
-          {
-            q: "How can you build apps 70% cheaper than agencies?",
-            a: "AI handles 80% of the coding work - boilerplate, testing, documentation. Our developers focus only on custom business logic. We pass the savings to you instead of charging agency rates."
-          },
-          {
-            q: "Will AI-built apps be lower quality?",
-            a: "Actually the opposite. AI writes cleaner, more consistent code than most developers. It follows best practices perfectly, never makes typos, and includes comprehensive testing. The result is often better than hand-coded apps."
-          },
-          {
-            q: "What if I need changes after launch?",
-            a: "You own all the code and can modify it anytime. We provide full documentation and can handle updates for you, or you can use any developer. No lock-in or proprietary systems."
-          },
-          {
-            q: "Can you build complex enterprise apps?",
-            a: "Yes. We've built multi-tenant SaaS platforms, real-time collaboration tools, and apps handling millions of transactions. AI excels at complex architecture and scaling challenges."
-          },
-          {
-            q: "What's included in the £2,999 MVP package?",
-            a: "Core features, basic UI/UX, mobile responsive design, user authentication, database, cloud deployment, and 30-day support. Perfect for validating ideas before bigger investment."
-          },
-          {
-            q: "How do you deliver so quickly?",
-            a: "AI generates code in seconds that would take developers days. Automated testing catches bugs instantly. Cloud deployment is automated. We've removed all the time-wasting parts of development."
-          }
-        ].map(faq => (
-          <details class="bg-gray-50 rounded-xl p-6 hover:shadow-md transition-shadow group">
-            <summary class="flex justify-between items-center cursor-pointer list-none">
-              <h3 class="text-lg font-semibold text-deep-space pr-4">{faq.q}</h3>
-              <svg class="w-5 h-5 text-ai-purple transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-              </svg>
-            </summary>
-            <p class="text-gray-700 mt-4">{faq.a}</p>
-          </details>
-        ))}
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl font-bold text-slate-900 mb-6">Who Is This For?</h2>
+        <p class="text-gray-600 leading-relaxed mb-4">
+          Custom app development is for businesses that have outgrown spreadsheets and off-the-shelf tools. If you're managing bookings by phone, tracking inventory on paper, or cobbling together multiple systems that don't talk to each other, a custom app can bring everything together in one place.
+        </p>
+        <p class="text-gray-600 leading-relaxed">
+          I've built apps for businesses across Norfolk and the UK, from booking systems for dog fields and horsebox hire companies to mentorship platforms with thousands of users. Whether you need a simple internal tool or a customer-facing platform, I can help.
+        </p>
       </div>
     </div>
   </section>
-  
-  <!-- CTA -->
-  <section class="py-20 bg-gradient-to-r from-ai-purple via-deep-space to-trust-blue text-white">
-    <div class="container mx-auto px-6 lg:px-8 text-center">
-      <div class="max-w-3xl mx-auto">
-        <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
-          <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"/>
-          </svg>
-          <span class="text-sm font-medium">Limited January offer: 30% off all packages</span>
-        </div>
-        
-        <h2 class="text-4xl lg:text-5xl font-bold mb-6">
-          Stop Paying £100k When Apps Start at £1,299
+
+  <!-- Pricing -->
+  <section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto text-center">
+        <h2 class="text-4xl font-bold text-slate-900 mb-4">
+          Pricing
         </h2>
-        
-        <p class="text-xl text-gray-100 mb-8">
-          Get your custom app built with AI efficiency. Same quality, 70% less cost, delivered in weeks.
+        <p class="text-xl text-gray-600 mb-8">
+          Every project is scoped individually, so you get a fixed quote before we start. No surprises.
         </p>
-        
-        <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 mb-8 inline-block">
-          <div class="grid grid-cols-3 gap-6 text-center">
-            <div>
-              <div class="text-2xl font-bold">24hr</div>
-              <div class="text-sm">Quote Turnaround</div>
-            </div>
-            <div>
-              <div class="text-2xl font-bold">£2,999</div>
-              <div class="text-sm">Starting Price</div>
-            </div>
-            <div>
-              <div class="text-2xl font-bold">4 weeks</div>
-              <div class="text-sm">Average Delivery</div>
-            </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="bg-white rounded-xl p-6 text-left shadow-sm">
+            <h3 class="text-xl font-bold text-slate-900 mb-2">Smaller Projects</h3>
+            <p class="text-2xl font-bold text-amber-500 mb-3">From £1,299</p>
+            <p class="text-gray-600 text-sm mb-4">Simple tools, MVPs, and straightforward applications. Good for testing an idea or solving a specific problem.</p>
+            <p class="text-gray-500 text-xs">Typical delivery: 3-5 weeks</p>
+          </div>
+
+          <div class="bg-white rounded-xl p-6 text-left shadow-sm">
+            <h3 class="text-xl font-bold text-slate-900 mb-2">Larger Projects</h3>
+            <p class="text-2xl font-bold text-amber-500 mb-3">From £5,000</p>
+            <p class="text-gray-600 text-sm mb-4">Full-featured applications with multiple integrations, user roles, and complex business logic.</p>
+            <p class="text-gray-500 text-xs">Typical delivery: 6-12 weeks</p>
           </div>
         </div>
-        
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <button class="btn-urgent text-lg px-8 py-4 bg-white text-deep-space hover:bg-gray-100">
-            Get Your App Quote →
-          </button>
-          <a href="tel:+441234567890" class="bg-white/20 backdrop-blur-sm border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-deep-space transition-all duration-200 inline-flex items-center justify-center">
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
-            </svg>
-            01234 567890
+
+        <div class="mt-8 text-left bg-white rounded-xl p-6 shadow-sm">
+          <h3 class="text-lg font-bold text-slate-900 mb-3">What's included in every project:</h3>
+          <div class="grid md:grid-cols-2 gap-2">
+            {[
+              "Source code ownership",
+              "Documentation",
+              "Training for your team",
+              "Post-launch support",
+              "No vendor lock-in",
+              "Fixed pricing"
+            ].map(item => (
+              <div class="flex items-center gap-2 text-sm text-gray-700">
+                <svg class="w-4 h-4 text-success-green flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+                {item}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Services -->
+  <section class="py-12 bg-white border-t border-gray-100">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-2xl font-bold text-slate-900 mb-6">Related Services</h2>
+        <div class="grid sm:grid-cols-3 gap-4">
+          <a href="/services/professional-websites" class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors group">
+            <h3 class="font-semibold text-slate-900 group-hover:text-ai-purple transition-colors">Professional Websites</h3>
+            <p class="text-sm text-gray-600 mt-1">Need a website instead of an app?</p>
+          </a>
+          <a href="/services/business-process-automation" class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors group">
+            <h3 class="font-semibold text-slate-900 group-hover:text-ai-purple transition-colors">Business Automation</h3>
+            <p class="text-sm text-gray-600 mt-1">Automate workflows alongside your app</p>
+          </a>
+          <a href="/services/reliable-hosting-maintenance" class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors group">
+            <h3 class="font-semibold text-slate-900 group-hover:text-ai-purple transition-colors">Hosting & Maintenance</h3>
+            <p class="text-sm text-gray-600 mt-1">Keep your app running smoothly</p>
           </a>
         </div>
-        
-        <p class="text-sm text-gray-200 mt-6">
-          Free consultation • Fixed pricing • No hidden costs
+        <p class="text-sm text-gray-500 mt-4">
+          <a href="/portfolio" class="text-ai-purple hover:underline">View app projects in our portfolio &rarr;</a>
         </p>
       </div>
     </div>
   </section>
-  
+
+  <!-- FAQ Section -->
+  <section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-4xl font-bold text-slate-900 mb-4">
+            Frequently Asked Questions
+          </h2>
+        </div>
+
+        <div class="space-y-4">
+          {faqs.map(item => (
+            <details class="bg-white rounded-lg border border-gray-100 group shadow-sm">
+              <summary class="p-6 cursor-pointer list-none flex items-center justify-between hover:bg-gray-50 rounded-lg">
+                <span class="font-semibold text-slate-900 pr-4">{item.question}</span>
+                <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </summary>
+              <div class="px-6 pb-6">
+                <p class="text-gray-600">{item.answer}</p>
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-20 bg-slate-900 text-white">
+    <div class="container mx-auto px-6 lg:px-8 text-center">
+      <div class="max-w-2xl mx-auto">
+        <h2 class="text-4xl font-bold mb-6 text-white">
+          Got an Idea for an App?
+        </h2>
+        <p class="text-xl text-gray-100 mb-8">
+          Let's talk about what you need. I can give you an honest assessment of what's involved and a clear quote.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="/#services" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-lg transition-colors shadow-lg inline-block">
+            Get in Touch
+          </a>
+          <a href="/portfolio" class="bg-white/10 backdrop-blur-sm border-2 border-white text-white font-bold py-4 px-8 rounded-lg hover:bg-white hover:text-slate-900 transition-all inline-block">
+            View Portfolio
+          </a>
+        </div>
+        <p class="text-sm text-gray-300 mt-6">
+          Based in Norwich, Norfolk. Working with businesses across the UK.
+        </p>
+      </div>
+    </div>
+  </section>
+
   <!-- Schema Markup -->
   <script type="application/ld+json">
     {JSON.stringify({
       "@context": "https://schema.org",
       "@type": "Service",
-      "name": "Custom App Development with AI",
-      "description": "AI-powered custom app development. Build apps 5x faster, 70% cheaper.",
+      "name": "Custom App Development",
+      "description": "Bespoke web and mobile application development for businesses. Starting from £1,299.",
       "provider": {
         "@type": "Organization",
-        "name": "FWD"
+        "name": "FWD Thinking Solutions",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Norwich",
+          "addressRegion": "Norfolk",
+          "addressCountry": "GB"
+        }
       },
-      "areaServed": "Norfolk, UK",
+      "areaServed": {
+        "@type": "Place",
+        "name": "United Kingdom"
+      },
       "hasOfferCatalog": {
         "@type": "OfferCatalog",
-        "name": "App Development Packages",
+        "name": "App Development",
         "itemListElement": [
           {
             "@type": "Offer",
-            "name": "MVP Builder",
-            "price": "2999",
-            "priceCurrency": "GBP"
+            "name": "Smaller Projects",
+            "price": "1299",
+            "priceCurrency": "GBP",
+            "description": "Simple tools, MVPs, and straightforward applications"
           },
           {
             "@type": "Offer",
-            "name": "Business Pro",
-            "price": "10000",
-            "priceCurrency": "GBP"
-          },
-          {
-            "@type": "Offer",
-            "name": "Enterprise",
-            "price": "25000",
-            "priceCurrency": "GBP"
+            "name": "Larger Projects",
+            "price": "5000",
+            "priceCurrency": "GBP",
+            "description": "Full-featured applications with complex requirements"
           }
         ]
       }
+    })}
+  </script>
+
+  <!-- FAQPage Schema -->
+  <script type="application/ld+json">
+    {JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": faqs.map(faq => ({
+        "@type": "Question",
+        "name": faq.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": faq.answer
+        }
+      }))
     })}
   </script>
 </Layout>

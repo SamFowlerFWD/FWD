@@ -1,353 +1,165 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Hero from '../components/ui/Hero.astro';
-import CompetitorClock from '../components/psychological/CompetitorClock.astro';
-import RevenueCounter from '../components/psychological/RevenueCounter.astro';
-import Calculator from '../components/interactive/Calculator.astro';
-import ProofFeed from '../components/trust/ProofFeed.astro';
-import ServiceCard from '../components/services/ServiceCard.tsx';
-import ServiceComparison from '../components/services/ServiceComparison.tsx';
-import LiveSuccessFeed from '../components/services/LiveSuccessFeed.tsx';
-import ServiceQuiz from '../components/services/ServiceQuiz.tsx';
-import StickyServiceBar from '../components/services/StickyServiceBar.tsx';
 ---
 
-<Layout 
-  title="Get 30+ Hours Back Every Week"
-  description="Transform your business with smart automation. Save 30+ hours weekly on repetitive tasks while reducing costs. Norfolk's trusted digital solutions partner."
+<Layout
+  title="FWD Thinking Solutions - Web Development & Automation"
+  description="Professional web development and business automation in Norwich, Norfolk. Websites, apps, booking systems and hosting for UK businesses."
 >
   <!-- Hero Section -->
-  <Hero 
-    headline="Get 30+ Hours Back Every Week"
-    subheadline="Transform repetitive tasks into automated workflows. Join Norfolk businesses saving time and reducing costs with modern digital solutions."
-  />
-  
-  <!-- Problem Agitation Section -->
-  <section class="py-20 bg-gradient-to-b from-soft-white to-norfolk-sand/20">
+  <section class="relative py-28 lg:py-36 hero-gradient overflow-hidden">
+    <!-- Particles -->
+    <div class="absolute inset-0 pointer-events-none">
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+    </div>
+
+    <div class="container relative z-10 mx-auto px-6 lg:px-8">
+      <div class="max-w-4xl mx-auto text-center text-white">
+        <div class="hero-text-animate">
+          <span class="inline-block bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 text-sm font-medium text-gray-200 mb-6">
+            Based in Norfolk, working across the UK
+          </span>
+        </div>
+        <h1 class="text-5xl lg:text-7xl font-bold mb-6 hero-text-animate">
+          Web Development &<br>
+          <span class="bg-gradient-to-r from-amber-400 to-amber-300 bg-clip-text text-transparent">Business Automation</span>
+        </h1>
+        <p class="text-xl lg:text-2xl text-gray-200 mb-10 max-w-2xl mx-auto hero-text-animate">
+          Websites, booking systems, custom apps, and automation. Built to save you time.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center hero-text-animate">
+          <a href="/#services" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 btn-glow">
+            View Services
+          </a>
+          <a href="/portfolio" class="bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white font-bold py-4 px-8 rounded-lg hover:bg-white hover:text-slate-900 transition-all duration-200">
+            View Portfolio
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 scroll-indicator">
+      <svg class="w-6 h-6 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section id="services" class="py-24 bg-white">
     <div class="container mx-auto px-6 lg:px-8">
-      <div class="text-center max-w-3xl mx-auto mb-12">
-        <h2 class="text-4xl lg:text-5xl font-bold text-deep-space mb-6">
-          Transform Your <span class="ai-gradient-text">Productivity</span> Today
+      <div class="text-center max-w-3xl mx-auto mb-16" data-animate>
+        <h2 class="text-4xl lg:text-5xl font-bold text-slate-900 mb-6">
+          What I Build
         </h2>
-        <p class="text-xl text-gray-800">
-          Discover how smart automation gives you back valuable time to focus on growing your business, not managing it.
+        <p class="text-xl text-gray-600">
+          End-to-end digital solutions tailored to your business needs.
         </p>
       </div>
-      
-      <div class="grid lg:grid-cols-3 gap-8">
-        <RevenueCounter />
-        
-        <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
-          <div class="text-4xl mb-4">⏱️</div>
-          <h3 class="text-xl font-bold text-deep-space mb-3">3 Hours Daily</h3>
-          <p class="text-gray-700 mb-4">Average time small and medium business employees waste on tasks automation could handle in seconds.</p>
-          <div class="text-sm text-gray-700">
-            That's <span class="font-bold text-gold-dark">780 hours/year</span> per employee
-          </div>
-        </div>
-        
-        <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
-          <div class="text-4xl mb-4">📉</div>
-          <h3 class="text-xl font-bold text-deep-space mb-3">40% Less Accurate</h3>
-          <p class="text-gray-700 mb-4">Manual processes have 40% more errors than automated systems.</p>
-          <div class="text-sm text-gray-700">
-            Each error costs <span class="font-bold text-gold-dark">£1,200 average</span>
-          </div>
-        </div>
+
+      <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto" data-stagger>
+        <a href="/services/business-process-automation" class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 card-hover group" data-animate>
+          <div class="text-4xl mb-4 transition-transform duration-300 group-hover:scale-110">&#9889;</div>
+          <h3 class="text-2xl font-bold text-slate-900 mb-3 group-hover:text-ai-purple transition-colors">Business Process Automation</h3>
+          <p class="text-gray-600 mb-4">Streamline repetitive tasks and workflows. From invoicing to customer communications, let technology handle the routine work.</p>
+          <span class="text-ai-purple font-semibold inline-flex items-center gap-1">Learn more <span class="arrow-slide">&rarr;</span></span>
+        </a>
+
+        <a href="/services/professional-websites" class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 card-hover group" data-animate>
+          <div class="text-4xl mb-4 transition-transform duration-300 group-hover:scale-110">&#127760;</div>
+          <h3 class="text-2xl font-bold text-slate-900 mb-3 group-hover:text-ai-purple transition-colors">Professional Websites</h3>
+          <p class="text-gray-600 mb-4">Modern, responsive websites that represent your business well. Fast, mobile-friendly, and optimised for search engines.</p>
+          <span class="text-ai-purple font-semibold inline-flex items-center gap-1">Learn more <span class="arrow-slide">&rarr;</span></span>
+        </a>
+
+        <a href="/services/custom-app-development" class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 card-hover group" data-animate>
+          <div class="text-4xl mb-4 transition-transform duration-300 group-hover:scale-110">&#128241;</div>
+          <h3 class="text-2xl font-bold text-slate-900 mb-3 group-hover:text-ai-purple transition-colors">Custom App Development</h3>
+          <p class="text-gray-600 mb-4">Bespoke applications built for your specific needs. iOS apps, web platforms, and internal tools.</p>
+          <span class="text-ai-purple font-semibold inline-flex items-center gap-1">Learn more <span class="arrow-slide">&rarr;</span></span>
+        </a>
+
+        <a href="/services/reliable-hosting-maintenance" class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 card-hover group" data-animate>
+          <div class="text-4xl mb-4 transition-transform duration-300 group-hover:scale-110">&#128640;</div>
+          <h3 class="text-2xl font-bold text-slate-900 mb-3 group-hover:text-ai-purple transition-colors">Hosting & Maintenance</h3>
+          <p class="text-gray-600 mb-4">Keep your website running smoothly with reliable hosting, regular updates, backups, and ongoing support.</p>
+          <span class="text-ai-purple font-semibold inline-flex items-center gap-1">Learn more <span class="arrow-slide">&rarr;</span></span>
+        </a>
       </div>
     </div>
   </section>
-  
-  <!-- Comprehensive Services Section -->
-  <section id="services" class="py-20 bg-gradient-to-b from-white to-ai-purple/5">
+
+  <!-- Testimonials Section -->
+  <section class="py-24 bg-slate-900 text-white">
     <div class="container mx-auto px-6 lg:px-8">
-      <!-- Section Header -->
-      <div class="text-center max-w-3xl mx-auto mb-12">
-        <div class="inline-flex items-center gap-2 bg-gold/10 rounded-full px-4 py-2 mb-6">
-          <span class="text-sm font-medium text-gold-dark">Starting from just £299</span>
-        </div>
-        <h2 class="text-4xl lg:text-5xl font-bold text-deep-space mb-6">
-          4 Ways to <span class="ai-gradient-text">Transform Your Business</span>
+      <div class="text-center mb-12" data-animate>
+        <h2 class="text-4xl font-bold mb-6 text-white">
+          What Clients Say
         </h2>
-        <p class="text-xl text-gray-800">
-          Proven solutions that deliver ROI within 8 weeks. Join hundreds of Norfolk businesses already saving time and money.
-        </p>
       </div>
 
-      <!-- Service Cards Grid -->
-      <div class="grid lg:grid-cols-2 gap-6 mb-12">
-        <ServiceCard
-          client:load
-          title="Business Process Automation"
-          description="Save 30+ hours weekly on repetitive tasks"
-          price="From £799"
-          benefits={[
-            "Reclaim 30+ hours every week",
-            "Eliminate 99% of manual errors",
-            "See results within 4 weeks"
-          ]}
-          competitorCount={17}
-          savingsAmount="£3,000+/month"
-          href="/services/business-process-automation"
-          badge="Most Popular"
-          icon="⚡"
-          testimonial={{
-            quote: "Saved us £4,200 in the first month alone",
-            author: "James Wilson",
-            location: "Norwich"
-          }}
-        />
-        
-        <ServiceCard
-          client:load
-          title="Professional Websites"
-          description="Modern websites built efficiently"
-          price="From £299"
-          benefits={[
-            "Fast delivery - 2-3 weeks",
-            "Mobile responsive design",
-            "SEO optimized from day one"
-          ]}
-          competitorCount={23}
-          savingsAmount="£2,000"
-          href="/services/professional-websites"
-          icon="🌐"
-          testimonial={{
-            quote: "Professional site delivered in just 2 weeks",
-            author: "Sarah Mitchell",
-            location: "Great Yarmouth"
-          }}
-        />
-        
-        <ServiceCard
-          client:load
-          title="Custom App Development"
-          description="Bespoke applications for your specific needs"
-          price="From £15,000"
-          benefits={[
-            "Built using modern practices",
-            "Faster delivery than agencies",
-            "Full support included"
-          ]}
-          competitorCount={8}
-          savingsAmount="£35,000+"
-          href="/services/custom-app-development"
-          badge="Limited Spots"
-          icon="📱"
-          testimonial={{
-            quote: "Perfect solution delivered on time and budget",
-            author: "Mark Thompson",
-            location: "King's Lynn"
-          }}
-        />
-        
-        <ServiceCard
-          client:load
-          title="Reliable Hosting & Maintenance"
-          description="Keep your website running smoothly"
-          price="From £99"
-          monthlyPrice="£99"
-          benefits={[
-            "99.9% uptime guarantee",
-            "Regular updates and backups",
-            "Quick support when needed"
-          ]}
-          competitorCount={12}
-          savingsAmount="£200/month"
-          href="/services/reliable-hosting-maintenance"
-          icon="🚀"
-          testimonial={{
-            quote: "Reliable service that just works",
-            author: "Emma Davis",
-            location: "Ipswich"
-          }}
-        />
-      </div>
-
-      <!-- Bundle Offer Banner -->
-      <div class="bg-gradient-to-r from-gold to-ai-purple rounded-2xl p-8 text-white text-center mb-12">
-        <h3 class="text-3xl font-bold mb-3">Bundle 2+ Services and Save 20%</h3>
-        <p class="text-xl mb-6">Most businesses start with automation + professional website for maximum impact</p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <button class="bg-white text-deep-space font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition-all duration-200">
-            Calculate Bundle Savings
-          </button>
-          <button class="bg-white/20 backdrop-blur-sm border-2 border-white text-white font-bold py-3 px-8 rounded-lg hover:bg-white/30 transition-all duration-200">
-            See Bundle Examples
-          </button>
-        </div>
-      </div>
-
-      <!-- Interactive Components Grid -->
-      <div class="grid lg:grid-cols-2 gap-8">
-        <!-- Service Quiz -->
-        <ServiceQuiz client:load />
-        
-        <!-- Live Success Feed -->
-        <LiveSuccessFeed client:load />
-      </div>
-    </div>
-  </section>
-
-  <!-- Service Comparison Section -->
-  <section class="py-20 bg-white">
-    <div class="container mx-auto px-6 lg:px-8">
-      <ServiceComparison client:load serviceName="automation" comparisons={[]} />
-    </div>
-  </section>
-  
-  <!-- Solution Section -->
-  <section class="py-20 bg-white">
-    <div class="container mx-auto px-6 lg:px-8">
-      <div class="grid lg:grid-cols-2 gap-12 items-center">
-        <div>
-          <div class="inline-flex items-center gap-2 bg-success-green/10 rounded-full px-4 py-2 mb-6">
-            <svg class="w-5 h-5 text-success-green" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-            </svg>
-            <span class="text-sm font-medium text-success-green">The Smart Choice</span>
-          </div>
-          
-          <h2 class="text-4xl lg:text-5xl font-bold text-deep-space mb-6">
-            Solutions That <span class="ai-gradient-text">Pay for Themselves</span> in 8 Weeks
-          </h2>
-          
-          <p class="text-xl text-gray-800 mb-8">
-            We don't just build software. We eliminate the tasks that drain your profits. Custom solutions designed specifically for UK small and medium businesses.
-          </p>
-          
-          <div class="space-y-4">
-            {[
-              "Save money vs traditional agency costs",
-              "Launch in weeks, not months",
-              "No technical knowledge required",
-              "Full training and support included",
-              "Clear pricing from the start"
-            ].map(benefit => (
-              <div class="flex items-start gap-3">
-                <svg class="w-6 h-6 text-success-green mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                <span class="text-lg text-gray-800">{benefit}</span>
-              </div>
+      <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto" data-stagger>
+        <div class="bg-white/5 backdrop-blur-sm rounded-xl p-8 border border-white/10 card-hover" data-animate>
+          <div class="flex gap-1 mb-4">
+            {[1,2,3,4,5].map(_ => (
+              <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+              </svg>
             ))}
           </div>
-        </div>
-        
-        <div>
-          <ProofFeed />
-        </div>
-      </div>
-    </div>
-  </section>
-  
-  <!-- Calculator Section -->
-  <section class="py-20 bg-gradient-to-b from-ai-purple/5 to-white">
-    <div class="container mx-auto px-6 lg:px-8">
-      <div class="text-center max-w-3xl mx-auto mb-12">
-        <h2 class="text-4xl lg:text-5xl font-bold text-deep-space mb-6">
-          See Your <span class="ai-gradient-text">Exact Savings</span> in 30 Seconds
-        </h2>
-        <p class="text-xl text-gray-800">
-          No email required. Get instant, personalized results based on your actual business.
-        </p>
-      </div>
-      
-      <Calculator />
-    </div>
-  </section>
-  
-  <!-- Social Proof Section -->
-  <section class="py-20 bg-deep-space text-white">
-    <div class="container mx-auto px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-4xl lg:text-5xl font-bold mb-6">
-          Norfolk Businesses Trust Us
-        </h2>
-        <p class="text-xl text-gray-200">
-          From King's Lynn to Great Yarmouth, we're the trusted digital partner for ambitious SMBs
-        </p>
-      </div>
-      
-      <div class="grid lg:grid-cols-4 gap-8 mb-12">
-        {[
-          { stat: "50+", label: "Projects delivered" },
-          { stat: "100%", label: "On-time delivery" },
-          { stat: "2-8 weeks", label: "Typical timeline" },
-          { stat: "5★", label: "Average rating" }
-        ].map(item => (
-          <div class="text-center">
-            <div class="text-5xl font-bold ai-gradient-text mb-2">{item.stat}</div>
-            <div class="text-gray-300">{item.label}</div>
+          <blockquote class="text-white mb-6 text-lg leading-relaxed">"Sam really listens to the client's brief and adds value to their ideas. He is naturally creative and takes time to understand and produce amazing outcomes. Highly recommended."</blockquote>
+          <div>
+            <div class="font-semibold text-white">Anna Kidd</div>
+            <div class="text-sm text-gray-300">Director, Harford Attachments Ltd</div>
           </div>
-        ))}
-      </div>
-      
-      <div class="grid lg:grid-cols-3 gap-6">
-        {[
-          {
-            quote: "FWD cut our processing time by 80%. We're now handling twice the orders with the same team.",
-            author: "Sarah Mitchell",
-            role: "Director, Norfolk Logistics Ltd",
-            location: "Norwich"
-          },
-          {
-            quote: "The ROI was visible in week 3. By week 8, we'd saved enough to fund our expansion.",
-            author: "James Patterson",
-            role: "CEO, East Anglian Foods",
-            location: "Great Yarmouth"
-          },
-          {
-            quote: "Our competitors are still doing things manually. Thanks to FWD, we're years ahead.",
-            author: "Emma Thompson",
-            role: "Founder, Suffolk Manufacturing",
-            location: "Bury St Edmunds"
-          }
-        ].map(testimonial => (
-          <div class="glass-premium rounded-xl p-6">
-            <div class="flex gap-1 mb-4">
-              {[1,2,3,4,5].map(_ => (
-                <svg class="w-5 h-5 text-gold" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                </svg>
-              ))}
-            </div>
-            <p class="text-gray-200 mb-4">"{testimonial.quote}"</p>
-            <div>
-              <div class="font-semibold">{testimonial.author}</div>
-              <div class="text-sm text-gray-300">{testimonial.role}</div>
-              <div class="text-sm text-gray-400">{testimonial.location}</div>
-            </div>
+        </div>
+
+        <div class="bg-white/5 backdrop-blur-sm rounded-xl p-8 border border-white/10 card-hover" data-animate>
+          <div class="flex gap-1 mb-4">
+            {[1,2,3,4,5].map(_ => (
+              <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+              </svg>
+            ))}
           </div>
-        ))}
+          <blockquote class="text-white mb-6 text-lg leading-relaxed">"We're on the first page of Google in the UK for 'used gym equipment'. For website building and general techy scheming, Sam knows what he's doing!"</blockquote>
+          <div>
+            <div class="font-semibold text-white">Matt Miller</div>
+            <div class="text-sm text-gray-300">Owner, Millers Fitness</div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
-  
-  <!-- Final CTA Section -->
-  <section class="py-20 bg-gradient-to-r from-ai-purple to-trust-blue text-white">
-    <div class="container mx-auto px-6 lg:px-8 text-center">
-      <h2 class="text-4xl lg:text-5xl font-bold mb-6">
-        Every Day You Wait, Your Competitors Pull Further Ahead
+
+  <!-- CTA Section -->
+  <section class="py-24 bg-gradient-to-br from-purple-700 via-purple-600 to-blue-600 text-white overflow-hidden relative">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-0 left-1/4 w-96 h-96 bg-white/20 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-amber-400/20 rounded-full blur-3xl"></div>
+    </div>
+    <div class="container relative z-10 mx-auto px-6 lg:px-8 text-center" data-animate>
+      <h2 class="text-4xl lg:text-5xl font-bold mb-6 text-white">
+        Ready to Discuss Your Project?
       </h2>
-      <p class="text-xl text-gray-200 mb-8 max-w-2xl mx-auto">
-        Join Norfolk businesses already saving time and money with modern solutions. Limited spots available for Q1 2025.
+      <p class="text-xl text-white/90 mb-10 max-w-2xl mx-auto">
+        Get in touch to chat about how I can help your business.
       </p>
-      
+
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <button class="btn-urgent text-lg px-8 py-4 bg-gold hover:bg-gold-light">
-          Claim Your Free Strategy Session
-        </button>
-        <button class="bg-white/20 backdrop-blur-sm border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-deep-space transition-all duration-200">
-          See Success Stories
-        </button>
+        <a href="/#services" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 btn-glow">
+          View Services
+        </a>
+        <a href="/portfolio" class="bg-white/15 backdrop-blur-sm border-2 border-white/30 text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-slate-900 transition-all duration-200">
+          View Portfolio
+        </a>
       </div>
-      
-      <p class="text-sm text-gray-300 mt-6">
-        No credit card required • 30-minute call • Worth £500
-      </p>
     </div>
   </section>
-  <!-- Sticky Service Bar -->
-  <StickyServiceBar client:load />
 </Layout>

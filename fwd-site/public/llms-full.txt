@@ -1,0 +1,133 @@
+# FWD Thinking Solutions: Full Details
+
+> Web development, business automation, and custom software for UK businesses. Based in Norwich, Norfolk.
+
+## About
+
+FWD Thinking Solutions is a web development and business automation agency run by Sam Fowler from Norwich, Norfolk, UK. We help businesses work smarter with technology, especially small businesses and rural enterprises that need quality solutions without the agency markup.
+
+Our approach is straightforward: understand the problem, build the solution, support it afterwards. No middlemen, no overselling, fixed pricing where possible.
+
+## Services
+
+### Professional Websites (from £299)
+
+Clean, fast, mobile-friendly websites built with modern tools.
+
+**Packages:**
+- **Starter (£299)**: Up to 5 pages, mobile responsive, basic SEO, contact form, 2 week delivery
+- **Professional (£799)**: Up to 10 pages, custom design, advanced SEO, blog/news section, 3 week delivery
+- **Bespoke (£1,999+)**: Unlimited pages, bespoke design, full SEO, e-commerce ready, custom integrations
+
+**What's included:** Mobile responsive design, SEO optimisation, fast loading, SSL security, content management, custom design to match your brand.
+
+### Business Process Automation (from £799)
+
+Automate the repetitive tasks that eat into your day.
+
+**What can be automated:**
+- Finance & invoicing: automatic invoice generation, payment reminders, expense tracking
+- Communications: email follow-ups, enquiry routing, appointment confirmations
+- Data & admin: data entry between systems, report generation, scheduling, stock management
+
+**Pricing:**
+- Simple automations: from £799 (1-3 processes, includes 30 days support)
+- Complex projects: from £3,000 (multi-system integrations, includes 90 days support)
+
+### Custom App Development (from £1,299)
+
+Bespoke web and mobile applications built to solve specific business problems.
+
+**Types of apps:**
+- Booking systems with online payments
+- Business dashboards
+- Customer portals
+- Mobile apps (iOS and Android)
+- System integrations
+- Internal tools
+
+**Pricing:**
+- Smaller projects: from £1,299 (MVPs, simple tools, 3-5 week delivery)
+- Larger projects: from £5,000 (full-featured apps, 6-12 week delivery)
+
+**Every project includes:** Source code ownership, documentation, team training, post-launch support, no vendor lock-in, fixed pricing.
+
+### Hosting & Maintenance (from £99/month)
+
+Reliable hosting with ongoing support.
+
+**Plans:**
+- **Essential (£99/month)**: Up to 10GB storage, daily backups, SSL, security updates, email support
+- **Professional (£199/month)**: Up to 50GB storage, daily backups, premium SSL, priority support, performance optimisation
+- **Enterprise (£399/month)**: Unlimited storage, continuous backups, advanced security, dedicated resources
+
+**All plans include:** Daily backups, security updates, performance monitoring, SSL certificate, email support. No contracts, cancel anytime. Free migration from other hosts.
+
+## Portfolio
+
+14+ projects delivered across 8+ industries:
+
+1. **Hoofflix**: Ongoing growth partnership with equestrian video streaming platform. Content strategy, system optimisation, revenue development. (hoofflix.com)
+2. **Fakenham Dog Field**: Booking system with Stripe payments and automated Paxton gate access codes. (fakenham-dog-field.pages.dev)
+3. **The Balanced Horse**: Lightweight LMS video platform for equestrian education with progress tracking.
+4. **Norwich Canoe Club**: Membership management and event booking systems for inclusive racing club. (norwichcanoeclub.co.uk)
+5. **Ask Stephen**: Business mentorship iOS app with AI coaching, habit tracking, and 2,000+ active members. (askstephen.app)
+6. **Wee Horsebox Hire**: Bespoke booking system with availability management and payments. (wee-horseboxhire.co.uk)
+7. **J Taylor Horseboxes**: Horsebox manufacturer website with SEO and hosting. (jthltd.co.uk)
+8. **Harford Attachments**: Excavator attachments manufacturer website with ongoing support. (harfordattachments.co.uk)
+9. **Farriers Choice**: Webshop and product catalogue with hosting and SEO. (farrierschoice.uk)
+10. **Britten Farriery**: Premium farriery business website with hosting. (masterfarrier.co.uk)
+11. **Mill Saddlery**: Mobile saddlery website with booking requests. (millsaddlery.co.uk)
+12. **Serene Safety**: Health & safety consultancy website with maintenance. (serenesafety.co.uk)
+13. **JDB Carpentry & Building**: Heritage building specialist website. (jdbcarpentryandbuilding.co.uk)
+14. **Millers Fitness**: Used gym equipment supplier, ranking first page of Google UK. (millersfitness.net)
+
+## Blog
+
+Case studies, tips, and insights from building software for UK businesses. Topics include project walkthroughs, development best practices, and business automation guides. Read at: https://f-w-d.co.uk/blog
+
+RSS feed available at: https://f-w-d.co.uk/rss.xml
+
+## Technologies
+
+- **Frontend**: React, Astro, TypeScript, Tailwind CSS
+- **Backend**: Node.js, Python, Firebase, PostgreSQL
+- **Mobile**: iOS (Swift/React Native)
+- **Integrations**: Stripe, OpenAI, Paxton, various APIs
+- **Hosting**: Cloudflare, Hostinger, custom VPS
+
+## Industries Served
+
+Equestrian, Manufacturing, Pet Services, Sports & Recreation, Technology, Retail, Professional Services, Construction
+
+## Location
+
+Based in Norwich, Norfolk, United Kingdom. Working with businesses across the UK.
+
+## Frequently Asked Questions
+
+**How much does a website cost?**
+Websites start from £299 for a simple 5-page site. Most business websites fall in the £799 range. Bespoke projects with e-commerce or complex features start from £1,999.
+
+**How long does it take to build a website?**
+Typically 2-4 weeks depending on the size and complexity of the project.
+
+**Do you build mobile apps?**
+Yes. I build cross-platform mobile apps for iOS and Android, as well as web applications.
+
+**Can you automate my business processes?**
+Most repetitive tasks can be automated. Common examples include invoicing, email follow-ups, data entry between systems, and scheduling. Simple automations start from £799.
+
+**Do you offer hosting for existing websites?**
+Yes. I can host websites I didn't build. Free migration is included with all hosting plans.
+
+**Will I own the code?**
+Yes. You get full source code ownership with every project. No vendor lock-in.
+
+**Where are you based?**
+Norwich, Norfolk, UK. I work with businesses across the United Kingdom.
+
+## Contact
+
+Website: https://f-w-d.co.uk
+Location: Norwich, Norfolk, United Kingdom
