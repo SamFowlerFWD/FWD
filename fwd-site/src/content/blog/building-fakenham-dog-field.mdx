@@ -10,68 +10,68 @@ featured: true
 draft: false
 ---
 
-## The Challenge
+## The Brief
 
-Fakenham Dog Field needed a way for customers to book private sessions at their secure dog exercise field at Fakenham Racecourse. The field is accessed through a Paxton-controlled gate, meaning customers need a valid access code to enter.
+Fakenham Dog Field is a brand new secure dog exercise field at Fakenham Racecourse. The owner needed a booking and payment system ready for launch, with one twist: the field is behind a Paxton-controlled gate, so customers need a valid access code to get in.
 
-Before the system was built, bookings were managed manually — phone calls, messages, and someone physically sharing gate codes. This was time-consuming for the owner and inconvenient for customers who wanted to book outside of working hours.
-
-The brief was straightforward:
+The requirements were pretty clear from the start:
 
 - Let customers book and pay online, any time of day
 - Automatically generate and send a gate access code after payment
-- Keep things simple — no app downloads, no account creation
+- Keep it simple, no app downloads, no account creation
 
-## The Solution
+There was no existing process to replace here. This was a new business that needed the right system from day one.
 
-We built a custom booking system from scratch, deployed on Cloudflare Pages for speed and reliability. The system handles the entire journey from browsing available slots to receiving an access code, with no manual intervention needed.
+## What We Built
+
+We built a custom booking system from scratch, deployed on Cloudflare Pages. It handles everything from browsing available slots to receiving a gate code, with nothing manual in between.
 
 ### How It Works
 
-1. **Customer picks a date and time** — the calendar shows available slots based on operating hours and existing bookings
-2. **Customer enters their details** — name, email, and phone number
-3. **Payment via Stripe** — secure card payment with no account needed
-4. **Access code generated** — the system communicates with the Paxton access control API to create a time-limited code
-5. **Confirmation sent** — customer receives an email with their booking details and gate code
+1. **Customer picks a date and time** on the calendar, which shows available slots based on operating hours and existing bookings
+2. **Customer enters their details** like name, email, and phone number
+3. **Payment goes through Stripe** with a secure card payment, no account needed
+4. **Access code gets generated** by the system talking to the Paxton access control API to create a time-limited code
+5. **Confirmation email goes out** with the booking details and gate code
 
-The entire flow takes under two minutes.
+The whole thing takes under two minutes from start to finish.
 
 ## Key Features
 
-**Smart availability checking** — the system prevents double-bookings by checking existing reservations and blocked dates in real-time. Operating hours are configurable per day of the week.
+**Smart availability checking** so the system prevents double-bookings by checking existing reservations and blocked dates in real-time. Operating hours are configurable per day of the week.
 
-**Stripe integration** — payments are handled securely through Stripe, with webhook confirmation to ensure the booking is only confirmed after successful payment.
+**Stripe integration** where payments are handled securely through Stripe, with webhook confirmation to make sure the booking is only confirmed after successful payment.
 
-**Paxton API integration** — this was the interesting part. The Paxton access control system manages the physical gate lock. After payment, the system calls the Paxton API to generate a unique access code that's only valid for the booked time window.
+**Paxton API integration** which was the interesting bit. The Paxton access control system manages the physical gate lock. After payment, the system calls the Paxton API to generate a unique access code that only works during the booked time window.
 
-**Admin dashboard** — the field owner can view bookings, manage availability, block dates for maintenance, and see revenue reports.
+**Admin dashboard** so the field owner can view bookings, manage availability, block dates for maintenance, and see revenue reports.
 
-**Email notifications** — automated confirmation emails with booking details and the gate access code, plus reminders before the session.
+**Email notifications** with automated confirmation emails including booking details and the gate access code, plus reminders before the session.
 
-## Results
+## How It's Going
 
 The system has been running reliably since launch:
 
-- **Zero manual bookings** — everything is self-service
-- **24/7 availability** — customers book whenever it suits them
-- **No access issues** — automated codes work every time
-- **Owner time saved** — hours per week freed up from admin
+- **Fully self-service** so every booking happens without anyone needing to get involved
+- **Open 24/7** so customers book whenever it suits them
+- **No access issues** because the automated codes just work
+- **Minimal admin** for the owner, who can focus on running the field rather than chasing bookings
 
 ## Tech Stack
 
 The project was built with a focus on speed, reliability, and low running costs:
 
 - **Frontend**: Custom-built with modern JavaScript
-- **Hosting**: Cloudflare Pages (fast, global CDN, free tier)
+- **Hosting**: Cloudflare Pages (fast, global CDN)
 - **Payments**: Stripe (checkout sessions + webhooks)
-- **Access Control**: Paxton Net2 API integration
+- **Access Control**: Paxton Cloud API integration
 - **Database**: Serverless database for bookings and availability
 - **Email**: Transactional email service for confirmations
 
-The whole system runs with minimal hosting costs thanks to Cloudflare's generous free tier and serverless architecture.
+The whole system runs with minimal hosting costs thanks to Cloudflare and serverless architecture.
 
 ---
 
-This project is a good example of how a well-scoped custom build can solve a real business problem more effectively than an off-the-shelf solution. The Paxton integration alone — automating physical access control from an online booking — isn't something you'd find in a standard booking plugin.
+This project is a good example of how a focused custom build can solve a real problem better than an off-the-shelf solution. The Paxton integration alone, automating physical access control from an online booking, isn't something you'd find in a standard booking plugin.
 
-If you've got a similar workflow that involves manual steps between online actions and physical systems, [get in touch](/services/custom-app-development) — there's a good chance it can be automated.
+If you've got something similar where online actions need to trigger real-world systems, [get in touch](/services/custom-app-development). There's a good chance it can be automated.
