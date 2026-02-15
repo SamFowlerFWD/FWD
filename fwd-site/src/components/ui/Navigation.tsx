@@ -49,7 +49,7 @@ const Navigation: React.FC = () => {
     { label: 'Portfolio', href: '/portfolio', badge: 'View Work' },
     { label: 'Blog', href: '/blog' },
     { label: 'About', href: '/about' },
-    { label: 'Contact', href: '/#services' }
+    { label: 'Contact', href: 'https://wa.me/447584417830' }
   ];
 
   useEffect(() => {
