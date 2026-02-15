@@ -1,0 +1,78 @@
+---
+title: "Building Ask Stephen: A Coaching Platform from Idea to App Store"
+description: "How we built a full coaching PWA with native iOS and Android apps, habit tracking, video lessons, community forums, and AI-powered analytics for a confidence coach."
+pubDate: 2026-02-15
+heroImage: "/portfolio/ask-stephen.webp"
+heroImageAlt: "Ask Stephen coaching app showing habit tracking and video lessons"
+category: "case-studies"
+tags: ["app development", "PWA", "React", "Supabase", "Stripe", "coaching"]
+featured: true
+draft: false
+---
+
+## The Brief
+
+This one is a bit different from our usual client projects. Ask Stephen is a business I co-founded with Stephen, a confidence and mindset coach who describes what he does as being a "Pocket Cheerleader" for his members.
+
+Stephen had been running his coaching business through a patchwork of tools. WhatsApp groups for community, manual booking, separate video hosting, no structured way for members to journal or track their habits. It worked, but it didn't feel like a premium experience. He needed a single platform that felt purpose-built rather than a cobbled-together stack of SaaS tools.
+
+The idea was strong enough that rather than building it as a standard client project, we went in as partners. I took a 50% stake and built the platform as a founder, not just a developer. That changes how you approach things. You're not just delivering a brief, you're building something you're personally invested in getting right.
+
+## What We Built
+
+A full Progressive Web App that also ships as native iOS and Android apps from a single codebase. It covers everything Stephen needs to run his coaching business in one place.
+
+### The Core Features
+
+**Habit tracking with streaks** so members can build daily routines and see their consistency over time. Streaks are a simple motivator but they work. Miss a day and you feel it.
+
+**Journaling with guided prompts** because most people don't know where to start with journaling. The prompts give structure without being prescriptive, and members can look back over their entries to see how their thinking has shifted.
+
+**Goal setting** with a framework that breaks bigger ambitions into manageable steps. Members set goals, track progress, and get nudges when things go quiet.
+
+**Short-form video lessons** delivered as 2 to 4 minute progressive learning modules through Cloudflare Stream. Short enough to watch on a commute, structured enough to build on each other.
+
+**A moderated community forum** with graduated posting rights. New members can read and react before they can post, which keeps the quality high and stops the usual forum noise.
+
+**The Vault** which is a resource library with book recommendations and affiliate links. Stephen curates it personally so it's not just a random list of self-help books.
+
+**Members-only podcast episodes** hosted directly in the app. No separate podcast app needed, no public RSS feed. Exclusive content stays exclusive.
+
+**Daily motivational messages from Stephen** and these are real content written by him, not AI-generated filler. Members see a fresh message every day when they open the app.
+
+### Behind the Scenes
+
+**Stripe subscription billing** handles payments, but only through the website. We deliberately avoid in-app purchases to sidestep the 30% App Store commission. Members subscribe on the web, then use whichever app they prefer.
+
+**A comprehensive admin dashboard** so Stephen can see member engagement at a glance, flag milestones, manage all content, and understand how people are actually using the platform.
+
+**AI-powered analytics** running in the background. This analyses journaling entries, habit completion patterns, and quiz responses to surface insights for Stephen. It's not user-facing AI. Members never interact with it. It's purely there to help the coach understand his community better and spot members who might need extra support.
+
+**Push notifications via Firebase Cloud Messaging** for daily messages, streak reminders, and new content alerts.
+
+## The Tech
+
+This is a big app. Around 400 API endpoints and 120 database tables, shipping across web, iOS, and Android from one codebase.
+
+- **Frontend**: React, TypeScript, Tailwind CSS, shadcn/ui components
+- **Backend**: Cloudflare Pages Functions (400+ serverless API endpoints, file-based routing)
+- **Database**: Supabase PostgreSQL (120+ tables with Row Level Security)
+- **Video**: Cloudflare Stream
+- **Payments**: Stripe (subscriptions + webhooks)
+- **AI**: OpenAI for sentiment analysis and engagement scoring (batch processed, not real-time)
+- **Mobile**: Capacitor for iOS and Android builds
+- **Hosting**: Cloudflare Pages
+
+The serverless architecture means hosting costs stay low even as the member base grows. No servers to manage, no scaling headaches. The database has Row Level Security on every table so members can only ever see their own data.
+
+You can see the live site at [askstephen.app](https://askstephen.app).
+
+## Where It's Headed
+
+The platform is live with over 2,000 members and growing. Stephen is actively coaching through it daily, and the feedback from members has been consistently positive. The habit tracking and journaling features in particular have become central to how people use the app.
+
+The roadmap includes group coaching sessions with live video, more granular analytics for Stephen, and deeper personalisation based on member behaviour patterns. Because we built it from scratch rather than bolting things onto an existing platform, adding new features is straightforward. The architecture was designed to grow.
+
+---
+
+This project is a good example of what happens when the idea is strong enough to invest in properly. Sometimes the right move isn't to quote a client for a build, it's to come in as a partner and build something together. If you've got an app idea that you think has real potential and you're looking for a technical co-founder who can actually build it, [that's a conversation worth having](/services/custom-app-development).
