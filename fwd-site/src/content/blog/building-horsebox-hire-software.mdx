@@ -1,0 +1,80 @@
+---
+title: "Building Horsebox Hire Software: From One Client to a Multi-Tenant SaaS Platform"
+description: "How a custom booking system for one horsebox hire company became a multi-tenant SaaS platform solving licence verification, deposit handling, and document management for the entire industry."
+pubDate: 2026-03-04
+heroImage: "/portfolio/wee-horsebox-hire.webp"
+heroImageAlt: "Horsebox hire booking system showing vehicle selection and availability calendar"
+category: "case-studies"
+tags: ["booking system", "SaaS", "horsebox hire", "vehicle hire", "Scotland"]
+featured: true
+draft: false
+---
+
+## The Brief
+
+Wee Horsebox Hire, based in East Lothian, Scotland, needed to replace their existing booking system. They had a fleet of four horseboxes, three 3.5 tonne and one 7.5 tonne, and were managing bookings through a generic plugin that couldn't handle the complexity of vehicle hire.
+
+The pain points were clear:
+
+- No automated document verification (driving licences, utility bills)
+- Manual signature collection via a separate app
+- No integrated payment and deposit handling
+- No way to verify customers held the correct licence category for heavier vehicles
+
+They needed a system purpose-built for horsebox hire, one that could handle everything from vehicle selection through to deposit release after return.
+
+## Why Custom
+
+Off-the-shelf booking platforms handle appointments and time slots well enough. But horsebox hire has specific requirements that none of them address: licence category verification (you need a C1 for anything over 3.5 tonnes), pre-authorised security deposits that are held but not charged, AI-powered document checks, and digital contract signing baked into the checkout flow.
+
+Rather than stitching together five different tools, we built one platform that handles the entire journey.
+
+## What We Built
+
+A complete booking platform where customers can browse vehicles, check availability, upload documents, sign their hire agreement, pay, and receive confirmation, all in a single flow that takes a few minutes.
+
+### Vehicle Selection and Availability
+
+Real-time availability checking prevents double bookings. Customers select collection and return dates, see dynamic pricing (weekday, weekend, and weekly rates), and can add extras like professional cleaning or flexible pickup times.
+
+### Document Verification
+
+This is where it gets interesting. Customers upload their driving licence and a utility bill for address verification. The system uses AI-powered analysis to extract data, check for tampering, and verify the document is genuine. For heavier vehicles requiring a C1 or HGV licence, the system integrates with the DVLA for official verification.
+
+Returning customers don't need to re-upload. The system securely stores document images for six months. But crucially, licence verification runs fresh every booking. A licence valid last month could be revoked today, and the insurance implications of not checking are serious.
+
+### Integrated Contract Signing
+
+Previously, Wee Horsebox Hire sent a separate email with a link to a standalone signature app. Now, the digital signature is step six of the checkout flow. The signed contract PDF generates automatically after payment succeeds. No separate systems, no manual chasing.
+
+### Two-Stage Payments
+
+The system handles two distinct payment events: the full rental payment at booking, and a pre-authorised security deposit 12 hours before collection. The deposit is held on the customer's card but not charged. After the vehicle comes back in good condition, it's released automatically. If there's damage, the admin can capture part or all of it.
+
+### Admin Dashboard
+
+A comprehensive back office for managing bookings, reviewing flagged documents, tracking vehicles, and monitoring revenue. Every admin action is audit-logged for compliance.
+
+## The Pivot
+
+Here's where the project evolved. While building for Wee Horsebox Hire, it became obvious that every horsebox hire company faces the same problems: licence verification, deposit handling, document management, contract signing. None of the existing tools solve these properly.
+
+So we rebuilt the architecture as a multi-tenant SaaS platform. Each hire business gets their own isolated environment with their own branding, vehicles, pricing rules, and customer data. But they all run on the same infrastructure.
+
+The platform, [Horsebox Hire Software](https://horseboxhiresoftware.co.uk), offers a flat monthly fee plus a small percentage on bookings. No per-vehicle charges. No setup fees. Businesses get a system that would cost tens of thousands to build from scratch, for a fraction of the price.
+
+And the model isn't limited to horseboxes. The same document verification, deposit handling, and booking logic applies directly to plant hire, car hire, motorhome rental, any business where you need to verify someone can legally operate what they're hiring before handing over the keys.
+
+## The Architecture
+
+The platform is built as a full-stack application with a serverless database layer. Every tenant's data is isolated at the database level through row-level security policies, meaning one business can never access another's bookings, customers, or documents.
+
+AI-powered document verification runs on every upload, and for vehicles over 3.5 tonnes, official DVLA checks add a second layer of confidence. The payment system handles both immediate charges and pre-authorised holds natively, with automatic release logic built in.
+
+## What's Next
+
+DVLA API integration is pending (application submitted), which will add official licence verification alongside the AI checks. A companion mobile app is in development for hire businesses to manage bookings on the go. And we're onboarding the first additional tenants to validate the multi-tenant architecture at scale.
+
+---
+
+Want something similar? If you've got a business running on spreadsheets, generic plugins, or a patchwork of tools that don't talk to each other, that's exactly the kind of problem we solve. [Get in touch](/contact).
