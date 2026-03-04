@@ -1,11 +1,11 @@
 ---
 title: "Building Ask Stephen: A Coaching Platform from Idea to App Store"
-description: "How we built a full coaching PWA with native iOS and Android apps, habit tracking, video lessons, community forums, and AI-powered analytics for a confidence coach."
+description: "How we built a full coaching platform with native iOS and Android apps, habit tracking, video lessons, community forums, and smart analytics for a confidence coach."
 pubDate: 2026-02-15
 heroImage: "/portfolio/ask-stephen.webp"
 heroImageAlt: "Ask Stephen coaching app showing habit tracking and video lessons"
 category: "case-studies"
-tags: ["app development", "PWA", "React", "Supabase", "Stripe", "coaching"]
+tags: ["app development", "mobile app", "coaching", "subscription platform"]
 featured: true
 draft: false
 ---
@@ -30,7 +30,7 @@ A full Progressive Web App that also ships as native iOS and Android apps from a
 
 **Goal setting** with a framework that breaks bigger ambitions into manageable steps. Members set goals, track progress, and get nudges when things go quiet.
 
-**Short-form video lessons** delivered as 2 to 4 minute progressive learning modules through Cloudflare Stream. Short enough to watch on a commute, structured enough to build on each other.
+**Short-form video lessons** delivered as 2 to 4 minute progressive learning modules. Short enough to watch on a commute, structured enough to build on each other.
 
 **A moderated community forum** with graduated posting rights. New members can read and react before they can post, which keeps the quality high and stops the usual forum noise.
 
@@ -42,34 +42,25 @@ A full Progressive Web App that also ships as native iOS and Android apps from a
 
 ### Behind the Scenes
 
-**Stripe subscription billing** handles payments, but only through the website. We deliberately avoid in-app purchases to sidestep the 30% App Store commission. Members subscribe on the web, then use whichever app they prefer.
+**Subscription billing** handles payments, but only through the website. We deliberately avoid in-app purchases to sidestep the 30% App Store commission. Members subscribe on the web, then use whichever app they prefer.
 
 **A comprehensive admin dashboard** so Stephen can see member engagement at a glance, flag milestones, manage all content, and understand how people are actually using the platform.
 
-**AI-powered analytics** running in the background. This analyses journaling entries, habit completion patterns, and quiz responses to surface insights for Stephen. It's not user-facing AI. Members never interact with it. It's purely there to help the coach understand his community better and spot members who might need extra support.
+**Smart analytics** running in the background. This analyses journaling entries, habit completion patterns, and quiz responses to surface insights for Stephen. It's not user-facing. Members never interact with it. It's purely there to help the coach understand his community better and spot members who might need extra support.
 
-**Push notifications via Firebase Cloud Messaging** for daily messages, streak reminders, and new content alerts.
+**Push notifications** for daily messages, streak reminders, and new content alerts.
 
-## The Tech
+## The Scale
 
-This is a big app. Around 400 API endpoints and 120 database tables, shipping across web, iOS, and Android from one codebase.
+This is a big app. Hundreds of API endpoints and over a hundred database tables, shipping across web, iOS, and Android from a single codebase.
 
-- **Frontend**: React, TypeScript, Tailwind CSS, shadcn/ui components
-- **Backend**: Cloudflare Pages Functions (400+ serverless API endpoints, file-based routing)
-- **Database**: Supabase PostgreSQL (120+ tables with Row Level Security)
-- **Video**: Cloudflare Stream
-- **Payments**: Stripe (subscriptions + webhooks)
-- **AI**: OpenAI for sentiment analysis and engagement scoring (batch processed, not real-time)
-- **Mobile**: Capacitor for iOS and Android builds
-- **Hosting**: Cloudflare Pages
-
-The serverless architecture means hosting costs stay low even as the member base grows. No servers to manage, no scaling headaches. The database has Row Level Security on every table so members can only ever see their own data.
+The serverless architecture means hosting costs stay low even as the member base grows. No servers to manage, no scaling headaches. Row Level Security on every database table means members can only ever see their own data.
 
 You can see the live site at [askstephen.app](https://askstephen.app).
 
 ## Where It's Headed
 
-The platform is live with over 2,000 members and growing. Stephen is actively coaching through it daily, and the feedback from members has been consistently positive. The habit tracking and journaling features in particular have become central to how people use the app.
+The platform is built and ready, with Stephen about to start onboarding his first members. The habit tracking and journaling features in particular are central to how people will use the app.
 
 The roadmap includes group coaching sessions with live video, more granular analytics for Stephen, and deeper personalisation based on member behaviour patterns. Because we built it from scratch rather than bolting things onto an existing platform, adding new features is straightforward. The architecture was designed to grow.
 

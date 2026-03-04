@@ -68,10 +68,10 @@ Reliable hosting with ongoing support.
 14+ projects delivered across 8+ industries:
 
 1. **Hoofflix**: Ongoing growth partnership with equestrian video streaming platform. Content strategy, system optimisation, revenue development. (hoofflix.com)
-2. **Fakenham Dog Field**: Booking system with Stripe payments and automated Paxton gate access codes. (fakenham-dog-field.pages.dev)
-3. **The Balanced Horse**: Lightweight LMS video platform for equestrian education with progress tracking.
+2. **Fakenham Dog Field**: Booking system with online payments and automated gate access codes. (fakenham-dog-field.pages.dev)
+3. **The Balanced Horse**: Video learning platform for equestrian education with progress tracking.
 4. **Norwich Canoe Club**: Membership management and event booking systems for inclusive racing club. (norwichcanoeclub.co.uk)
-5. **Ask Stephen**: Business mentorship iOS app with AI coaching, habit tracking, and 2,000+ active members. (askstephen.app)
+5. **Ask Stephen**: Business mentorship platform with coaching tools, habit tracking, and the 4 Corners framework. Co-founded as technical partner. (askstephen.app)
 6. **Wee Horsebox Hire**: Bespoke booking system with availability management and payments. (weehorseboxhire.horseboxhiresoftware.co.uk)
 7. **J Taylor Horseboxes**: Horsebox manufacturer website with SEO and hosting. (jthltd.co.uk)
 8. **Harford Attachments**: Excavator attachments manufacturer website with ongoing support. (harfordattachments.co.uk)
@@ -87,14 +87,6 @@ Reliable hosting with ongoing support.
 Case studies, tips, and insights from building software for UK businesses. Topics include project walkthroughs, development best practices, and business automation guides. Read at: https://f-w-d.co.uk/blog
 
 RSS feed available at: https://f-w-d.co.uk/rss.xml
-
-## Technologies
-
-- **Frontend**: React, Astro, TypeScript, Tailwind CSS
-- **Backend**: Node.js, Python, Firebase, PostgreSQL
-- **Mobile**: iOS (Swift/React Native)
-- **Integrations**: Stripe, OpenAI, Paxton, various APIs
-- **Hosting**: Cloudflare, Hostinger, custom VPS
 
 ## Industries Served
 
