@@ -19,6 +19,10 @@ const categoryStyles: Record<string, { bg: string; text: string; label: string }
   'case-studies': { bg: 'bg-amber-500/10', text: 'text-amber-700', label: 'Case Study' },
   'tips': { bg: 'bg-purple-500/10', text: 'text-ai-purple', label: 'Tips & Tricks' },
   'news': { bg: 'bg-blue-500/10', text: 'text-trust-blue', label: 'News' },
+  'guides': { bg: 'bg-green-500/10', text: 'text-green-700', label: 'Guide' },
+  'automation': { bg: 'bg-purple-500/10', text: 'text-ai-purple', label: 'Automation' },
+  'web-development': { bg: 'bg-blue-500/10', text: 'text-trust-blue', label: 'Web Development' },
+  'business': { bg: 'bg-amber-500/10', text: 'text-amber-700', label: 'Business' },
 };
 const style = categoryStyles[category];
 
@@ -47,19 +51,28 @@ const siteUrl = 'https://f-w-d.co.uk';
   ogImage={heroImage}
 >
   <!-- Hero Image -->
-  <section class="relative h-72 md:h-96 -mt-3">
-    <img
-      src={heroImage}
-      alt={heroImageAlt}
-      class="w-full h-full object-cover"
-      width="1200"
-      height="400"
-    />
-    <div class="absolute inset-0 bg-gradient-to-t from-white via-white/30 to-transparent"></div>
-  </section>
+  {heroImage ? (
+    <section class="relative h-72 md:h-96 -mt-3">
+      <img
+        src={heroImage}
+        alt={heroImageAlt}
+        class="w-full h-full object-cover"
+        width="1200"
+        height="400"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+      />
+      <div class="absolute inset-0 bg-gradient-to-t from-white via-white/30 to-transparent"></div>
+    </section>
+  ) : (
+    <section class="relative h-32 md:h-40 -mt-3 bg-gradient-to-br from-slate-900 to-slate-800">
+      <div class="absolute inset-0 bg-gradient-to-t from-white via-white/30 to-transparent"></div>
+    </section>
+  )}
 
   <!-- Article Header -->
-  <article class="container mx-auto px-6 lg:px-8 max-w-3xl -mt-24 relative z-10">
+  <article class="container mx-auto px-6 lg:px-8 max-w-5xl -mt-24 relative z-10">
     <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 mb-10">
       <div class="flex flex-wrap items-center gap-3 mb-4">
         <span class={`${style.bg} ${style.text} text-xs font-semibold px-2.5 py-1 rounded-full`}>{style.label}</span>
@@ -116,7 +129,7 @@ const siteUrl = 'https://f-w-d.co.uk';
     "@type": "BlogPosting",
     "headline": title,
     "description": description,
-    "image": heroImage.startsWith('http') ? heroImage : `${siteUrl}${heroImage}`,
+    "image": heroImage ? (heroImage.startsWith('http') ? heroImage : `${siteUrl}${heroImage}`) : `${siteUrl}/og-default.png`,
     "datePublished": pubDate.toISOString(),
     "dateModified": (updatedDate || pubDate).toISOString(),
     "author": {

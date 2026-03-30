@@ -1,0 +1,123 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Section from '../../components/layout/Section.astro';
+import SmartCTA from '../../components/interactive/SmartCTA.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const industries = await getCollection('industries');
+  return industries.map((entry) => ({
+    params: { slug: entry.data.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+const serviceLinks: Record<string, { label: string; href: string }> = {
+  websites: { label: 'Professional Websites', href: '/services/professional-websites' },
+  automation: { label: 'Business Automation', href: '/services/business-process-automation' },
+  apps: { label: 'Custom App Development', href: '/services/custom-app-development' },
+  hosting: { label: 'Hosting & Maintenance', href: '/services/hosting-maintenance' },
+};
+
+const industryLabel = entry.data.title.replace('Web Development for ', '').replace(' Businesses', '');
+---
+
+<Layout
+  title={`${entry.data.title} | FWD`}
+  description={entry.data.description}
+>
+  <!-- Hero -->
+  <section class="relative py-20 bg-slate-900">
+    <div class="container relative z-10 mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto text-center text-white">
+        <h1 class="text-4xl lg:text-5xl font-bold mb-6">{entry.data.title}</h1>
+        <p class="text-xl text-gray-200">{entry.data.description}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pain Points -->
+  <Section variant="default">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="text-3xl font-bold text-slate-900 mb-8" data-animate>Common Challenges</h2>
+      <div class="grid md:grid-cols-2 gap-4" data-stagger>
+        {entry.data.painPoints.map((point: string) => (
+          <div class="flex items-start gap-3 p-4 bg-red-50 rounded-lg" data-animate>
+            <svg class="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+            <span class="text-slate-700">{point}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </Section>
+
+  <!-- Capabilities -->
+  <Section variant="muted">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="text-3xl font-bold text-slate-900 mb-8" data-animate>What I Can Build</h2>
+      <div class="grid md:grid-cols-2 gap-4" data-stagger>
+        {entry.data.capabilities.map((cap: string) => (
+          <div class="flex items-start gap-3 p-4 bg-white rounded-lg shadow-sm" data-animate>
+            <svg class="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+            <span class="text-slate-700">{cap}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </Section>
+
+  <!-- MDX Content Body -->
+  <Section variant="default">
+    <div class="max-w-3xl mx-auto prose">
+      <Content />
+    </div>
+  </Section>
+
+  <!-- Related Services -->
+  <Section variant="muted">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="text-3xl font-bold text-slate-900 mb-8" data-animate>Relevant Services</h2>
+      <div class="grid md:grid-cols-3 gap-4" data-stagger>
+        {entry.data.relatedServices.map((serviceKey: string) => {
+          const service = serviceLinks[serviceKey];
+          return service ? (
+            <a href={service.href} class="block p-4 bg-white rounded-lg shadow-sm border border-slate-100 hover:border-purple-200 hover:shadow-md transition-all text-center" data-animate>
+              <span class="font-semibold text-slate-900">{service.label}</span>
+            </a>
+          ) : null;
+        })}
+      </div>
+    </div>
+  </Section>
+
+  <!-- CTA -->
+  <Section variant="gradient">
+    <SmartCTA
+      heading={`Got a ${industryLabel} project?`}
+      text="I'd love to hear about it. Let's chat about what you need."
+      primaryWhatsappMessage={`Hi Sam, I run a ${industryLabel.toLowerCase()} business and I'm looking for help with...`}
+      secondaryLabel="See My Work"
+      secondaryHref="/work"
+    />
+  </Section>
+
+  <!-- Schema -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": entry.data.title,
+    "description": entry.data.description,
+    "provider": {
+      "@type": "Organization",
+      "name": "FWD Thinking Solutions",
+      "url": "https://f-w-d.co.uk"
+    }
+  })} />
+</Layout>

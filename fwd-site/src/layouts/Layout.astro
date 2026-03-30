@@ -3,12 +3,13 @@ import Nav from '../components/ui/Nav.astro';
 import Footer from '../components/ui/Footer.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import CookieConsent from '../components/CookieConsent.tsx';
+import '../styles/tokens.css';
+import '../styles/animations.css';
 import '../styles/global.css';
 
 export interface Props {
   title: string;
   description?: string;
-  keywords?: string;
   ogImage?: string;
   noindex?: boolean;
   hideBreadcrumbs?: boolean;
@@ -17,7 +18,6 @@ export interface Props {
 const {
   title,
   description = "Professional web development and business automation in Norwich, Norfolk. Websites, apps, booking systems and hosting for UK businesses.",
-  keywords = "web development norwich, custom app development, business automation norfolk, website hosting uk",
   ogImage = "/og-image.png",
   noindex = false,
   hideBreadcrumbs = false
@@ -25,6 +25,7 @@ const {
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const isHomepage = Astro.url.pathname === '/' || Astro.url.pathname === '';
+const pageTitle = isHomepage ? title : `${title} | FWD`;
 ---
 
 <!DOCTYPE html>
@@ -37,11 +38,22 @@ const isHomepage = Astro.url.pathname === '/' || Astro.url.pathname === '';
     <link rel="apple-touch-icon" sizes="180x180" href="/fwd-logo.webp" />
     <meta name="generator" content={Astro.generator} />
 
+    <!-- Google Analytics (GA4) -->
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-THCJXTGRCM"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('consent', 'default', {
+        'analytics_storage': 'denied'
+      });
+      gtag('config', 'G-THCJXTGRCM');
+    </script>
+
     <!-- Primary Meta Tags -->
-    <title>{title} | FWD Thinking Solutions</title>
-    <meta name="title" content={`${title} | FWD Thinking Solutions`} />
+    <title>{pageTitle}</title>
+    <meta name="title" content={pageTitle} />
     <meta name="description" content={description} />
-    <meta name="keywords" content={keywords} />
 
     <!-- Canonical URL -->
     <link rel="canonical" href={canonicalURL} />
@@ -49,7 +61,7 @@ const isHomepage = Astro.url.pathname === '/' || Astro.url.pathname === '';
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalURL} />
-    <meta property="og:title" content={`${title} | FWD Thinking Solutions`} />
+    <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImage} />
     <meta property="og:locale" content="en_GB" />
@@ -58,7 +70,7 @@ const isHomepage = Astro.url.pathname === '/' || Astro.url.pathname === '';
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content={canonicalURL} />
-    <meta property="twitter:title" content={`${title} | FWD Thinking Solutions`} />
+    <meta property="twitter:title" content={pageTitle} />
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={ogImage} />
 
@@ -66,9 +78,9 @@ const isHomepage = Astro.url.pathname === '/' || Astro.url.pathname === '';
     {noindex && <meta name="robots" content="noindex, nofollow" />}
 
     <!-- Performance hints -->
-    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://wa.me" />
+    <link rel="preconnect" href="https://www.googletagmanager.com" />
+    <link rel="dns-prefetch" href="https://www.google-analytics.com" />
 
     <!-- Schema.org markup for Google -->
     <script type="application/ld+json">
@@ -93,6 +105,13 @@ const isHomepage = Astro.url.pathname === '/' || Astro.url.pathname === '';
           "@type": "GeoCoordinates",
           "latitude": 52.6309,
           "longitude": 1.2974
+        },
+        "telephone": "+447584417830",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+447584417830",
+          "contactType": "customer service",
+          "availableLanguage": "English"
         },
         "areaServed": [
           {
@@ -186,15 +205,15 @@ const isHomepage = Astro.url.pathname === '/' || Astro.url.pathname === '';
                 "@type": "Service",
                 "name": "Hosting & Maintenance",
                 "description": "Reliable hosting with daily backups, security updates, performance monitoring and support",
-                "url": "https://f-w-d.co.uk/services/reliable-hosting-maintenance"
+                "url": "https://f-w-d.co.uk/services/hosting-maintenance"
               },
-              "price": "99",
+              "price": "20",
               "priceCurrency": "GBP",
               "priceSpecification": {
                 "@type": "PriceSpecification",
-                "price": "99",
+                "price": "20",
                 "priceCurrency": "GBP",
-                "minPrice": "99",
+                "minPrice": "20",
                 "unitText": "MONTH"
               }
             }
@@ -234,8 +253,17 @@ const isHomepage = Astro.url.pathname === '/' || Astro.url.pathname === '';
             }
           }
         ],
-        "sameAs": []
+        "sameAs": [
+          "https://g.page/fwd-thinking-solutions"
+        ]
       })}
+    </script>
+    <script is:inline>
+      (function() {
+        const stored = document.cookie.match(/theme=(\w+)/);
+        const pref = stored ? stored[1] : 'light';
+        document.documentElement.setAttribute('data-theme', pref);
+      })();
     </script>
   </head>
   <body>

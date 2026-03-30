@@ -1,0 +1,54 @@
+/* Respect user preferences */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Scroll-triggered reveals */
+[data-animate] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity var(--duration-normal) var(--ease-default),
+              transform var(--duration-normal) var(--ease-default);
+}
+[data-animate].is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Staggered grid reveals */
+[data-stagger] > * {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity var(--duration-normal) var(--ease-default),
+              transform var(--duration-normal) var(--ease-default);
+}
+[data-stagger].is-visible > *:nth-child(1) { transition-delay: 0ms; }
+[data-stagger].is-visible > *:nth-child(2) { transition-delay: 100ms; }
+[data-stagger].is-visible > *:nth-child(3) { transition-delay: 200ms; }
+[data-stagger].is-visible > *:nth-child(4) { transition-delay: 300ms; }
+[data-stagger].is-visible > * { opacity: 1; transform: translateY(0); }
+
+/* Button press */
+button:active, a[role="button"]:active {
+  transform: scale(0.98);
+  transition: transform 100ms var(--ease-default);
+}
+
+/* Card hover */
+.card-hover {
+  transition: transform var(--duration-fast) var(--ease-default),
+              box-shadow var(--duration-fast) var(--ease-default);
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Dark mode colour transition */
+body {
+  transition: background-color 200ms, color 200ms;
+}

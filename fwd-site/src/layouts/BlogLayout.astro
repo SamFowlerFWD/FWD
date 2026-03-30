@@ -1,0 +1,123 @@
+---
+import Layout from './Layout.astro';
+import ReadingProgress from '../components/blog/ReadingProgress.tsx';
+import TableOfContents from '../components/blog/TableOfContents.tsx';
+import AuthorBox from '../components/blog/AuthorBox.astro';
+import RelatedPosts from '../components/blog/RelatedPosts.astro';
+import FreshnessBadge from '../components/content/FreshnessBadge.astro';
+import SmartCTA from '../components/interactive/SmartCTA.astro';
+import { formatDate } from '../lib/utils';
+import { generateArticleSchema } from '../lib/schema';
+
+export interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  lastUpdated?: Date;
+  heroImage?: string;
+  heroImageAlt?: string;
+  category: string;
+  slug: string;
+}
+
+const { title, description, pubDate, lastUpdated, heroImage, heroImageAlt, category, slug } = Astro.props;
+
+const showFreshness = lastUpdated && lastUpdated.valueOf() !== pubDate.valueOf();
+const articleSchema = generateArticleSchema({
+  title,
+  description,
+  url: `https://f-w-d.co.uk/blog/${slug}`,
+  image: heroImage ? `https://f-w-d.co.uk${heroImage}` : undefined,
+  datePublished: pubDate.toISOString(),
+  dateModified: lastUpdated?.toISOString(),
+});
+
+const categoryLabels: Record<string, string> = {
+  'case-studies': 'Case Study',
+  'guides': 'Guide',
+  'automation': 'Automation',
+  'web-development': 'Web Development',
+  'business': 'Business',
+  'tips': 'Tips',
+  'news': 'News',
+};
+---
+
+<Layout
+  title={title}
+  description={description}
+>
+  <ReadingProgress client:load />
+
+  <!-- Article Header -->
+  <section class="py-16 bg-slate-900 text-white">
+    <div class="max-w-4xl mx-auto px-6 md:px-8">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="text-xs font-medium bg-amber-500/20 text-amber-400 px-2.5 py-1 rounded-full">
+          {categoryLabels[category] || category}
+        </span>
+        <time datetime={pubDate.toISOString()} class="text-sm text-gray-400">
+          {formatDate(pubDate)}
+        </time>
+      </div>
+      <h1 class="text-4xl lg:text-5xl font-bold mb-4">{title}</h1>
+      <p class="text-xl text-gray-300">{description}</p>
+      {showFreshness && lastUpdated && (
+        <div class="mt-4">
+          <FreshnessBadge date={lastUpdated} />
+        </div>
+      )}
+    </div>
+  </section>
+
+  {heroImage && (
+    <div class="max-w-4xl mx-auto px-6 md:px-8 -mt-8">
+      <img
+        src={heroImage}
+        alt={heroImageAlt || title}
+        class="w-full rounded-xl shadow-lg"
+        width="800"
+        height="450"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+      />
+    </div>
+  )}
+
+  <!-- Article Content -->
+  <div class="max-w-7xl mx-auto px-6 md:px-8 py-12">
+    <div class="flex gap-12">
+      <!-- Main Content -->
+      <article class="flex-1 max-w-4xl">
+        <TableOfContents client:visible />
+        <div class="prose max-w-none">
+          <slot />
+        </div>
+        <AuthorBox />
+        <RelatedPosts currentSlug={slug} category={category} />
+      </article>
+
+      <!-- Desktop Sidebar ToC -->
+      <aside class="hidden lg:block w-64 flex-shrink-0">
+        <TableOfContents client:visible />
+      </aside>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <section class="py-16 bg-gradient-to-br from-[#0f172a] via-[#1e1040] to-[#0f172a] text-white">
+    <div class="max-w-7xl mx-auto px-6 md:px-8">
+      <SmartCTA
+        heading="Got a Similar Project?"
+        text="I'd love to hear about it. Let's chat."
+        primaryWhatsappMessage={`Hi Sam, I was reading your article about ${title} and had some questions.`}
+        secondaryLabel="See My Work"
+        secondaryHref="/work"
+      />
+    </div>
+  </section>
+
+  <!-- Schema -->
+  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+</Layout>

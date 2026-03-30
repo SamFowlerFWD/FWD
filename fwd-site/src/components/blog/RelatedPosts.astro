@@ -1,0 +1,43 @@
+---
+import PostCard from './PostCard.astro';
+import { getCollection } from 'astro:content';
+
+export interface Props {
+  currentSlug: string;
+  category?: string;
+}
+
+const { currentSlug, category } = Astro.props;
+
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+
+// Filter out current post and prefer same category
+const related = allPosts
+  .filter((post) => post.id !== currentSlug)
+  .sort((a, b) => {
+    const aMatch = category && a.data.category === category ? 1 : 0;
+    const bMatch = category && b.data.category === category ? 1 : 0;
+    if (aMatch !== bMatch) return bMatch - aMatch;
+    return b.data.pubDate.valueOf() - a.data.pubDate.valueOf();
+  })
+  .slice(0, 3);
+---
+
+{related.length > 0 && (
+  <div class="mt-16" data-animate>
+    <h2 class="text-2xl font-bold text-slate-900 mb-8">Related Articles</h2>
+    <div class="grid md:grid-cols-3 gap-6">
+      {related.map((post) => (
+        <PostCard
+          title={post.data.title}
+          description={post.data.description}
+          pubDate={post.data.pubDate}
+          heroImage={post.data.heroImage || post.data.image || ''}
+          heroImageAlt={post.data.heroImageAlt || post.data.title}
+          category={post.data.category}
+          slug={post.id}
+        />
+      ))}
+    </div>
+  </div>
+)}

@@ -1,0 +1,277 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import SmartCTA from '../../components/interactive/SmartCTA.astro';
+
+const caseStudies = [
+  {
+    name: "Ask Stephen",
+    slug: "building-ask-stephen",
+    description: "Business mentorship platform with coaching tools, habit tracking, and the 4 Corners framework. Co-founded as technical partner.",
+    services: ["Mobile App", "Custom Platform", "Subscription Billing"],
+    image: "/portfolio/ask-stephen.webp",
+    alt: "Ask Stephen business mentorship app with AI coaching and habit tracking",
+    industry: "Technology"
+  },
+  {
+    name: "Fakenham Dog Field",
+    slug: "building-fakenham-dog-field",
+    description: "Secure dog field booking system with online payments and automated gate access codes. Book online, pay securely, receive instant access code.",
+    services: ["Booking System", "Payment Integration", "Access Control"],
+    image: "/portfolio/fakenham-dog-field.webp",
+    alt: "Fakenham Dog Field online booking system with calendar and Stripe payments",
+    industry: "Pet Services"
+  },
+  {
+    name: "Horsebox Hire Software",
+    slug: "building-horsebox-hire-software",
+    description: "Bespoke booking system built from scratch. Handles availability, payments, and customer management automatically.",
+    services: ["Booking System", "Payment Integration", "Custom Build"],
+    image: "/portfolio/wee-horsebox-hire.webp",
+    alt: "Horsebox hire booking system with availability calendar and payments",
+    industry: "Equestrian"
+  },
+  {
+    name: "Salon 64",
+    slug: "building-salon-64-dereham",
+    description: "Professional website for a Dereham hair salon. Clean design, easy to update, and built to attract local customers.",
+    services: ["Website Build", "Local SEO", "Hosting"],
+    image: "/portfolio/salon-64.webp",
+    alt: "Salon 64 hair salon website in Dereham, Norfolk",
+    industry: "Health & Beauty"
+  }
+];
+
+const allProjects = [
+  {
+    name: "Hoofflix",
+    description: "Equestrian video streaming platform. Growth partnership, content strategy, and system optimisation.",
+    url: "https://hoofflix.com",
+    image: "/portfolio/hoofflix.webp",
+    industry: "Equestrian / Media"
+  },
+  {
+    name: "The Balanced Horse",
+    description: "Video learning platform for equestrian education with progress tracking.",
+    url: "#",
+    image: "/portfolio/balanced-horse.webp",
+    industry: "Equestrian"
+  },
+  {
+    name: "Norwich Canoe Club",
+    description: "Membership management, event bookings, and communication tools.",
+    url: "https://norwichcanoeclub.co.uk",
+    image: "/portfolio/norwich-canoe-club.webp",
+    industry: "Sports & Recreation"
+  },
+  {
+    name: "J Taylor Horseboxes",
+    description: "Horsebox manufacturer website with SEO and hosting.",
+    url: "https://www.jthltd.co.uk",
+    image: "/portfolio/jth-horseboxes.webp",
+    industry: "Manufacturing"
+  },
+  {
+    name: "Harford Attachments",
+    description: "Excavator attachments manufacturer website with ongoing support.",
+    url: "https://www.harfordattachments.co.uk",
+    image: "/portfolio/harford-attachments.webp",
+    industry: "Manufacturing"
+  },
+  {
+    name: "Farriers Choice",
+    description: "Webshop and product catalogue with ongoing SEO.",
+    url: "https://www.farrierschoice.uk",
+    image: "/portfolio/farriers-choice.webp",
+    industry: "Equestrian"
+  },
+  {
+    name: "Britten Farriery",
+    description: "Premium local farriery business website.",
+    url: "https://masterfarrier.co.uk",
+    image: "/portfolio/britten-farriery.webp",
+    industry: "Equestrian"
+  },
+  {
+    name: "Mill Saddlery",
+    description: "Mobile saddlery business with booking request feature.",
+    url: "https://www.millsaddlery.co.uk",
+    image: "/portfolio/mill-saddlery.webp",
+    industry: "Equestrian"
+  },
+  {
+    name: "Serene Safety",
+    description: "Health and safety consultancy website with ongoing SEO.",
+    url: "https://serenesafety.co.uk",
+    image: "/portfolio/serene-safety.webp",
+    industry: "Professional Services"
+  },
+  {
+    name: "JDB Carpentry & Building",
+    description: "Heritage and listed properties specialist website.",
+    url: "https://jdbcarpentryandbuilding.co.uk",
+    image: "/portfolio/jdb-carpentry.webp",
+    industry: "Construction"
+  },
+  {
+    name: "Millers Fitness",
+    description: "Used gym equipment supplier. First page of Google UK for 'used gym equipment'.",
+    url: "https://www.millersfitness.net",
+    image: "/portfolio/millers-fitness.webp",
+    industry: "Retail"
+  }
+];
+---
+
+<Layout
+  title="My Work | Web Development & Automation Projects | FWD"
+  description="Real projects, real results. Websites, apps, booking systems, and automation built for UK businesses. Based in Norwich, working UK-wide."
+  keywords="web development portfolio, uk business websites, booking system development, case studies, norfolk web design"
+>
+  <Breadcrumbs path="/work" />
+
+  <!-- Hero Section -->
+  <section class="relative py-20 bg-slate-900">
+    <div class="absolute inset-0 bg-ai-mesh opacity-20"></div>
+    <div class="container relative z-10 mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto text-center text-white">
+        <h1 class="text-5xl lg:text-6xl font-bold mb-6">
+          Our <span class="text-amber-400">Work</span>
+        </h1>
+        <p class="text-xl text-gray-100 mb-8">
+          Real projects built for real businesses. Have a look at what I've done and see if it gives you ideas for your own project.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Case Studies -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-12">
+          <span class="bg-amber-100 text-amber-800 text-sm font-semibold px-4 py-2 rounded-full">Case Studies</span>
+          <h2 class="text-3xl font-bold text-slate-900 mt-4">Featured Projects</h2>
+          <p class="text-gray-600 mt-2">Read the full story behind these builds.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8">
+          {caseStudies.map(project => (
+            <a href={`/blog/${project.slug}`} class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow group">
+              <div class="h-48 relative overflow-hidden">
+                <img
+                  src={project.image}
+                  alt={project.alt}
+                  class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300"
+                  width="400"
+                  height="192"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div class="absolute top-4 right-4 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                  Case Study
+                </div>
+              </div>
+              <div class="p-6">
+                <div class="flex items-center gap-2 mb-3">
+                  <span class="bg-slate-100 text-slate-700 text-xs font-semibold px-2 py-1 rounded-full">{project.industry}</span>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-amber-600 transition-colors">{project.name}</h3>
+                <p class="text-gray-600 text-sm mb-4">{project.description}</p>
+                <div class="flex flex-wrap gap-1 mb-4">
+                  {project.services.map(service => (
+                    <span class="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">{service}</span>
+                  ))}
+                </div>
+                <span class="inline-flex items-center gap-1 text-ai-purple font-semibold text-sm">
+                  Read Case Study
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                  </svg>
+                </span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- All Projects -->
+  <section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold text-slate-900 mb-4">All Projects</h2>
+          <p class="text-gray-600">Websites, apps, and digital solutions delivered for businesses across the UK.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {allProjects.map(project => (
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow group">
+              <div class="h-40 relative overflow-hidden">
+                <img
+                  src={project.image}
+                  alt={`${project.name} website`}
+                  class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300"
+                  width="300"
+                  height="160"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <div class="p-4">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="bg-slate-100 text-slate-700 text-xs font-semibold px-2 py-0.5 rounded-full">{project.industry}</span>
+                </div>
+                <h3 class="text-lg font-bold text-slate-900 mb-1">{project.name}</h3>
+                <p class="text-gray-600 text-sm mb-3">{project.description}</p>
+                {project.url !== "#" && (
+                  <a href={project.url} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-ai-purple font-semibold hover:underline text-sm">
+                    View Live
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                    </svg>
+                  </a>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SmartCTA -->
+  <section class="py-20 bg-slate-900 text-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <SmartCTA
+        heading="Ready to Start Your Project?"
+        text="Let's talk about what you need. I'll give you an honest recommendation and a clear quote."
+        primaryWhatsappMessage="Hi Sam, I've been looking at your work. I'd like to discuss a project."
+        secondaryLabel="View Services"
+        secondaryHref="/services"
+      />
+    </div>
+  </section>
+
+  <!-- Schema Markup -->
+  <script type="application/ld+json">
+    {JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "My Work - FWD Thinking Solutions",
+      "description": "Real projects, real results. Websites, apps, and automation built for UK businesses.",
+      "provider": {
+        "@type": "Organization",
+        "name": "FWD Thinking Solutions",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Norwich",
+          "addressRegion": "Norfolk",
+          "addressCountry": "GB"
+        }
+      }
+    })}
+  </script>
+</Layout>

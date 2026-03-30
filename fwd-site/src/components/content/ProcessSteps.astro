@@ -1,0 +1,22 @@
+---
+export interface Props {
+  steps: Array<{
+    number: number;
+    title: string;
+    description: string;
+  }>;
+}
+
+const { steps } = Astro.props;
+---
+<div class="grid md:grid-cols-3 gap-8 md:gap-12" data-stagger>
+  {steps.map((step) => (
+    <div class="text-center" data-animate>
+      <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-amber-500 text-slate-900 font-bold text-xl mb-4">
+        {step.number}
+      </div>
+      <h3 class="text-xl font-bold mb-2">{step.title}</h3>
+      <p class="text-slate-600">{step.description}</p>
+    </div>
+  ))}
+</div>

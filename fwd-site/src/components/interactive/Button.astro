@@ -1,0 +1,36 @@
+---
+export interface Props {
+  variant?: 'primary' | 'secondary' | 'ghost' | 'dark';
+  size?: 'sm' | 'md' | 'lg';
+  href?: string;
+  icon?: string;
+  class?: string;
+  [key: string]: any;
+}
+
+const { variant = 'primary', size = 'md', href, icon, class: className = '', ...rest } = Astro.props;
+
+const baseClasses = 'inline-flex items-center justify-center font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 min-h-[44px] min-w-[44px]';
+
+const variantClasses: Record<string, string> = {
+  primary: 'bg-amber-500 text-slate-900 hover:bg-amber-400 focus:ring-amber-500 shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0',
+  secondary: 'bg-white text-slate-900 border border-slate-200 hover:bg-slate-50 focus:ring-slate-400 shadow-sm hover:shadow-md',
+  ghost: 'text-slate-700 hover:bg-slate-100 focus:ring-slate-400',
+  dark: 'bg-slate-900 text-white hover:bg-slate-800 focus:ring-slate-600 shadow-lg',
+};
+
+const sizeClasses: Record<string, string> = {
+  sm: 'px-4 py-2 text-sm gap-1.5',
+  md: 'px-6 py-3 text-base gap-2',
+  lg: 'px-8 py-4 text-lg gap-2.5',
+};
+
+const Tag = href ? 'a' : 'button';
+---
+<Tag
+  href={href}
+  class:list={[baseClasses, variantClasses[variant], sizeClasses[size], className]}
+  {...rest}
+>
+  <slot />
+</Tag>

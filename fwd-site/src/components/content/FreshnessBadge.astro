@@ -1,0 +1,18 @@
+---
+export interface Props {
+  date?: Date;
+}
+
+const { date = new Date() } = Astro.props;
+
+const formatted = date.toLocaleDateString('en-GB', {
+  month: 'long',
+  year: 'numeric',
+});
+---
+<span class="inline-flex items-center gap-1.5 text-sm text-slate-500">
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+  Last updated: {formatted}
+</span>

@@ -1,181 +1,157 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import Section from '../../components/layout/Section.astro';
+import SmartCTA from '../../components/interactive/SmartCTA.astro';
 ---
 
 <Layout
-  title="Services - FWD Thinking Solutions"
-  description="Web development, automation, custom apps and hosting services from Norwich, Norfolk. Fair prices, honest approach, delivered on time."
-  keywords="web development norwich, business automation norfolk, custom software uk, website hosting norfolk"
+  title="Web Development & Automation Services | FWD"
+  description="Websites from £299, automation from £799, custom apps from £1,299. Fixed pricing, honest advice, direct communication. See all FWD services."
 >
   <!-- Hero Section -->
   <section class="relative py-20 bg-slate-900">
-    <div class="absolute inset-0 bg-ai-mesh opacity-20"></div>
     <div class="container relative z-10 mx-auto px-6 lg:px-8">
       <div class="max-w-3xl mx-auto text-center text-white">
         <h1 class="text-5xl lg:text-6xl font-bold mb-6">
           Web Development & <span class="text-amber-400">Automation Services</span>
         </h1>
         <p class="text-xl text-gray-100 mb-8">
-          I help businesses work smarter with technology. Websites, apps, automation, and hosting. Built properly, priced fairly, delivered on time.
+          Not sure what you need? That's fine. Have a look at what I offer, or just <a href="/contact" class="text-amber-400 hover:underline">get in touch</a> and I'll help you figure it out. No pressure, no obligation.
         </p>
-        <a href="https://wa.me/447584417830" target="_blank" rel="noopener noreferrer" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-lg transition-colors shadow-lg inline-block">
-          Get in Touch
-        </a>
       </div>
     </div>
   </section>
 
   <!-- Services Grid -->
-  <section class="py-20 bg-white">
-    <div class="container mx-auto px-6 lg:px-8">
-      <div class="grid lg:grid-cols-2 gap-8 max-w-5xl mx-auto" data-stagger>
+  <Section variant="default">
+    <div class="grid lg:grid-cols-2 gap-8 max-w-5xl mx-auto" data-stagger>
 
-        <!-- Websites -->
-        <a href="/services/professional-websites" class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 card-hover group" data-animate>
-          <div class="text-4xl mb-4">🌐</div>
-          <h2 class="text-2xl font-bold text-slate-900 mb-2 group-hover:text-ai-purple transition-colors">Professional Websites</h2>
-          <p class="text-sm text-ai-purple font-medium mb-3">From £299</p>
-          <p class="text-gray-600 mb-4">
-            Clean, fast, mobile-friendly websites that represent your business well. Built with modern tools and delivered in 2-3 weeks.
-          </p>
-          <ul class="space-y-2 mb-6">
-            {["Mobile responsive", "SEO optimised", "Fast loading", "Easy to update"].map(feature => (
-              <li class="flex items-start gap-2 text-sm text-gray-700">
-                <svg class="w-4 h-4 text-success-green mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                </svg>
-                {feature}
-              </li>
-            ))}
-          </ul>
-          <span class="text-ai-purple font-semibold">Learn more →</span>
-        </a>
+      <a href="/services/professional-websites" class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 card-hover group" data-animate>
+        <div class="text-4xl mb-4">&#127760;</div>
+        <h2 class="text-2xl font-bold text-slate-900 mb-2 group-hover:text-[var(--colour-primary)] transition-colors">Professional Websites</h2>
+        <p class="text-sm text-[var(--colour-primary)] font-medium mb-3">From £299</p>
+        <p class="text-gray-600 mb-4">
+          Fast, mobile-friendly websites that represent your business well. Built in 2 to 3 weeks, SEO-ready from day one. You own everything, no subscriptions, no lock-in.
+        </p>
+        <ul class="space-y-2 mb-6">
+          {["Mobile responsive", "SEO optimised", "Fast loading", "Easy to update"].map(feature => (
+            <li class="flex items-start gap-2 text-sm text-gray-700">
+              <svg class="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+              {feature}
+            </li>
+          ))}
+        </ul>
+        <span class="text-[var(--colour-primary)] font-semibold inline-flex items-center gap-1">Learn more <span class="arrow-slide">&rarr;</span></span>
+      </a>
 
-        <!-- Automation -->
-        <a href="/services/business-process-automation" class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 card-hover group" data-animate>
-          <div class="text-4xl mb-4 transition-transform duration-300 group-hover:scale-110">⚡</div>
-          <h2 class="text-2xl font-bold text-slate-900 mb-2 group-hover:text-ai-purple transition-colors">Business Process Automation</h2>
-          <p class="text-sm text-ai-purple font-medium mb-3">From £799</p>
-          <p class="text-gray-600 mb-4">
-            Automate the repetitive tasks that eat into your day. Invoicing, emails, data entry, and scheduling. Let technology handle the routine work.
-          </p>
-          <ul class="space-y-2 mb-6">
-            {["Invoice & data processing", "Email automation", "Workflow integration", "Works with your existing tools"].map(feature => (
-              <li class="flex items-start gap-2 text-sm text-gray-700">
-                <svg class="w-4 h-4 text-success-green mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                </svg>
-                {feature}
-              </li>
-            ))}
-          </ul>
-          <span class="text-ai-purple font-semibold">Learn more →</span>
-        </a>
+      <a href="/services/business-process-automation" class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 card-hover group" data-animate>
+        <div class="text-4xl mb-4">&#9889;</div>
+        <h2 class="text-2xl font-bold text-slate-900 mb-2 group-hover:text-[var(--colour-primary)] transition-colors">Business Process Automation</h2>
+        <p class="text-sm text-[var(--colour-primary)] font-medium mb-3">From £799</p>
+        <p class="text-gray-600 mb-4">
+          Automate the repetitive tasks that eat into your day. Invoicing, emails, data entry, and scheduling. Let technology handle the routine work.
+        </p>
+        <ul class="space-y-2 mb-6">
+          {["Invoice & data processing", "Email automation", "Workflow integration", "Works with your existing tools"].map(feature => (
+            <li class="flex items-start gap-2 text-sm text-gray-700">
+              <svg class="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+              {feature}
+            </li>
+          ))}
+        </ul>
+        <span class="text-[var(--colour-primary)] font-semibold inline-flex items-center gap-1">Learn more <span class="arrow-slide">&rarr;</span></span>
+      </a>
 
-        <!-- Custom Apps -->
-        <a href="/services/custom-app-development" class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 card-hover group" data-animate>
-          <div class="text-4xl mb-4 transition-transform duration-300 group-hover:scale-110">📱</div>
-          <h2 class="text-2xl font-bold text-slate-900 mb-2 group-hover:text-ai-purple transition-colors">Custom App Development</h2>
-          <p class="text-sm text-ai-purple font-medium mb-3">From £1,299</p>
-          <p class="text-gray-600 mb-4">
-            Bespoke web and mobile applications built to solve your specific business problems. Booking systems, dashboards, and internal tools.
-          </p>
-          <ul class="space-y-2 mb-6">
-            {["Web & mobile apps", "Booking systems", "Business dashboards", "API development"].map(feature => (
-              <li class="flex items-start gap-2 text-sm text-gray-700">
-                <svg class="w-4 h-4 text-success-green mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                </svg>
-                {feature}
-              </li>
-            ))}
-          </ul>
-          <span class="text-ai-purple font-semibold">Learn more →</span>
-        </a>
+      <a href="/services/custom-app-development" class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 card-hover group" data-animate>
+        <div class="text-4xl mb-4">&#128241;</div>
+        <h2 class="text-2xl font-bold text-slate-900 mb-2 group-hover:text-[var(--colour-primary)] transition-colors">Custom App Development</h2>
+        <p class="text-sm text-[var(--colour-primary)] font-medium mb-3">From £1,299</p>
+        <p class="text-gray-600 mb-4">
+          Bespoke web and mobile applications built to solve your specific business problems. Booking systems, dashboards, and internal tools.
+        </p>
+        <ul class="space-y-2 mb-6">
+          {["Web & mobile apps", "Booking systems", "Business dashboards", "API development"].map(feature => (
+            <li class="flex items-start gap-2 text-sm text-gray-700">
+              <svg class="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+              {feature}
+            </li>
+          ))}
+        </ul>
+        <span class="text-[var(--colour-primary)] font-semibold inline-flex items-center gap-1">Learn more <span class="arrow-slide">&rarr;</span></span>
+      </a>
 
-        <!-- Hosting -->
-        <a href="/services/reliable-hosting-maintenance" class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 card-hover group" data-animate>
-          <div class="text-4xl mb-4 transition-transform duration-300 group-hover:scale-110">🛡️</div>
-          <h2 class="text-2xl font-bold text-slate-900 mb-2 group-hover:text-ai-purple transition-colors">Hosting & Maintenance</h2>
-          <p class="text-sm text-ai-purple font-medium mb-3">From £99/month</p>
-          <p class="text-gray-600 mb-4">
-            Reliable hosting with regular backups, security updates, and support when you need it. I keep your site running so you can focus on your business.
-          </p>
-          <ul class="space-y-2 mb-6">
-            {["Daily backups", "Security updates", "Performance monitoring", "Email support"].map(feature => (
-              <li class="flex items-start gap-2 text-sm text-gray-700">
-                <svg class="w-4 h-4 text-success-green mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                </svg>
-                {feature}
-              </li>
-            ))}
-          </ul>
-          <span class="text-ai-purple font-semibold">Learn more →</span>
-        </a>
+      <a href="/services/hosting-maintenance" class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 card-hover group" data-animate>
+        <div class="text-4xl mb-4">&#128640;</div>
+        <h2 class="text-2xl font-bold text-slate-900 mb-2 group-hover:text-[var(--colour-primary)] transition-colors">Hosting & Maintenance</h2>
+        <p class="text-sm text-[var(--colour-primary)] font-medium mb-3">From £20/month</p>
+        <p class="text-gray-600 mb-4">
+          Reliable hosting with daily backups, security updates, and support when you need it. I keep your site running so you can focus on your business.
+        </p>
+        <ul class="space-y-2 mb-6">
+          {["Daily backups", "Security updates", "Performance monitoring", "Email support"].map(feature => (
+            <li class="flex items-start gap-2 text-sm text-gray-700">
+              <svg class="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+              {feature}
+            </li>
+          ))}
+        </ul>
+        <span class="text-[var(--colour-primary)] font-semibold inline-flex items-center gap-1">Learn more <span class="arrow-slide">&rarr;</span></span>
+      </a>
 
-      </div>
+      <a href="/services/ai-training" class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 card-hover group lg:col-span-2 lg:max-w-lg lg:mx-auto" data-animate>
+        <div class="text-4xl mb-4">&#129302;</div>
+        <h2 class="text-2xl font-bold text-slate-900 mb-2 group-hover:text-[var(--colour-primary)] transition-colors">AI Training & Workshops</h2>
+        <p class="text-sm text-[var(--colour-primary)] font-medium mb-3">From £299</p>
+        <p class="text-gray-600 mb-4">
+          Learn to use ChatGPT, Claude, and AI tools properly. Hands-on training tailored to your actual workflows, not generic tips.
+        </p>
+        <ul class="space-y-2 mb-6">
+          {["1-to-1 sessions", "Team workshops", "Ongoing support", "Practical, not theoretical"].map(feature => (
+            <li class="flex items-start gap-2 text-sm text-gray-700">
+              <svg class="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+              {feature}
+            </li>
+          ))}
+        </ul>
+        <span class="text-[var(--colour-primary)] font-semibold inline-flex items-center gap-1">Learn more <span class="arrow-slide">&rarr;</span></span>
+      </a>
+
     </div>
-  </section>
+  </Section>
 
   <!-- CTA Section -->
-  <section class="py-20 bg-slate-900 text-white">
-    <div class="container mx-auto px-6 lg:px-8 text-center">
-      <div class="max-w-2xl mx-auto">
-        <h2 class="text-4xl font-bold mb-6 text-white">
-          Not Sure What You Need?
-        </h2>
-        <p class="text-xl text-gray-100 mb-8">
-          Happy to have a chat about your business and suggest the right approach. No pressure, no obligation.
-        </p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <a href="https://wa.me/447584417830" target="_blank" rel="noopener noreferrer" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-lg transition-colors shadow-lg inline-block">
-            Get in Touch
-          </a>
-          <a href="/portfolio" class="bg-white/10 backdrop-blur-sm border-2 border-white text-white font-bold py-4 px-8 rounded-lg hover:bg-white hover:text-slate-900 transition-all inline-block">
-            View Portfolio
-          </a>
-        </div>
-        <p class="text-sm text-gray-300 mt-6">
-          Based in Norwich, Norfolk. Working with businesses across the UK.
-        </p>
-      </div>
-    </div>
-  </section>
+  <Section variant="dark">
+    <SmartCTA
+      heading="Not Sure What You Need?"
+      text="Happy to have a chat about your business and suggest the right approach. No pressure, no obligation."
+      primaryWhatsappMessage="Hi Sam, I'm not sure what I need but I'd like to chat about my business."
+      secondaryLabel="See Pricing"
+      secondaryHref="/pricing"
+    />
+  </Section>
 
   <!-- Schema Markup -->
-  <script type="application/ld+json">
-    {JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "ItemList",
-      "name": "FWD Thinking Solutions - Services",
-      "description": "Web development, automation, custom apps, and hosting for UK businesses",
-      "itemListElement": [
-        {
-          "@type": "Service",
-          "@id": "https://f-w-d.co.uk/services/professional-websites",
-          "name": "Professional Websites",
-          "description": "Clean, fast, mobile-friendly websites for businesses"
-        },
-        {
-          "@type": "Service",
-          "@id": "https://f-w-d.co.uk/services/business-process-automation",
-          "name": "Business Process Automation",
-          "description": "Automate repetitive business tasks to save time"
-        },
-        {
-          "@type": "Service",
-          "@id": "https://f-w-d.co.uk/services/custom-app-development",
-          "name": "Custom App Development",
-          "description": "Bespoke web and mobile applications for your business"
-        },
-        {
-          "@type": "Service",
-          "@id": "https://f-w-d.co.uk/services/reliable-hosting-maintenance",
-          "name": "Hosting & Maintenance",
-          "description": "Reliable hosting with backups, updates, and support"
-        }
-      ]
-    })}
-  </script>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "FWD Thinking Solutions - Services",
+    "description": "Web development, automation, custom apps, hosting, and AI training for UK businesses",
+    "itemListElement": [
+      { "@type": "Service", "@id": "https://f-w-d.co.uk/services/professional-websites", "name": "Professional Websites", "description": "Fast, mobile-friendly websites for businesses" },
+      { "@type": "Service", "@id": "https://f-w-d.co.uk/services/business-process-automation", "name": "Business Process Automation", "description": "Automate repetitive business tasks to save time" },
+      { "@type": "Service", "@id": "https://f-w-d.co.uk/services/custom-app-development", "name": "Custom App Development", "description": "Bespoke web and mobile applications" },
+      { "@type": "Service", "@id": "https://f-w-d.co.uk/services/hosting-maintenance", "name": "Hosting & Maintenance", "description": "Reliable hosting with backups, updates, and support" },
+      { "@type": "Service", "@id": "https://f-w-d.co.uk/services/ai-training", "name": "AI Training & Workshops", "description": "Hands-on AI training for UK businesses" }
+    ]
+  })} />
 </Layout>

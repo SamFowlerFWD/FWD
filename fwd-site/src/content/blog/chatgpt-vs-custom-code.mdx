@@ -1,0 +1,106 @@
+---
+title: "ChatGPT vs Custom Code: When AI Tools Aren't Enough for Your Business"
+description: "When should you use ChatGPT and when do you need proper code? Honest guide with real examples from a developer who uses both daily."
+pubDate: 2026-03-16
+category: "automation"
+tags: ["AI", "ChatGPT", "automation", "custom code", "small business"]
+featured: true
+draft: false
+---
+
+I use ChatGPT and Claude every single day. They're brilliant tools. But I also see businesses trying to use them as a substitute for actual automation, and it ends up costing them more time than it saves.
+
+This isn't an article about AI being bad. It's about knowing when a chat tool is the right answer and when you need something built properly. I work on both sides of this, so I'll give you a straight take.
+
+## Where AI Tools Genuinely Help
+
+Let's start with the good stuff. AI chat tools are excellent for:
+
+**Writing and editing.** Drafting emails, tidying up proposals, creating social media posts, rewording something that doesn't sound right. This is where AI tools shine. They're fast, they're flexible, and they keep getting better at matching your tone.
+
+**Brainstorming and research.** Need 10 ideas for a marketing campaign? Want to understand a concept you're not familiar with? AI tools are a great thinking partner. They won't replace expertise, but they'll speed up the early stages of most tasks.
+
+**Summarising long documents.** Paste in a 30-page report and ask for the key points. This genuinely saves hours and AI does it well.
+
+**One-off data formatting.** Got a messy spreadsheet and need to clean up a column? Need to convert dates from one format to another? For small, one-time jobs, pasting data into ChatGPT and asking it to reformat works fine.
+
+**Learning and explaining concepts.** Want to understand what an API is? Curious about how VAT works on digital services? AI tools explain things clearly and patiently, at whatever level you need.
+
+For all of these tasks, AI is the right answer. You don't need me to build anything. You just need to learn how to prompt effectively, and we offer [AI training](/services/ai-training) for exactly that.
+
+## Where AI Tools Fall Short
+
+Here's where things get interesting. AI tools struggle with, or simply can't do, the following:
+
+**Anything that needs to run on a schedule.** If you need a report generated every Monday morning, or a reminder sent 24 hours before every appointment, AI tools can't help. They only work when someone opens them and types a prompt. Real automation runs whether anyone is at their desk or not.
+
+**Processing large amounts of data consistently.** ChatGPT can handle a few dozen rows of data in a conversation. It can't reliably process thousands of records with consistent formatting, validation, and error handling. And it doesn't remember what it did last time.
+
+**Connecting two systems together.** Your CRM needs to talk to your email marketing tool. Orders from your website need to flow into your accounting software. AI tools don't connect systems. They sit in a browser tab and wait for you to paste things in.
+
+**Tasks that need the same result every time.** AI tools are probabilistic. Ask them the same question twice and you might get slightly different answers. For creative tasks, that's fine. For data validation, invoice formatting, or anything where consistency matters, it's a problem.
+
+**Anything involving private or sensitive data.** Customer records, financial data, medical information. Pasting this into a third-party chat window raises serious data protection questions. If you're handling personal data under UK GDPR, you need to think carefully about where that data goes.
+
+## The eBay to Shopify Story
+
+This is a real example that illustrates the difference clearly.
+
+A client had over 500 product listings on eBay that needed migrating to Shopify. Different format, different fields, different requirements.
+
+**The ChatGPT approach** would look like this: copy a listing from eBay, paste it into ChatGPT, ask it to reformat for Shopify, copy the output, paste it into Shopify. Repeat 500 times. You'd need to check each result manually because the formatting might vary between attempts. Realistically, this would take days of tedious copy-paste work.
+
+**The code approach:** a Python script that reads the entire eBay catalogue export, splits multi-variation listings into individual products, cleans up the descriptions, maps the fields to Shopify's format, and outputs a ready-to-import CSV file. It runs in seconds. It produces identical formatting every time. And when the client adds new eBay listings next month, the same script handles those too.
+
+Both approaches use technology. Only one is automation.
+
+You can try a version of this kind of conversion in our [playground](/playground) to see what automated data processing looks like in practice.
+
+## The Honest Test
+
+When you're trying to decide whether you need an AI tool or custom code, ask yourself two questions:
+
+**"Do I need to do this more than once?"**
+
+If it's a one-off task, like drafting a specific email or reformatting a single document, an AI tool is probably fine. If it's something that happens repeatedly, weekly, daily, or triggered by an event, you need code. AI tools don't run themselves.
+
+**"Does this involve data I'd be uncomfortable pasting into a chatbot?"**
+
+If the answer is yes, you need a solution that keeps your data within systems you control. Custom code runs on your own infrastructure. It doesn't send your customer data to a third party's servers for processing.
+
+A third question worth considering:
+
+**"Does this need to work the same way every time?"**
+
+If consistency matters, code wins. Every time.
+
+## Real Examples Side by Side
+
+Here's how common business tasks break down:
+
+| Task | Best Approach | Why |
+|------|--------------|-----|
+| Write a follow-up email | AI tool | One-off, creative task |
+| Send follow-up emails automatically after every booking | Custom code | Needs to run reliably without human input |
+| Reformat a product description | AI tool | One-off text task |
+| Reformat 500 product descriptions | Custom code | Scale and consistency matter |
+| Summarise meeting notes | AI tool | One-off, varies every time |
+| Generate weekly sales reports from CRM data | Custom code | Scheduled, structured, same format every time |
+| Draft a job listing | AI tool | Creative, one-off |
+| Post job listings to 5 platforms simultaneously | Custom code | Repetitive multi-system task |
+| Research a competitor's pricing | AI tool | One-off research task |
+| Monitor competitor prices and alert you to changes | Custom code | Ongoing, scheduled, automated |
+
+## The Two-Sided Service
+
+This is why FWD offers both sides.
+
+For tasks where AI chat tools are the right answer, we run [AI training sessions](/services/ai-training) that teach you how to use them properly. Good prompting technique, understanding what the tools can and can't do, practical workflows for your specific business. Most people are using about 10% of what these tools can offer.
+
+For tasks where you need proper [automation](/services/business-process-automation), we build it. Custom code that runs on schedule, connects your systems, processes your data consistently, and works without anyone needing to babysit it.
+
+I'll always tell you which approach fits your situation. Even if it means a smaller invoice. If ChatGPT can solve your problem, I'll say so and show you how to use it. If you need code, I'll explain why and quote you a fixed price. You can see our [pricing](/pricing) for both services.
+
+## Not Sure Which You Need?
+
+[Get in touch](/contact) and tell me what's eating your time. I'll give you an honest answer about whether you need AI tools, custom code, or a combination of the two. No sales pitch. Just a straight recommendation based on what actually makes sense for your situation.

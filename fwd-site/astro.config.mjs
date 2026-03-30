@@ -8,6 +8,10 @@ import mdx from '@astrojs/mdx';
 // https://astro.build/config
 export default defineConfig({
   output: 'static',
+  redirects: {
+    '/portfolio': '/work',
+    '/services/reliable-hosting-maintenance': '/services/hosting-maintenance',
+  },
   server: {
     headers: {
       // Security headers
@@ -46,24 +50,14 @@ export default defineConfig({
       changefreq: 'weekly',
       lastmod: new Date(),
       serialize(item) {
-        const url = item.url.replace(/\/$/, '');
-        if (url.endsWith('f-w-d.co.uk') || url.endsWith('f-w-d.co.uk/')) {
-          item.priority = 1.0;
-        } else if (url.endsWith('/services')) {
-          item.priority = 0.9;
-        } else if (url.includes('/services/')) {
-          item.priority = 0.8;
-        } else if (url.endsWith('/blog')) {
-          item.priority = 0.8;
-        } else if (url.includes('/blog/')) {
-          item.priority = 0.6;
-        } else if (url.endsWith('/portfolio') || url.endsWith('/about')) {
-          item.priority = 0.7;
-        } else if (url.endsWith('/privacy-policy')) {
-          item.priority = 0.3;
-        } else {
-          item.priority = 0.5;
-        }
+        if (item.url === 'https://f-w-d.co.uk/') item.priority = 1.0;
+        else if (item.url === 'https://f-w-d.co.uk/pricing') item.priority = 0.9;
+        else if (item.url.includes('/services') && !item.url.includes('/services/')) item.priority = 0.9;
+        else if (item.url.includes('/services/')) item.priority = 0.8;
+        else if (item.url.includes('/industries/')) item.priority = 0.7;
+        else if (item.url.includes('/work/')) item.priority = 0.6;
+        else if (item.url.includes('/blog/')) item.priority = 0.5;
+        else if (item.url.includes('/privacy-policy')) item.priority = 0.3;
         return item;
       }
     })

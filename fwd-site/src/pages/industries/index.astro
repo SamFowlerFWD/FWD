@@ -1,0 +1,136 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import SmartCTA from '../../components/interactive/SmartCTA.astro';
+
+const industries = [
+  {
+    name: "Equestrian",
+    slug: "equestrian",
+    icon: "\u{1F40E}",
+    description: "Websites, booking systems, and video platforms for equestrian businesses across the UK.",
+    examples: "Horsebox manufacturers, saddlers, farriers, riding schools, equine video platforms"
+  },
+  {
+    name: "Manufacturing",
+    slug: "manufacturing",
+    icon: "\u{1F3ED}",
+    description: "Professional websites and business systems for manufacturers and engineering firms.",
+    examples: "Product catalogues, quote request systems, supplier portals"
+  },
+  {
+    name: "Pet Services",
+    slug: "pet-services",
+    icon: "\u{1F43E}",
+    description: "Booking systems, payment integration, and websites for pet service businesses.",
+    examples: "Dog fields, grooming salons, kennels, dog walkers, pet shops"
+  },
+  {
+    name: "Trades & Construction",
+    slug: "trades-construction",
+    icon: "\u{1F528}",
+    description: "Websites that generate leads and showcase your work for trades and construction businesses.",
+    examples: "Builders, carpenters, electricians, plumbers, landscapers"
+  },
+  {
+    name: "Health & Fitness",
+    slug: "health-fitness",
+    icon: "\u{1F4AA}",
+    description: "Online shops, booking systems, and class timetables for fitness and health businesses.",
+    examples: "Gyms, personal trainers, equipment suppliers, wellness centres"
+  },
+  {
+    name: "Professional Services",
+    slug: "professional-services",
+    icon: "\u{1F4BC}",
+    description: "Clean, credible websites for consultants, advisors, and professional service firms.",
+    examples: "Safety consultants, accountants, solicitors, coaches, mentors"
+  },
+  {
+    name: "Retail & Ecommerce",
+    slug: "retail-ecommerce",
+    icon: "\u{1F6D2}",
+    description: "Online shops and product catalogues that help you sell more.",
+    examples: "Product catalogues, e-commerce stores, inventory management"
+  },
+  {
+    name: "Technology & SaaS",
+    slug: "technology-saas",
+    icon: "\u{1F4BB}",
+    description: "Custom platforms, apps, and tools for technology businesses and startups.",
+    examples: "Web apps, mobile apps, SaaS platforms, API integrations"
+  }
+];
+---
+
+<Layout
+  title="Industries We Work With | FWD Thinking Solutions"
+  description="Web development and automation tailored for equestrian, manufacturing, pet services, trades, fitness, and other UK industries."
+  keywords="industry web development, equestrian websites, manufacturing websites, trades websites norfolk, small business web design uk"
+>
+  <Breadcrumbs path="/industries" />
+
+  <!-- Hero Section -->
+  <section class="relative py-20 bg-slate-900">
+    <div class="absolute inset-0 bg-ai-mesh opacity-20"></div>
+    <div class="container relative z-10 mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto text-center text-white">
+        <h1 class="text-5xl lg:text-6xl font-bold mb-6">
+          Industries We <span class="text-amber-400">Work With</span>
+        </h1>
+        <p class="text-xl text-gray-100 mb-8">
+          I've built websites, apps, and automation for businesses across a wide range of sectors. Every industry has its own challenges, and I take the time to understand yours before building anything.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Industry Grid -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-5xl mx-auto">
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {industries.map(industry => (
+            <a href={`/industries/${industry.slug}`} class="bg-gray-50 rounded-xl p-6 hover:bg-gray-100 transition-colors group border border-gray-100 hover:border-amber-200 hover:shadow-md">
+              <div class="text-4xl mb-4">{industry.icon}</div>
+              <h2 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-amber-600 transition-colors">{industry.name}</h2>
+              <p class="text-gray-600 text-sm mb-3">{industry.description}</p>
+              <p class="text-xs text-gray-500">{industry.examples}</p>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Industry Experience Matters -->
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl font-bold text-slate-900 mb-6">Why Industry Experience Matters</h2>
+        <p class="text-gray-600 leading-relaxed mb-4">
+          A website for a horsebox manufacturer has very different needs to one for a fitness equipment supplier. Booking systems, payment flows, product catalogues, and compliance requirements all vary by sector.
+        </p>
+        <p class="text-gray-600 leading-relaxed mb-4">
+          Having worked across multiple industries, I understand these differences. I know what works for trades businesses versus professional services, and I bring that practical experience to every project.
+        </p>
+        <p class="text-gray-600 leading-relaxed">
+          Don't see your industry listed? That's fine. The skills transfer. Get in touch and we'll talk about what you need.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SmartCTA -->
+  <section class="py-20 bg-slate-900 text-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <SmartCTA
+        heading="Let's Talk About Your Business"
+        text="Tell me about your industry and what you need. I'll give you honest advice on the best approach."
+        primaryWhatsappMessage="Hi Sam, I'd like to discuss a project for my business."
+        secondaryLabel="View My Work"
+        secondaryHref="/work"
+      />
+    </div>
+  </section>
+</Layout>

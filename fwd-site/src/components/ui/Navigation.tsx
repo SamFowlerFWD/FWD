@@ -39,14 +39,21 @@ const Navigation: React.FC = () => {
           description: 'Bespoke apps for your business'
         },
         {
-          label: 'Reliable Hosting & Maintenance',
-          href: '/services/reliable-hosting-maintenance',
+          label: 'Hosting & Maintenance',
+          href: '/services/hosting-maintenance',
           description: 'Keep your site running smoothly',
-          badge: 'From £99/mo'
+          badge: 'From £20/mo'
+        },
+        {
+          label: 'AI Training',
+          href: '/services/ai-training',
+          description: 'Learn to use AI tools properly'
         }
       ]
     },
-    { label: 'Portfolio', href: '/portfolio', badge: 'View Work' },
+    { label: 'Playground', href: '/playground' },
+    { label: 'My Work', href: '/work' },
+    { label: 'Pricing', href: '/pricing' },
     { label: 'Blog', href: '/blog' },
     { label: 'About', href: '/about' },
     { label: 'Contact', href: '/contact' }
@@ -90,7 +97,10 @@ const Navigation: React.FC = () => {
                 src="/fwd-logo.webp"
                 alt="FWD Thinking Solutions"
                 className="h-[120px] w-auto"
-                loading="lazy"
+                loading="eager"
+                decoding="async"
+                width="120"
+                height="120"
               />
               <span className="hidden sm:inline text-sm text-gray-800 font-medium">Thinking Solutions</span>
             </a>

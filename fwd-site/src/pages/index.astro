@@ -1,261 +1,247 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import PostCard from '../components/blog/PostCard.astro';
+import WhatsAppWidget from '../components/interactive/WhatsAppWidget.tsx';
+import HeroSequence from '../components/homepage/HeroSequence.tsx';
+import TestimonialCarousel from '../components/homepage/TestimonialCarousel.tsx';
 import { getCollection } from 'astro:content';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 3);
+
+const services = [
+  {
+    icon: '&#9889;',
+    name: 'Business Automation',
+    price: 'From £799',
+    description: 'Automate invoicing, emails, data entry and scheduling. Let technology handle the routine.',
+    href: '/services/business-process-automation',
+    cta: 'Learn more',
+    accent: 'purple',
+  },
+  {
+    icon: '&#127760;',
+    name: 'Professional Websites',
+    price: 'From £299',
+    description: 'Fast, mobile-friendly websites built in 2 to 3 weeks. SEO-ready from day one.',
+    href: '/services/professional-websites',
+    cta: 'Learn more',
+    accent: 'purple',
+  },
+  {
+    icon: '&#128241;',
+    name: 'Custom Apps',
+    price: 'From £1,299',
+    description: 'Booking systems, dashboards, internal tools. Built around your specific needs.',
+    href: '/services/custom-app-development',
+    cta: 'Learn more',
+    accent: 'purple',
+  },
+  {
+    icon: '&#128640;',
+    name: 'Hosting & Maintenance',
+    price: 'From £20/mo',
+    description: 'Daily backups, security updates, performance monitoring and support when you need it.',
+    href: '/services/hosting-maintenance',
+    cta: 'Learn more',
+    accent: 'purple',
+  },
+  {
+    icon: '&#129302;',
+    name: 'AI Training',
+    price: 'From £299',
+    description: 'Learn to use ChatGPT, Claude and AI tools properly. Hands-on training for your team.',
+    href: '/services/ai-training',
+    cta: 'Learn more',
+    accent: 'purple',
+  },
+  {
+    icon: '&#127918;',
+    name: 'Playground',
+    price: 'Interactive demos',
+    description: 'See what I build in action. Booking systems, quote builders, data tools. Try them now.',
+    href: '/playground',
+    cta: 'Explore demos',
+    accent: 'amber',
+  },
+];
+
+const playgroundDemos = [
+  { label: 'Quote Builder', gradient: 'from-purple-600 to-indigo-600', letter: 'Q' },
+  { label: 'Booking System', gradient: 'from-blue-600 to-cyan-600', letter: 'B' },
+  { label: 'ROI Calculator', gradient: 'from-amber-500 to-orange-600', letter: 'R' },
+  { label: 'Review Writer', gradient: 'from-emerald-500 to-teal-600', letter: 'W' },
+];
 ---
 
 <Layout
-  title="FWD Thinking Solutions - Web Development & Automation"
-  description="Professional web development and business automation in Norwich, Norfolk. Websites, apps, booking systems and hosting for UK businesses."
+  title="FWD Thinking Solutions | Web Developer for UK Businesses"
+  description="Web development, automation, and custom apps for UK small businesses. One developer, no middlemen, transparent pricing. Based in Norwich, working UK-wide."
 >
-  <!-- Hero Section -->
-  <section class="relative py-28 lg:py-36 hero-gradient overflow-hidden">
-    <!-- Particles -->
-    <div class="absolute inset-0 pointer-events-none">
-      <div class="particle"></div>
-      <div class="particle"></div>
-      <div class="particle"></div>
-      <div class="particle"></div>
-      <div class="particle"></div>
-      <div class="particle"></div>
+  <!-- Hero: Terminal → CTA → Build Sequence -->
+  <HeroSequence client:load />
+
+  <!-- ═══════════════════════════════════════════
+       1. SERVICES SHOWCASE
+       ═══════════════════════════════════════════ -->
+  <section class="relative py-24 md:py-32 bg-gradient-to-b from-[#0f172a] via-[#1a1040] to-[#0f172a] overflow-hidden">
+    <!-- Subtle background glow -->
+    <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+      <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-purple-600/5 rounded-full blur-3xl"></div>
     </div>
 
-    <div class="container relative z-10 mx-auto px-6 lg:px-8">
-      <div class="max-w-4xl mx-auto text-center text-white">
-        <div class="hero-text-animate">
-          <span class="inline-block bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 text-sm font-medium text-gray-200 mb-6">
-            Based in Norfolk, working across the UK
-          </span>
-        </div>
-        <h1 class="text-5xl lg:text-7xl font-bold mb-6 hero-text-animate">
-          One Developer.<br>
-          <span class="bg-gradient-to-r from-amber-400 to-amber-300 bg-clip-text text-transparent">No Middlemen.</span>
-        </h1>
-        <p class="text-xl lg:text-2xl text-gray-200 mb-10 max-w-2xl mx-auto hero-text-animate">
-          Websites, apps, booking systems and automation for UK businesses. You deal directly with the person who builds it.
-        </p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center hero-text-animate">
-          <a href="https://wa.me/447584417830" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 btn-glow">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-            Message on WhatsApp
-          </a>
-          <a href="/portfolio" class="bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white font-bold py-4 px-8 rounded-lg hover:bg-white hover:text-slate-900 transition-all duration-200">
-            View Portfolio
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Scroll indicator -->
-    <div class="absolute bottom-8 left-1/2 scroll-indicator">
-      <svg class="w-6 h-6 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-      </svg>
-    </div>
-  </section>
-
-  <!-- Social Proof Bar -->
-  <section class="py-6 bg-white border-b border-gray-100">
-    <div class="container mx-auto px-6 lg:px-8">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto text-center">
-        <div>
-          <div class="text-2xl font-bold text-slate-900">14+</div>
-          <div class="text-sm text-gray-500">Projects Delivered</div>
-        </div>
-        <div>
-          <div class="text-2xl font-bold text-slate-900">5.0</div>
-          <div class="text-sm text-gray-500">Client Rating</div>
-        </div>
-        <div>
-          <div class="text-2xl font-bold text-slate-900">8+</div>
-          <div class="text-sm text-gray-500">Industries Served</div>
-        </div>
-        <div>
-          <div class="text-2xl font-bold text-slate-900">UK-wide</div>
-          <div class="text-sm text-gray-500">Clients Served</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Services Section -->
-  <section id="services" class="py-24 bg-white">
-    <div class="container mx-auto px-6 lg:px-8">
+    <div class="relative max-w-7xl mx-auto px-6 md:px-8">
       <div class="text-center max-w-3xl mx-auto mb-16" data-animate>
-        <h2 class="text-4xl lg:text-5xl font-bold text-slate-900 mb-6">
-          What I Build
-        </h2>
-        <p class="text-xl text-gray-600">
-          From simple websites to complex applications. Fixed quotes, no jargon, and I'll tell you if you don't need it.
+        <h2 class="text-4xl lg:text-5xl font-bold text-white mb-6">What I Build</h2>
+        <p class="text-xl text-gray-400">
+          From simple websites to custom applications. Fixed quotes, no jargon, and I'll tell you if you don't need it.
         </p>
       </div>
 
-      <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto" data-stagger>
-        <a href="/services/business-process-automation" class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 card-hover group" data-animate>
-          <div class="text-4xl mb-4 transition-transform duration-300 group-hover:scale-110">&#9889;</div>
-          <h3 class="text-2xl font-bold text-slate-900 mb-3 group-hover:text-ai-purple transition-colors">Business Process Automation</h3>
-          <p class="text-gray-600 mb-4">Streamline repetitive tasks and workflows. From invoicing to customer communications, let technology handle the routine work.</p>
-          <span class="text-ai-purple font-semibold inline-flex items-center gap-1">Learn more <span class="arrow-slide">&rarr;</span></span>
-        </a>
-
-        <a href="/services/professional-websites" class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 card-hover group" data-animate>
-          <div class="text-4xl mb-4 transition-transform duration-300 group-hover:scale-110">&#127760;</div>
-          <h3 class="text-2xl font-bold text-slate-900 mb-3 group-hover:text-ai-purple transition-colors">Professional Websites</h3>
-          <p class="text-gray-600 mb-4">Modern, responsive websites that represent your business well. Fast, mobile-friendly, and optimised for search engines.</p>
-          <span class="text-ai-purple font-semibold inline-flex items-center gap-1">Learn more <span class="arrow-slide">&rarr;</span></span>
-        </a>
-
-        <a href="/services/custom-app-development" class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 card-hover group" data-animate>
-          <div class="text-4xl mb-4 transition-transform duration-300 group-hover:scale-110">&#128241;</div>
-          <h3 class="text-2xl font-bold text-slate-900 mb-3 group-hover:text-ai-purple transition-colors">Custom App Development</h3>
-          <p class="text-gray-600 mb-4">Bespoke applications built for your specific needs. iOS apps, web platforms, and internal tools.</p>
-          <span class="text-ai-purple font-semibold inline-flex items-center gap-1">Learn more <span class="arrow-slide">&rarr;</span></span>
-        </a>
-
-        <a href="/services/reliable-hosting-maintenance" class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 card-hover group" data-animate>
-          <div class="text-4xl mb-4 transition-transform duration-300 group-hover:scale-110">&#128640;</div>
-          <h3 class="text-2xl font-bold text-slate-900 mb-3 group-hover:text-ai-purple transition-colors">Hosting & Maintenance</h3>
-          <p class="text-gray-600 mb-4">Keep your website running smoothly with reliable hosting, regular updates, backups, and ongoing support.</p>
-          <span class="text-ai-purple font-semibold inline-flex items-center gap-1">Learn more <span class="arrow-slide">&rarr;</span></span>
-        </a>
+      <!-- Stack on mobile, 3-col grid on desktop -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6" data-stagger>
+        {services.map((service) => (
+          <a
+            href={service.href}
+            class="group block"
+            data-animate
+          >
+            <div class="h-full bg-white/5 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-white/10 transition-all duration-300 hover:bg-white/10 hover:border-white/20 hover:-translate-y-1 hover:shadow-2xl hover:shadow-purple-900/20">
+              <div class="text-3xl mb-4" set:html={service.icon} />
+              <h3 class="text-lg font-bold text-white mb-1">{service.name}</h3>
+              <p class={`text-sm font-medium mb-3 ${service.accent === 'amber' ? 'text-amber-400' : 'text-purple-400'}`}>{service.price}</p>
+              <p class="text-gray-400 text-sm mb-5 leading-relaxed">{service.description}</p>
+              <span class={`font-semibold text-sm inline-flex items-center gap-1 ${service.accent === 'amber' ? 'text-amber-400' : 'text-purple-400'}`}>
+                {service.cta} <span class="arrow-slide">&rarr;</span>
+              </span>
+            </div>
+          </a>
+        ))}
       </div>
     </div>
   </section>
 
-  <!-- How I Work -->
-  <section class="py-24 bg-gray-50">
-    <div class="container mx-auto px-6 lg:px-8">
-      <div class="text-center max-w-3xl mx-auto mb-16" data-animate>
-        <h2 class="text-4xl lg:text-5xl font-bold text-slate-900 mb-6">
-          How I Work
-        </h2>
-        <p class="text-xl text-gray-600">
-          No agencies, no account managers. Just straightforward development from someone who cares about getting it right.
+  <!-- ═══════════════════════════════════════════
+       2. SOCIAL PROOF / TESTIMONIALS
+       ═══════════════════════════════════════════ -->
+  <section class="relative py-24 md:py-32 bg-gradient-to-b from-[#0f172a] via-[#12082a] to-[#0f172a]">
+    <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+      <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500/20 to-transparent"></div>
+      <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500/20 to-transparent"></div>
+    </div>
+
+    <div class="relative max-w-5xl mx-auto px-6 md:px-8" data-animate>
+      <h2 class="sr-only">Client Testimonials</h2>
+      <TestimonialCarousel client:visible />
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       3. TRY BEFORE YOU TALK
+       ═══════════════════════════════════════════ -->
+  <section class="relative py-24 md:py-32 bg-gradient-to-b from-[#0f172a] via-[#161830] to-[#0f172a]">
+    <div class="max-w-5xl mx-auto px-6 md:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-14" data-animate>
+        <h2 class="text-4xl lg:text-5xl font-bold text-white mb-6">Try Before You Talk</h2>
+        <p class="text-xl text-gray-400">
+          Interactive demos you can use right now. No signup needed.
         </p>
       </div>
 
-      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto" data-stagger>
-        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100" data-animate>
-          <div class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center mb-4">
-            <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-            </svg>
-          </div>
-          <h3 class="text-lg font-bold text-slate-900 mb-2">Direct Communication</h3>
-          <p class="text-gray-600 text-sm">You deal with me directly. The person who actually builds your project. No middlemen.</p>
-        </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-12" data-stagger>
+        {playgroundDemos.map((demo) => (
+          <a href="/playground" class="group block" data-animate>
+            <div class="aspect-[4/3] rounded-xl bg-gradient-to-br overflow-hidden relative border border-white/10 transition-all duration-300 hover:border-white/20 hover:scale-[1.03]">
+              <div class={`absolute inset-0 bg-gradient-to-br ${demo.gradient} opacity-80`}></div>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <span class="text-4xl md:text-5xl font-bold text-white/20">{demo.letter}</span>
+              </div>
+              <div class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 to-transparent">
+                <span class="text-sm font-medium text-white">{demo.label}</span>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
 
-        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100" data-animate>
-          <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mb-4">
-            <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <h3 class="text-lg font-bold text-slate-900 mb-2">Fixed Pricing</h3>
-          <p class="text-gray-600 text-sm">You know exactly what you're paying before we start. No hourly surprises or scope creep invoices.</p>
-        </div>
-
-        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100" data-animate>
-          <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-            </svg>
-          </div>
-          <h3 class="text-lg font-bold text-slate-900 mb-2">Honest Advice</h3>
-          <p class="text-gray-600 text-sm">I'll tell you what you need and what you don't. If a simpler solution works better, that's what I'll recommend.</p>
-        </div>
-
-        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100" data-animate>
-          <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
-            <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
-          </div>
-          <h3 class="text-lg font-bold text-slate-900 mb-2">End-to-End</h3>
-          <p class="text-gray-600 text-sm">Design, development, hosting and support. One point of contact for everything your project needs.</p>
-        </div>
+      <div class="text-center" data-animate>
+        <a
+          href="/playground"
+          class="inline-flex items-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-xl border border-white/20 hover:bg-white/15 hover:border-white/30 transition-all duration-300 hover:-translate-y-0.5 text-lg"
+        >
+          Open the Playground
+          <svg class="w-5 h-5 arrow-slide" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </a>
       </div>
     </div>
   </section>
 
-  <!-- Testimonials Section -->
-  <section class="py-24 bg-slate-900 text-white">
-    <div class="container mx-auto px-6 lg:px-8">
-      <div class="text-center mb-12" data-animate>
-        <h2 class="text-4xl font-bold mb-6 text-white">
-          What Clients Say
-        </h2>
-      </div>
-
-      <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto" data-stagger>
-        <div class="bg-white/5 backdrop-blur-sm rounded-xl p-8 border border-white/10 card-hover" data-animate>
-          <div class="flex gap-1 mb-4">
-            {[1,2,3,4,5].map(_ => (
-              <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-              </svg>
-            ))}
-          </div>
-          <blockquote class="text-white mb-6 text-lg leading-relaxed">"Sam really listens to the client's brief and adds value to their ideas. He is naturally creative and takes time to understand and produce amazing outcomes. Highly recommended."</blockquote>
-          <div>
-            <div class="font-semibold text-white">Anna Kidd</div>
-            <div class="text-sm text-gray-300">Director, Harford Attachments Ltd</div>
-          </div>
-        </div>
-
-        <div class="bg-white/5 backdrop-blur-sm rounded-xl p-8 border border-white/10 card-hover" data-animate>
-          <div class="flex gap-1 mb-4">
-            {[1,2,3,4,5].map(_ => (
-              <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-              </svg>
-            ))}
-          </div>
-          <blockquote class="text-white mb-6 text-lg leading-relaxed">"We're on the first page of Google in the UK for 'used gym equipment'. For website building and general techy scheming, Sam knows what he's doing!"</blockquote>
-          <div>
-            <div class="font-semibold text-white">Matt Miller</div>
-            <div class="text-sm text-gray-300">Owner, Millers Fitness</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Blog Section -->
+  <!-- ═══════════════════════════════════════════
+       4. BLOG / LATEST THINKING
+       ═══════════════════════════════════════════ -->
   {posts.length > 0 && (
-    <section class="py-24 bg-white">
-      <div class="container mx-auto px-6 lg:px-8">
-        <div class="text-center max-w-3xl mx-auto mb-12" data-animate>
-          <h2 class="text-4xl lg:text-5xl font-bold text-slate-900 mb-4">
-            From the Blog
-          </h2>
-          <p class="text-xl text-gray-600">
-            Case studies and insights from recent projects.
-          </p>
+    <section class="relative py-24 md:py-32 bg-gradient-to-b from-[#0f172a] via-[#1a1040] to-[#0f172a]">
+      <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500/20 to-transparent"></div>
+      </div>
+
+      <div class="relative max-w-6xl mx-auto px-6 md:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-14" data-animate>
+          <h2 class="text-4xl lg:text-5xl font-bold text-white mb-4">Latest Thinking</h2>
+          <p class="text-xl text-gray-400">Practical guides and case studies. No filler.</p>
         </div>
 
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto" data-stagger>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" data-stagger>
           {posts.map(post => (
-            <PostCard
-              title={post.data.title}
-              description={post.data.description}
-              pubDate={post.data.pubDate}
-              heroImage={post.data.heroImage}
-              heroImageAlt={post.data.heroImageAlt}
-              category={post.data.category}
-              slug={post.id}
-            />
+            <a href={`/blog/${post.id}`} class="group block" data-animate>
+              <div class="h-full bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 overflow-hidden transition-all duration-300 hover:bg-white/10 hover:border-white/20 hover:-translate-y-1">
+                <!-- Thumbnail -->
+                <div class="h-48 relative overflow-hidden">
+                  {post.data.heroImage ? (
+                    <img
+                      src={post.data.heroImage}
+                      alt={post.data.heroImageAlt || post.data.title}
+                      class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                      width="400"
+                      height="192"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ) : (
+                    <div class="w-full h-full bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center">
+                      <span class="text-white/20 text-6xl font-bold">{post.data.title.charAt(0)}</span>
+                    </div>
+                  )}
+                </div>
+                <!-- Content -->
+                <div class="p-6">
+                  <div class="flex items-center gap-3 mb-3">
+                    {post.data.category && (
+                      <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-purple-500/20 text-purple-300">
+                        {post.data.category === 'case-studies' ? 'Case Study' :
+                         post.data.category === 'web-development' ? 'Web Development' :
+                         post.data.category.charAt(0).toUpperCase() + post.data.category.slice(1)}
+                      </span>
+                    )}
+                    <time datetime={post.data.pubDate.toISOString()} class="text-xs text-gray-500">
+                      {post.data.pubDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+                    </time>
+                  </div>
+                  <h3 class="text-lg font-bold text-white mb-2 group-hover:text-purple-300 transition-colors">{post.data.title}</h3>
+                  <p class="text-gray-400 text-sm line-clamp-2">{post.data.description}</p>
+                </div>
+              </div>
+            </a>
           ))}
         </div>
 
-        <div class="text-center mt-10" data-animate>
-          <a href="/blog" class="inline-flex items-center gap-2 text-ai-purple font-semibold hover:underline text-lg">
+        <div class="text-center mt-12" data-animate>
+          <a href="/blog" class="inline-flex items-center gap-2 text-purple-400 font-semibold hover:text-purple-300 transition-colors text-lg group">
             View all posts
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-5 h-5 arrow-slide" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
           </a>
@@ -264,29 +250,47 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
     </section>
   )}
 
-  <!-- CTA Section -->
-  <section class="py-24 bg-gradient-to-br from-purple-700 via-purple-600 to-blue-600 text-white overflow-hidden relative">
-    <div class="absolute inset-0 opacity-10">
-      <div class="absolute top-0 left-1/4 w-96 h-96 bg-white/20 rounded-full blur-3xl"></div>
-      <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-amber-400/20 rounded-full blur-3xl"></div>
+  <!-- ═══════════════════════════════════════════
+       5. FINAL CTA
+       ═══════════════════════════════════════════ -->
+  <section class="relative min-h-screen flex items-center justify-center bg-gradient-to-b from-[#0f172a] via-[#1e1040] to-[#0A0E27] overflow-hidden">
+    <!-- Ambient glow -->
+    <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+      <div class="absolute top-1/3 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-purple-600/8 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-1/4 left-1/4 w-[400px] h-[400px] bg-amber-500/5 rounded-full blur-3xl"></div>
     </div>
-    <div class="container relative z-10 mx-auto px-6 lg:px-8 text-center" data-animate>
-      <h2 class="text-4xl lg:text-5xl font-bold mb-6 text-white">
-        Got an Idea? Let's Talk.
+
+    <div class="relative text-center max-w-4xl mx-auto px-6 md:px-8 py-24" data-animate>
+      <h2 class="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-8 leading-tight">
+        Ready to build something?
       </h2>
-      <p class="text-xl text-white/90 mb-10 max-w-2xl mx-auto">
+      <p class="text-xl md:text-2xl text-gray-400 mb-12 max-w-2xl mx-auto">
         No sales pitch, no pressure. Just a quick chat about what you need and whether I can help.
       </p>
-
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="https://wa.me/447584417830" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 btn-glow">
-          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-          Message on WhatsApp
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a
+          href="https://wa.me/447584417830?text=Hi%20Sam%2C%20I%20found%20your%20website%20and%20I%27m%20interested%20in%20discussing%20a%20project."
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-3 px-8 py-4 bg-amber-500 text-slate-900 font-bold rounded-xl hover:bg-amber-400 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-amber-500/25 text-lg"
+        >
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+          </svg>
+          Chat on WhatsApp
         </a>
-        <a href="/portfolio" class="bg-white/15 backdrop-blur-sm border-2 border-white/30 text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-slate-900 transition-all duration-200">
-          View Portfolio
+        <a
+          href="/work"
+          class="inline-flex items-center gap-3 px-8 py-4 bg-transparent text-white font-semibold rounded-xl border border-white/20 hover:bg-white/10 hover:border-white/30 transition-all duration-300 hover:-translate-y-0.5 text-lg"
+        >
+          See My Work
+          <svg class="w-5 h-5 arrow-slide" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
         </a>
       </div>
     </div>
   </section>
+
+  <WhatsAppWidget client:idle message="Hi Sam, I found your website and I'm interested in discussing a project." />
 </Layout>

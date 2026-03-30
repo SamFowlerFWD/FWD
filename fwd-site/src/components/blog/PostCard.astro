@@ -5,7 +5,7 @@ export interface Props {
   pubDate: Date;
   heroImage: string;
   heroImageAlt: string;
-  category: 'case-studies' | 'tips' | 'news';
+  category: 'case-studies' | 'tips' | 'news' | 'guides' | 'automation' | 'web-development' | 'business';
   slug: string;
 }
 
@@ -15,6 +15,10 @@ const categoryStyles: Record<string, { bg: string; text: string; label: string }
   'case-studies': { bg: 'bg-amber-500/10', text: 'text-amber-700', label: 'Case Study' },
   'tips': { bg: 'bg-purple-500/10', text: 'text-ai-purple', label: 'Tips & Tricks' },
   'news': { bg: 'bg-blue-500/10', text: 'text-trust-blue', label: 'News' },
+  'guides': { bg: 'bg-green-500/10', text: 'text-green-700', label: 'Guide' },
+  'automation': { bg: 'bg-purple-500/10', text: 'text-ai-purple', label: 'Automation' },
+  'web-development': { bg: 'bg-blue-500/10', text: 'text-trust-blue', label: 'Web Development' },
+  'business': { bg: 'bg-amber-500/10', text: 'text-amber-700', label: 'Business' },
 };
 
 const style = categoryStyles[category];
@@ -28,14 +32,21 @@ const formattedDate = pubDate.toLocaleDateString('en-GB', {
 
 <a href={`/blog/${slug}`} class="block bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden card-hover group" data-animate>
   <div class="h-48 relative overflow-hidden">
-    <img
-      src={heroImage}
-      alt={heroImageAlt}
-      class="w-full h-full object-cover object-top img-zoom"
-      width="400"
-      height="192"
-      loading="lazy"
-    />
+    {heroImage ? (
+      <img
+        src={heroImage}
+        alt={heroImageAlt}
+        class="w-full h-full object-cover object-top img-zoom"
+        width="400"
+        height="192"
+        loading="lazy"
+        decoding="async"
+      />
+    ) : (
+      <div class="w-full h-full bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center">
+        <span class="text-white/20 text-6xl font-bold">{title.charAt(0)}</span>
+      </div>
+    )}
   </div>
   <div class="p-6">
     <div class="flex items-center gap-3 mb-3">

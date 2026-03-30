@@ -1,0 +1,71 @@
+---
+export interface Props {
+  variant: 'service' | 'project' | 'blog' | 'industry';
+  title: string;
+  description: string;
+  href: string;
+  image?: string;
+  imageAlt?: string;
+  badge?: string;
+  price?: string;
+  tags?: string[];
+  icon?: string;
+}
+
+const { variant, title, description, href, image, imageAlt, badge, price, tags, icon } = Astro.props;
+---
+<a
+  href={href}
+  class:list={[
+    'group block rounded-xl overflow-hidden card-hover border border-slate-200 bg-white',
+    variant === 'service' && 'p-6',
+    (variant === 'project' || variant === 'blog') && 'flex flex-col',
+    variant === 'industry' && 'p-6',
+  ]}
+  data-animate
+>
+  {image && (variant === 'project' || variant === 'blog') && (
+    <div class="aspect-video overflow-hidden">
+      <img
+        src={image}
+        alt={imageAlt || title}
+        class="w-full h-full object-cover img-zoom"
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+  )}
+
+  <div class:list={[(variant === 'project' || variant === 'blog') && 'p-6']}>
+    {badge && (
+      <span class="inline-block text-xs font-medium bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full mb-3">
+        {badge}
+      </span>
+    )}
+
+    <h3 class="text-lg font-bold text-slate-900 group-hover:text-[var(--colour-primary)] transition-colors mb-2">
+      {title}
+    </h3>
+
+    <p class="text-sm text-slate-600 mb-4 line-clamp-2">{description}</p>
+
+    {price && (
+      <p class="text-sm font-semibold text-[var(--colour-primary)]">{price}</p>
+    )}
+
+    {tags && tags.length > 0 && (
+      <div class="flex flex-wrap gap-1.5 mt-3">
+        {tags.map((tag) => (
+          <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded">{tag}</span>
+        ))}
+      </div>
+    )}
+
+    <span class="inline-flex items-center gap-1 text-sm font-medium text-[var(--colour-primary)] mt-3 group-hover:gap-2 transition-all">
+      {variant === 'service' ? 'Learn more' : 'Read more'}
+      <svg class="w-4 h-4 arrow-slide" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </span>
+  </div>
+</a>

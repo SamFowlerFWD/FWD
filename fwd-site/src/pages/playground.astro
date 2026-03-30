@@ -1,0 +1,328 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Section from '../components/layout/Section.astro';
+import SmartCTA from '../components/interactive/SmartCTA.astro';
+import PlaygroundNav from '../components/playground/PlaygroundNav.tsx';
+---
+
+<Layout
+  title="Playground | Try Our Tools | FWD"
+  description="Interactive demos showing what automation and custom code can do for your business. Try booking systems, quoting tools, email automation, and more."
+>
+  <!-- Hero -->
+  <section class="relative py-20 bg-slate-900">
+    <div class="container relative z-10 mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto text-center text-white">
+        <span class="inline-block bg-amber-500/20 text-amber-400 text-sm font-medium px-3 py-1 rounded-full mb-6">Interactive Demos</span>
+        <h1 class="text-5xl lg:text-6xl font-bold mb-6">
+          The <span class="text-amber-400">Playground</span>
+        </h1>
+        <p class="text-xl text-gray-200 mb-4">
+          Try the kind of tools I build for businesses every day. These all run in your browser, right now. No signups, no waiting.
+        </p>
+        <p class="text-gray-400">
+          This is the difference between pasting things into ChatGPT one at a time and building something that actually scales. <a href="/services/business-process-automation" class="text-amber-400 hover:underline">That's what I build.</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Demo Navigation -->
+  <PlaygroundNav client:load />
+
+  <!-- eBay to Shopify Converter -->
+  <Section variant="default" id="ebay-converter">
+    <div class="max-w-4xl mx-auto" data-animate>
+      <div class="flex items-center gap-3 mb-2">
+        <span class="text-2xl">&#128230;</span>
+        <span class="text-xs font-medium bg-green-100 text-green-700 px-2 py-0.5 rounded-full">No AI needed</span>
+      </div>
+      <h2 class="text-3xl font-bold text-slate-900 mb-2">eBay to Shopify Listing Converter</h2>
+      <p class="text-slate-600 mb-8">Paste a messy eBay listing and watch it get parsed into clean, structured product data. This is based on a real project where we processed 500+ listings automatically.</p>
+      <div id="ebay-converter-mount"></div>
+    </div>
+  </Section>
+
+  <!-- Quote Builder -->
+  <Section variant="muted" id="quote-builder">
+    <div class="max-w-4xl mx-auto" data-animate>
+      <div class="flex items-center gap-3 mb-2">
+        <span class="text-2xl">&#128203;</span>
+        <span class="text-xs font-medium bg-green-100 text-green-700 px-2 py-0.5 rounded-full">No AI needed</span>
+      </div>
+      <h2 class="text-3xl font-bold text-slate-900 mb-2">Instant Quote Builder</h2>
+      <p class="text-slate-600 mb-8">Pick your trade, click the jobs, and get a professional quote in seconds. No more scribbling on the back of an envelope.</p>
+      <div id="quote-builder-mount"></div>
+    </div>
+  </Section>
+
+  <!-- Booking System Demo -->
+  <Section variant="default" id="booking-demo">
+    <div class="max-w-4xl mx-auto" data-animate>
+      <div class="flex items-center gap-3 mb-2">
+        <span class="text-2xl">&#128197;</span>
+        <span class="text-xs font-medium bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">Live demo</span>
+      </div>
+      <h2 class="text-3xl font-bold text-slate-900 mb-2">Booking System Demo</h2>
+      <p class="text-slate-600 mb-8">This is how an online booking system works from the customer's side. Pick a date, choose a slot, confirm your booking, and get an access code. Just like <a href="/work" class="text-purple-600 hover:underline">Fakenham Dog Field</a>.</p>
+      <div id="booking-demo-mount"></div>
+    </div>
+  </Section>
+
+  <!-- Email Sequence Visualiser -->
+  <Section variant="muted" id="email-sequences">
+    <div class="max-w-4xl mx-auto" data-animate>
+      <div class="flex items-center gap-3 mb-2">
+        <span class="text-2xl">&#9993;</span>
+        <span class="text-xs font-medium bg-green-100 text-green-700 px-2 py-0.5 rounded-full">No AI needed</span>
+      </div>
+      <h2 class="text-3xl font-bold text-slate-900 mb-2">Email Sequence Visualiser</h2>
+      <p class="text-slate-600 mb-8">Pick a trigger and see what happens next, automatically. This is what real <a href="/services/business-process-automation" class="text-purple-600 hover:underline">business automation</a> looks like.</p>
+      <div id="email-sequences-mount"></div>
+    </div>
+  </Section>
+
+  <!-- Review Response Writer -->
+  <Section variant="default" id="review-responder">
+    <div class="max-w-4xl mx-auto" data-animate>
+      <div class="flex items-center gap-3 mb-2">
+        <span class="text-2xl">&#11088;</span>
+        <span class="text-xs font-medium bg-green-100 text-green-700 px-2 py-0.5 rounded-full">No AI needed</span>
+      </div>
+      <h2 class="text-3xl font-bold text-slate-900 mb-2">Review Response Writer</h2>
+      <p class="text-slate-600 mb-8">Paste a Google review, get a professional response. Template-based, not AI. Consistent, fast, and it never sounds robotic.</p>
+      <div id="review-responder-mount"></div>
+    </div>
+  </Section>
+
+  <!-- ROI Calculator -->
+  <Section variant="muted" id="roi-calculator">
+    <div class="max-w-4xl mx-auto" data-animate>
+      <div class="flex items-center gap-3 mb-2">
+        <span class="text-2xl">&#128176;</span>
+        <span class="text-xs font-medium bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">Business case</span>
+      </div>
+      <h2 class="text-3xl font-bold text-slate-900 mb-2">Automation ROI Calculator</h2>
+      <p class="text-slate-600 mb-8">Most businesses don't realise how much manual work actually costs. Pick your industry, plug in your numbers, and see what automation could save you.</p>
+      <div id="roi-calculator-mount"></div>
+    </div>
+  </Section>
+
+  <!-- Before/After Slider -->
+  <Section variant="default" id="before-after">
+    <div class="max-w-4xl mx-auto" data-animate>
+      <div class="flex items-center gap-3 mb-2">
+        <span class="text-2xl">&#128247;</span>
+        <span class="text-xs font-medium bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">Was £200+ plugin</span>
+      </div>
+      <h2 class="text-3xl font-bold text-slate-900 mb-2">Before/After Image Slider</h2>
+      <p class="text-slate-600 mb-8">Drag to compare. Perfect for builders, decorators, beauticians, landscapers. Show off transformations in a way that stops people scrolling.</p>
+      <div id="before-after-mount"></div>
+    </div>
+  </Section>
+
+  <!-- QR Code Generator -->
+  <Section variant="muted" id="qr-generator">
+    <div class="max-w-4xl mx-auto" data-animate>
+      <div class="flex items-center gap-3 mb-2">
+        <span class="text-2xl">&#128274;</span>
+        <span class="text-xs font-medium bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">Was paid service</span>
+      </div>
+      <h2 class="text-3xl font-bold text-slate-900 mb-2">QR Code Generator</h2>
+      <p class="text-slate-600 mb-8">Generate QR codes for your website, Wi-Fi network, or any text. Download as PNG. No subscription, no per-code fees.</p>
+      <div id="qr-generator-mount"></div>
+    </div>
+  </Section>
+
+  <!-- Social Media Preview -->
+  <Section variant="default" id="social-preview">
+    <div class="max-w-4xl mx-auto" data-animate>
+      <div class="flex items-center gap-3 mb-2">
+        <span class="text-2xl">&#128064;</span>
+        <span class="text-xs font-medium bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">Was £100+/month tool</span>
+      </div>
+      <h2 class="text-3xl font-bold text-slate-900 mb-2">Social Media Preview</h2>
+      <p class="text-slate-600 mb-8">See how your page looks on Google, Facebook, and Twitter before you share it. Check titles, descriptions, and images are right.</p>
+      <div id="social-preview-mount"></div>
+    </div>
+  </Section>
+
+  <!-- Animated Stats Builder -->
+  <Section variant="muted" id="stats-builder">
+    <div class="max-w-4xl mx-auto" data-animate>
+      <div class="flex items-center gap-3 mb-2">
+        <span class="text-2xl">&#128200;</span>
+        <span class="text-xs font-medium bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">Was plugin add-on</span>
+      </div>
+      <h2 class="text-3xl font-bold text-slate-900 mb-2">Animated Stats Section</h2>
+      <p class="text-slate-600 mb-8">The "numbers counting up" section that every client wants. Edit the values, pick colours, and preview the animation. Built in, not bolted on.</p>
+      <div id="stats-builder-mount"></div>
+    </div>
+  </Section>
+
+  <!-- Testimonial Wall -->
+  <Section variant="default" id="testimonial-wall">
+    <div class="max-w-5xl mx-auto" data-animate>
+      <div class="flex items-center gap-3 mb-2">
+        <span class="text-2xl">&#128172;</span>
+        <span class="text-xs font-medium bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">Was £50+/year plugin</span>
+      </div>
+      <h2 class="text-3xl font-bold text-slate-900 mb-2">Testimonial Wall</h2>
+      <p class="text-slate-600 mb-8">A premium masonry grid of client reviews that animates in and filters by category. Looks expensive, costs nothing to run.</p>
+      <div id="testimonial-wall-mount"></div>
+    </div>
+  </Section>
+
+  <!-- Interactive Pricing Table -->
+  <Section variant="muted" id="pricing-table">
+    <div class="max-w-5xl mx-auto" data-animate>
+      <div class="flex items-center gap-3 mb-2">
+        <span class="text-2xl">&#128178;</span>
+        <span class="text-xs font-medium bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">Was £30+/year plugin</span>
+      </div>
+      <h2 class="text-3xl font-bold text-slate-900 mb-2">Interactive Pricing Table</h2>
+      <p class="text-slate-600 mb-8">Monthly/annual toggle with smooth animations, highlighted recommended tier, and the polish clients expect. No page builder needed.</p>
+      <div id="pricing-table-mount"></div>
+    </div>
+  </Section>
+
+  <!-- Why Build Custom -->
+  <Section variant="dark">
+    <div class="max-w-3xl mx-auto" data-animate>
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-8 text-center">Why Build Custom Instead of Buying Off the Shelf?</h2>
+
+      <div class="grid md:grid-cols-2 gap-8 mb-12">
+        <!-- Third party problems -->
+        <div class="bg-white/5 rounded-xl p-6 border border-white/10">
+          <h3 class="text-lg font-bold text-red-400 mb-4">Third-party plugins and SaaS tools</h3>
+          <ul class="space-y-3">
+            {[
+              "Monthly subscriptions that add up fast",
+              "Features you don't need, missing the ones you do",
+              "Your data locked inside someone else's platform",
+              "Breaks when they update, you wait for their fix",
+              "Generic workflows that don't match how you actually work",
+              "Per-user pricing that punishes you for growing",
+            ].map(item => (
+              <li class="flex items-start gap-2 text-gray-300 text-sm">
+                <svg class="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- Custom built -->
+        <div class="bg-white/5 rounded-xl p-6 border border-amber-500/30">
+          <h3 class="text-lg font-bold text-amber-400 mb-4">Built around your business</h3>
+          <ul class="space-y-3">
+            {[
+              "One-off cost, you own it forever",
+              "Only the features you actually need",
+              "Your data stays yours, on your infrastructure",
+              "I fix it, update it, and improve it when you need",
+              "Designed around your actual workflows",
+              "Scales with your team at no extra cost",
+            ].map(item => (
+              <li class="flex items-start gap-2 text-gray-300 text-sm">
+                <svg class="w-5 h-5 text-amber-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <div class="text-center">
+        <p class="text-gray-300 text-lg mb-6">
+          Every demo on this page runs without third-party services. No monthly fees, no vendor lock-in, no waiting for someone else to fix a bug. Just software that does exactly what you need it to do.
+        </p>
+        <p class="text-gray-400">
+          Sometimes an off-the-shelf tool genuinely is the right answer. I'll tell you when it is. But when your business needs something specific, custom-built software pays for itself faster than you'd think.
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <!-- The Point -->
+  <Section variant="default">
+    <div class="max-w-3xl mx-auto text-center" data-animate>
+      <h2 class="text-3xl font-bold text-slate-900 mb-6">Code vs ChatGPT</h2>
+      <p class="text-slate-600 text-lg mb-4">
+        ChatGPT is brilliant for one-off tasks. Writing an email, summarising a document, brainstorming ideas. But if you're processing data, sending follow-ups, generating quotes, or managing bookings on a regular basis, you need something that runs itself.
+      </p>
+      <p class="text-slate-600 text-lg mb-4">
+        That's what these demos show. Deterministic code that gives you the same result every time, instantly, without anyone sitting there typing prompts.
+      </p>
+      <p class="text-slate-600 text-lg">
+        And if AI genuinely is the right tool for part of your workflow, <a href="/services/ai-training" class="text-purple-600 hover:underline">I'll help you use it properly too</a>.
+      </p>
+    </div>
+  </Section>
+
+  <!-- CTA -->
+  <Section variant="gradient">
+    <SmartCTA
+      heading="Want Something Like This for Your Business?"
+      text="These demos are simple examples. The real thing is tailored to your specific workflows, your data, and your tools."
+      primaryWhatsappMessage="Hi Sam, I tried the playground on your site and I'd like to discuss automating some of my business processes."
+      secondaryLabel="See Automation Services"
+      secondaryHref="/services/business-process-automation"
+    />
+  </Section>
+
+  <!-- Mount React components -->
+  <script>
+    import { createElement } from 'react';
+    import { createRoot } from 'react-dom/client';
+    import EbayToShopify from '../components/playground/EbayToShopify.tsx';
+    import QuoteBuilder from '../components/playground/QuoteBuilder.tsx';
+    import BookingDemo from '../components/playground/BookingDemo.tsx';
+    import EmailSequenceVisualiser from '../components/playground/EmailSequenceVisualiser.tsx';
+    import ReviewResponseWriter from '../components/playground/ReviewResponseWriter.tsx';
+    import RoiCalculator from '../components/playground/RoiCalculator.tsx';
+    import BeforeAfterSlider from '../components/playground/BeforeAfterSlider.tsx';
+    import QrCodeGenerator from '../components/playground/QrCodeGenerator.tsx';
+    import SocialPreview from '../components/playground/SocialPreview.tsx';
+    import AnimatedStatsBuilder from '../components/playground/AnimatedStatsBuilder.tsx';
+    import TestimonialWall from '../components/playground/TestimonialWall.tsx';
+    import InteractivePricingTable from '../components/playground/InteractivePricingTable.tsx';
+
+    const mounts = [
+      { id: 'ebay-converter-mount', component: EbayToShopify },
+      { id: 'quote-builder-mount', component: QuoteBuilder },
+      { id: 'booking-demo-mount', component: BookingDemo },
+      { id: 'email-sequences-mount', component: EmailSequenceVisualiser },
+      { id: 'review-responder-mount', component: ReviewResponseWriter },
+      { id: 'roi-calculator-mount', component: RoiCalculator },
+      { id: 'before-after-mount', component: BeforeAfterSlider },
+      { id: 'qr-generator-mount', component: QrCodeGenerator },
+      { id: 'social-preview-mount', component: SocialPreview },
+      { id: 'stats-builder-mount', component: AnimatedStatsBuilder },
+      { id: 'testimonial-wall-mount', component: TestimonialWall },
+      { id: 'pricing-table-mount', component: InteractivePricingTable },
+    ];
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const mount = mounts.find(m => m.id === entry.target.id);
+          if (mount) {
+            const root = createRoot(entry.target);
+            root.render(createElement(mount.component));
+            observer.unobserve(entry.target);
+          }
+        }
+      });
+    }, { rootMargin: '200px' });
+
+    mounts.forEach(mount => {
+      const el = document.getElementById(mount.id);
+      if (el) observer.observe(el);
+    });
+  </script>
+</Layout>

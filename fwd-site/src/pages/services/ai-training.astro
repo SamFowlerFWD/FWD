@@ -1,0 +1,407 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import SmartCTA from '../../components/interactive/SmartCTA.astro';
+import FreshnessBadge from '../../components/content/FreshnessBadge.astro';
+
+const faqs = [
+  {
+    question: "Do I need any technical knowledge?",
+    answer: "None at all. I tailor the training to your level. If you can use email, you can learn to use AI tools effectively."
+  },
+  {
+    question: "Which AI tools do you cover?",
+    answer: "Primarily ChatGPT and Claude, as they're the most useful for business. I'll also cover others where they're relevant to your specific needs."
+  },
+  {
+    question: "Can you train my whole team?",
+    answer: "Yes. Team workshops cover up to 8 people. For larger teams, I run multiple sessions so everyone gets hands-on practice."
+  },
+  {
+    question: "Will AI replace my staff?",
+    answer: "No, and anyone who tells you it will is selling something. AI tools make people faster and better at their jobs. The goal is to free up your team's time for work that actually needs a human."
+  },
+  {
+    question: "How is this different from online courses?",
+    answer: "Online courses teach generic prompts. I work with your actual business, your actual tasks, and your actual workflows. You leave with a system that works for you, not a certificate."
+  },
+  {
+    question: "What if AI tools change after the training?",
+    answer: "They will, that's why I offer an ongoing support plan. But the fundamentals I teach (how to think about prompts, how to evaluate output, where AI fits your workflow) don't change even when the tools do."
+  }
+];
+---
+
+<Layout
+  title="AI Training for Business | ChatGPT & Claude Workshops | FWD"
+  description="Hands-on AI training for UK businesses. Learn to use ChatGPT, Claude, and AI tools properly. Tailored to your workflows, not generic tips. From £299."
+>
+  <Breadcrumbs path="/services/ai-training" />
+
+  <!-- Hero Section -->
+  <section class="relative py-20 bg-slate-900">
+    <div class="absolute inset-0 bg-ai-mesh opacity-20"></div>
+    <div class="container relative z-10 mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto text-center text-white">
+        <h1 class="text-5xl lg:text-6xl font-bold mb-6">
+          AI Training for <span class="text-amber-400">Your Business</span>
+        </h1>
+        <p class="text-xl text-gray-100 mb-8">
+          Practical, hands-on training that teaches you and your team how to actually use AI tools. No jargon, no hype. Just honest guidance tailored to your specific workflows.
+        </p>
+        <p class="text-lg text-amber-400 font-semibold mb-8">From £299</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="https://wa.me/447584417830?text=Hi%20Sam%2C%20I'm%20interested%20in%20AI%20training%20for%20my%20business." target="_blank" rel="noopener noreferrer" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-lg transition-colors shadow-lg inline-block">
+            Get in Touch
+          </a>
+          <a href="/services" class="bg-white/10 backdrop-blur-sm border-2 border-white text-white font-bold py-4 px-8 rounded-lg hover:bg-white hover:text-slate-900 transition-all inline-block">
+            View All Services
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What You'll Learn -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-4xl font-bold text-slate-900 mb-4">
+            What You'll Learn
+          </h2>
+          <p class="text-xl text-gray-600">
+            Everything you need to start using AI tools confidently and effectively.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          {[
+            {
+              icon: "\u{270D}\u{FE0F}",
+              title: "Writing Better Prompts",
+              description: "Learn how to ask AI tools the right questions to get useful, accurate answers every time."
+            },
+            {
+              icon: "\u{1F9E0}",
+              title: "Which Tool for Which Job",
+              description: "Understand the differences between ChatGPT, Claude, and other tools so you pick the right one for each task."
+            },
+            {
+              icon: "\u{2699}\u{FE0F}",
+              title: "Real Workflows",
+              description: "Apply AI to your actual day-to-day tasks. Drafting emails, summarising documents, creating content, and more."
+            },
+            {
+              icon: "\u{26A0}\u{FE0F}",
+              title: "Where AI Falls Short",
+              description: "Know when AI is helpful and when it's not. Avoid common mistakes and learn to spot bad output."
+            },
+            {
+              icon: "\u{1F512}",
+              title: "Data Safety",
+              description: "Understand what's safe to share with AI tools and what isn't. Keep your business data protected."
+            },
+            {
+              icon: "\u{1F504}",
+              title: "Building AI Into Routine",
+              description: "Create a practical system for using AI regularly, so it becomes a natural part of how you work."
+            }
+          ].map(item => (
+            <div class="bg-gray-50 rounded-xl p-6">
+              <div class="text-3xl mb-3">{item.icon}</div>
+              <h3 class="text-lg font-bold text-slate-900 mb-2">{item.title}</h3>
+              <p class="text-gray-600 text-sm">{item.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Training Formats -->
+  <section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-4xl font-bold text-slate-900 mb-4">
+            Training Formats
+          </h2>
+          <p class="text-xl text-gray-600">
+            Choose the format that suits your business best.
+          </p>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-8">
+          <!-- 1-to-1 -->
+          <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+            <div class="text-center mb-6">
+              <h3 class="text-2xl font-bold text-slate-900 mb-2">1-to-1 Training</h3>
+              <p class="text-gray-600 mb-4">Focused, personal session</p>
+              <div class="text-4xl font-bold text-slate-900 mb-2">£299</div>
+              <p class="text-gray-500 text-sm">per session</p>
+            </div>
+            <ul class="space-y-3 mb-8">
+              {[
+                "2-hour hands-on session",
+                "Tailored to your role",
+                "Your actual tasks and tools",
+                "Follow-up notes and resources",
+                "30 days of email support"
+              ].map(item => (
+                <li class="flex items-start gap-2">
+                  <svg class="w-5 h-5 text-success-green mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                  </svg>
+                  <span class="text-gray-700">{item}</span>
+                </li>
+              ))}
+            </ul>
+            <a href="https://wa.me/447584417830?text=Hi%20Sam%2C%20I'm%20interested%20in%20AI%20training%20for%20my%20business." target="_blank" rel="noopener noreferrer" class="block w-full text-center bg-slate-900 text-white font-semibold py-3 rounded-lg hover:bg-slate-800 transition-colors">
+              Book a Session
+            </a>
+          </div>
+
+          <!-- Team Workshop -->
+          <div class="bg-white rounded-2xl shadow-xl border-2 border-amber-500 p-8 relative">
+            <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-amber-500 text-white text-sm font-semibold px-4 py-1 rounded-full">
+              MOST POPULAR
+            </div>
+            <div class="text-center mb-6">
+              <h3 class="text-2xl font-bold text-slate-900 mb-2">Team Workshop</h3>
+              <p class="text-gray-600 mb-4">Up to 8 people</p>
+              <div class="text-4xl font-bold text-slate-900 mb-2">£499</div>
+              <p class="text-gray-500 text-sm">per workshop</p>
+            </div>
+            <ul class="space-y-3 mb-8">
+              {[
+                "Half-day group session",
+                "Tailored to your industry",
+                "Hands-on exercises",
+                "Team prompt library created",
+                "Follow-up resources for all",
+                "30 days of email support"
+              ].map(item => (
+                <li class="flex items-start gap-2">
+                  <svg class="w-5 h-5 text-success-green mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                  </svg>
+                  <span class="text-gray-700">{item}</span>
+                </li>
+              ))}
+            </ul>
+            <a href="https://wa.me/447584417830?text=Hi%20Sam%2C%20I'm%20interested%20in%20AI%20training%20for%20my%20business." target="_blank" rel="noopener noreferrer" class="block w-full text-center bg-amber-500 text-white font-semibold py-3 rounded-lg hover:bg-amber-600 transition-colors">
+              Book a Workshop
+            </a>
+          </div>
+
+          <!-- Ongoing Support -->
+          <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+            <div class="text-center mb-6">
+              <h3 class="text-2xl font-bold text-slate-900 mb-2">Ongoing Support</h3>
+              <p class="text-gray-600 mb-4">Keep learning as tools evolve</p>
+              <div class="text-4xl font-bold text-slate-900 mb-2">£99</div>
+              <p class="text-gray-500 text-sm">per month</p>
+            </div>
+            <ul class="space-y-3 mb-8">
+              {[
+                "Monthly check-in call",
+                "New tool updates and tips",
+                "Prompt reviews and feedback",
+                "Priority email support",
+                "Cancel anytime"
+              ].map(item => (
+                <li class="flex items-start gap-2">
+                  <svg class="w-5 h-5 text-success-green mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                  </svg>
+                  <span class="text-gray-700">{item}</span>
+                </li>
+              ))}
+            </ul>
+            <a href="https://wa.me/447584417830?text=Hi%20Sam%2C%20I'm%20interested%20in%20AI%20training%20for%20my%20business." target="_blank" rel="noopener noreferrer" class="block w-full text-center bg-slate-900 text-white font-semibold py-3 rounded-lg hover:bg-slate-800 transition-colors">
+              Get Started
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Who This Is For -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl font-bold text-slate-900 mb-6">Who This Is For</h2>
+        <ul class="space-y-4">
+          {[
+            "Business owners who keep hearing about AI but aren't sure where to start or what's actually useful.",
+            "Teams who are already using ChatGPT but want to get more out of it and avoid common pitfalls.",
+            "Managers who want their staff to work smarter without spending thousands on enterprise software.",
+            "Anyone who's tried AI tools, got mediocre results, and assumed they weren't that helpful."
+          ].map(item => (
+            <li class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-amber-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+              <span class="text-gray-600">{item}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Me? -->
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl font-bold text-slate-900 mb-6">Why Train With Me?</h2>
+        <p class="text-gray-600 leading-relaxed mb-4">
+          I'm not a trainer who read a book about AI. I'm a developer who builds with these tools every day. I use ChatGPT, Claude, and other AI tools to write code, create content, automate workflows, and solve real business problems for my clients.
+        </p>
+        <p class="text-gray-600 leading-relaxed mb-4">
+          That means I can show you what actually works in practice, not just theory. I know which tools are good at what, where they fall over, and how to get the best results without wasting time on trial and error.
+        </p>
+        <p class="text-gray-600 leading-relaxed">
+          I also keep it honest. I won't tell you AI can do things it can't, and I won't oversell it. You'll leave with a clear, practical understanding of how AI fits into your work.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-4xl font-bold text-slate-900 mb-4">
+            Frequently Asked Questions
+          </h2>
+        </div>
+
+        <div class="space-y-4">
+          {faqs.map(item => (
+            <details class="bg-gray-50 rounded-lg border border-gray-100 group shadow-sm">
+              <summary class="p-6 cursor-pointer list-none flex items-center justify-between hover:bg-gray-100 rounded-lg">
+                <span class="font-semibold text-slate-900 pr-4">{item.question}</span>
+                <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </summary>
+              <div class="px-6 pb-6">
+                <p class="text-gray-600">{item.answer}</p>
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SmartCTA -->
+  <section class="py-20 bg-slate-900 text-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <SmartCTA
+        heading="Ready to Get Your Team Up to Speed?"
+        text="Let's chat about what you need. I'll give you an honest recommendation on the best training format for your business."
+        primaryWhatsappMessage="Hi Sam, I'm interested in AI training for my business."
+        secondaryLabel="View All Services"
+        secondaryHref="/services"
+      />
+      <div class="text-center mt-6">
+        <FreshnessBadge />
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Services -->
+  <section class="py-12 bg-white border-t border-gray-100">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-2xl font-bold text-slate-900 mb-6">Related Services</h2>
+        <div class="grid sm:grid-cols-3 gap-4">
+          <a href="/services/business-process-automation" class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors group">
+            <h3 class="font-semibold text-slate-900 group-hover:text-ai-purple transition-colors">Business Automation</h3>
+            <p class="text-sm text-gray-600 mt-1">Automate tasks with AI tools</p>
+          </a>
+          <a href="/services/professional-websites" class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors group">
+            <h3 class="font-semibold text-slate-900 group-hover:text-ai-purple transition-colors">Professional Websites</h3>
+            <p class="text-sm text-gray-600 mt-1">Get your business online</p>
+          </a>
+          <a href="/services/custom-app-development" class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors group">
+            <h3 class="font-semibold text-slate-900 group-hover:text-ai-purple transition-colors">Custom App Development</h3>
+            <p class="text-sm text-gray-600 mt-1">Build bespoke tools</p>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQPage Schema -->
+  <script type="application/ld+json">
+    {JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": faqs.map(faq => ({
+        "@type": "Question",
+        "name": faq.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": faq.answer
+        }
+      }))
+    })}
+  </script>
+
+  <!-- Service Schema -->
+  <script type="application/ld+json">
+    {JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "name": "AI Training for Business",
+      "description": "Hands-on AI training for UK businesses. Learn to use ChatGPT, Claude, and AI tools properly. Tailored to your workflows.",
+      "provider": {
+        "@type": "Organization",
+        "name": "FWD Thinking Solutions",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Norwich",
+          "addressRegion": "Norfolk",
+          "addressCountry": "GB"
+        }
+      },
+      "areaServed": {
+        "@type": "Place",
+        "name": "United Kingdom"
+      },
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "AI Training",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "name": "1-to-1 Training",
+            "price": "299",
+            "priceCurrency": "GBP",
+            "description": "Personal AI training session tailored to your role"
+          },
+          {
+            "@type": "Offer",
+            "name": "Team Workshop",
+            "price": "499",
+            "priceCurrency": "GBP",
+            "description": "Half-day group AI training for up to 8 people"
+          },
+          {
+            "@type": "Offer",
+            "name": "Ongoing Support",
+            "price": "99",
+            "priceCurrency": "GBP",
+            "description": "Monthly AI support and guidance"
+          }
+        ]
+      }
+    })}
+  </script>
+</Layout>

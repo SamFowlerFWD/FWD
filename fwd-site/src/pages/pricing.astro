@@ -1,0 +1,335 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+import SmartCTA from '../components/interactive/SmartCTA.astro';
+import FreshnessBadge from '../components/content/FreshnessBadge.astro';
+
+const faqs = [
+  {
+    question: "Are your prices fixed?",
+    answer: "Yes, for most projects. I provide a fixed quote after understanding what you need. The price I quote is the price you pay."
+  },
+  {
+    question: "Do I need to pay upfront?",
+    answer: "Typically 50% upfront and 50% on completion. For larger projects, I can split payments across milestones."
+  },
+  {
+    question: "Are there ongoing costs?",
+    answer: "Hosting and maintenance is optional and starts from £20/month. If you prefer to host elsewhere, that's fine."
+  },
+  {
+    question: "Why are your prices lower than agencies?",
+    answer: "No overheads. No account managers, no office rent, no project managers. You pay for development, not a chain of people between you and the person doing the work."
+  },
+  {
+    question: "What if the project scope changes?",
+    answer: "I'll tell you how it affects the price before doing any additional work. No surprises."
+  },
+  {
+    question: "Do you offer payment plans?",
+    answer: "For projects over £2,000, I can arrange monthly payment plans. Let's discuss what works for you."
+  },
+  {
+    question: "What's included in every project?",
+    answer: "Design, development, testing, mobile responsiveness, basic SEO setup, training on how to manage your content, and 30 days of post-launch support."
+  },
+  {
+    question: "How do you compare to using Wix or Squarespace?",
+    answer: "DIY builders cost £15 to £50/month and you do all the work yourself. I build something custom that performs better, looks more professional, and does not lock you into a platform."
+  }
+];
+---
+
+<Layout
+  title="How Much Does a Website Cost? | Transparent Pricing | FWD"
+  description="Honest pricing for websites, automation, and custom apps. See exactly what you get at each price point. No hidden fees, no surprises."
+>
+  <Breadcrumbs path="/pricing" />
+
+  <!-- Hero Section -->
+  <section class="relative py-20 bg-slate-900">
+    <div class="absolute inset-0 bg-ai-mesh opacity-20"></div>
+    <div class="container relative z-10 mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto text-center text-white">
+        <h1 class="text-5xl lg:text-6xl font-bold mb-6">
+          Transparent <span class="text-amber-400">Pricing</span>
+        </h1>
+        <p class="text-xl text-gray-100 mb-8">
+          I believe you should know what you're paying before we start. Here's what everything costs.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Table -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-4xl font-bold text-slate-900 mb-4">
+            What Everything Costs
+          </h2>
+          <p class="text-xl text-gray-600">
+            Straightforward pricing across all services. No hidden fees.
+          </p>
+        </div>
+
+        <!-- Pricing Cards -->
+        <div class="space-y-8">
+          <!-- Professional Websites -->
+          <div class="bg-gray-50 rounded-2xl p-8 border border-gray-100">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+              <div class="lg:max-w-md">
+                <h3 class="text-2xl font-bold text-slate-900 mb-2">Professional Websites</h3>
+                <p class="text-gray-600">Clean, fast, mobile-friendly sites that represent your business well.</p>
+                <a href="/services/professional-websites" class="text-ai-purple hover:underline text-sm font-semibold mt-2 inline-block">Learn more &rarr;</a>
+              </div>
+              <div class="grid grid-cols-3 gap-4 lg:gap-6">
+                <div class="text-center">
+                  <p class="text-sm text-gray-500 mb-1">Single page</p>
+                  <p class="text-2xl font-bold text-slate-900">£299</p>
+                </div>
+                <div class="text-center bg-amber-50 rounded-lg p-3 border border-amber-200">
+                  <p class="text-sm text-amber-700 mb-1 font-semibold">Typical</p>
+                  <p class="text-2xl font-bold text-slate-900">£799-£2,500</p>
+                </div>
+                <div class="text-center">
+                  <p class="text-sm text-gray-500 mb-1">Complex</p>
+                  <p class="text-2xl font-bold text-slate-900">£2,500+</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Business Automation -->
+          <div class="bg-gray-50 rounded-2xl p-8 border border-gray-100">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+              <div class="lg:max-w-md">
+                <h3 class="text-2xl font-bold text-slate-900 mb-2">Business Automation</h3>
+                <p class="text-gray-600">Automate repetitive tasks like invoicing, emails, and data entry.</p>
+                <a href="/services/business-process-automation" class="text-ai-purple hover:underline text-sm font-semibold mt-2 inline-block">Learn more &rarr;</a>
+              </div>
+              <div class="grid grid-cols-3 gap-4 lg:gap-6">
+                <div class="text-center">
+                  <p class="text-sm text-gray-500 mb-1">Simple</p>
+                  <p class="text-2xl font-bold text-slate-900">£799</p>
+                </div>
+                <div class="text-center bg-amber-50 rounded-lg p-3 border border-amber-200">
+                  <p class="text-sm text-amber-700 mb-1 font-semibold">Typical</p>
+                  <p class="text-2xl font-bold text-slate-900">£1,500-£3,000</p>
+                </div>
+                <div class="text-center">
+                  <p class="text-sm text-gray-500 mb-1">Complex</p>
+                  <p class="text-2xl font-bold text-slate-900">£3,000+</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Custom Apps -->
+          <div class="bg-gray-50 rounded-2xl p-8 border border-gray-100">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+              <div class="lg:max-w-md">
+                <h3 class="text-2xl font-bold text-slate-900 mb-2">Custom Apps</h3>
+                <p class="text-gray-600">Bespoke software built around your specific business needs.</p>
+                <a href="/services/custom-app-development" class="text-ai-purple hover:underline text-sm font-semibold mt-2 inline-block">Learn more &rarr;</a>
+              </div>
+              <div class="grid grid-cols-3 gap-4 lg:gap-6">
+                <div class="text-center">
+                  <p class="text-sm text-gray-500 mb-1">Simple</p>
+                  <p class="text-2xl font-bold text-slate-900">£1,299</p>
+                </div>
+                <div class="text-center bg-amber-50 rounded-lg p-3 border border-amber-200">
+                  <p class="text-sm text-amber-700 mb-1 font-semibold">Typical</p>
+                  <p class="text-2xl font-bold text-slate-900">£2,000-£5,000</p>
+                </div>
+                <div class="text-center">
+                  <p class="text-sm text-gray-500 mb-1">Complex</p>
+                  <p class="text-2xl font-bold text-slate-900">£5,000+</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hosting -->
+          <div class="bg-gray-50 rounded-2xl p-8 border border-gray-100">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+              <div class="lg:max-w-md">
+                <h3 class="text-2xl font-bold text-slate-900 mb-2">Hosting & Maintenance</h3>
+                <p class="text-gray-600">Reliable hosting with backups, security updates, and support.</p>
+                <a href="/services/hosting-maintenance" class="text-ai-purple hover:underline text-sm font-semibold mt-2 inline-block">Learn more &rarr;</a>
+              </div>
+              <div class="grid grid-cols-3 gap-4 lg:gap-6">
+                <div class="text-center">
+                  <p class="text-sm text-gray-500 mb-1">Standard</p>
+                  <p class="text-2xl font-bold text-slate-900">£20/mo</p>
+                </div>
+                <div class="text-center bg-amber-50 rounded-lg p-3 border border-amber-200">
+                  <p class="text-sm text-amber-700 mb-1 font-semibold">Premium</p>
+                  <p class="text-2xl font-bold text-slate-900">£149/mo</p>
+                </div>
+                <div class="text-center">
+                  <p class="text-sm text-gray-500 mb-1">Enterprise</p>
+                  <p class="text-2xl font-bold text-slate-900">Custom</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- AI Training -->
+          <div class="bg-gray-50 rounded-2xl p-8 border border-gray-100">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+              <div class="lg:max-w-md">
+                <h3 class="text-2xl font-bold text-slate-900 mb-2">AI Training</h3>
+                <p class="text-gray-600">Hands-on training for ChatGPT, Claude, and other AI tools.</p>
+                <a href="/services/ai-training" class="text-ai-purple hover:underline text-sm font-semibold mt-2 inline-block">Learn more &rarr;</a>
+              </div>
+              <div class="grid grid-cols-3 gap-4 lg:gap-6">
+                <div class="text-center">
+                  <p class="text-sm text-gray-500 mb-1">1-to-1</p>
+                  <p class="text-2xl font-bold text-slate-900">£299</p>
+                </div>
+                <div class="text-center bg-amber-50 rounded-lg p-3 border border-amber-200">
+                  <p class="text-sm text-amber-700 mb-1 font-semibold">Team</p>
+                  <p class="text-2xl font-bold text-slate-900">£499</p>
+                </div>
+                <div class="text-center">
+                  <p class="text-sm text-gray-500 mb-1">Ongoing</p>
+                  <p class="text-2xl font-bold text-slate-900">£99/mo</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Are My Prices Lower? -->
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl font-bold text-slate-900 mb-6">Why Are My Prices Lower?</h2>
+        <p class="text-gray-600 leading-relaxed mb-4">
+          No overheads. No account managers, no office rent, no project managers. You pay for development, not a chain of people between you and the person doing the work.
+        </p>
+        <p class="text-gray-600 leading-relaxed mb-4">
+          When you work with me, you speak directly to the person building your project. That means faster turnaround, fewer misunderstandings, and a much lower price. I also use AI tools extensively in my workflow, which means I can build faster without compromising on quality.
+        </p>
+        <p class="text-gray-600 leading-relaxed">
+          Lower prices don't mean lower quality. It means less waste.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comparison Table -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-4xl font-bold text-slate-900 mb-4">
+            How I Compare
+          </h2>
+          <p class="text-xl text-gray-600">
+            An honest look at your options.
+          </p>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse">
+            <thead>
+              <tr class="border-b-2 border-gray-200">
+                <th class="text-left py-4 px-4 text-slate-900 font-bold"></th>
+                <th class="text-center py-4 px-4 bg-amber-50 text-slate-900 font-bold rounded-t-lg">FWD</th>
+                <th class="text-center py-4 px-4 text-slate-900 font-bold">Agency</th>
+                <th class="text-center py-4 px-4 text-slate-900 font-bold">Budget WordPress</th>
+                <th class="text-center py-4 px-4 text-slate-900 font-bold">DIY (Wix/Squarespace)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { label: "Typical cost", fwd: "£799-£2,500", agency: "£5,000-£20,000", budget: "£200-£500", diy: "£15-£50/mo" },
+                { label: "Custom design", fwd: "Yes", agency: "Yes", budget: "Template", diy: "Template" },
+                { label: "Performance", fwd: "Fast", agency: "Varies", budget: "Slow", diy: "Average" },
+                { label: "SEO setup", fwd: "Included", agency: "Extra cost", budget: "Basic", diy: "Limited" },
+                { label: "You own the code", fwd: "Yes", agency: "Usually", budget: "Depends", diy: "No" },
+                { label: "Direct contact", fwd: "Always", agency: "Account manager", budget: "Sometimes", diy: "Support ticket" },
+                { label: "Ongoing support", fwd: "Optional", agency: "Retainer", budget: "Limited", diy: "Self-service" }
+              ].map((row, i) => (
+                <tr class={i % 2 === 0 ? "bg-gray-50" : "bg-white"}>
+                  <td class="py-3 px-4 font-semibold text-slate-900 text-sm">{row.label}</td>
+                  <td class="py-3 px-4 text-center text-sm font-semibold text-amber-700 bg-amber-50">{row.fwd}</td>
+                  <td class="py-3 px-4 text-center text-sm text-gray-600">{row.agency}</td>
+                  <td class="py-3 px-4 text-center text-sm text-gray-600">{row.budget}</td>
+                  <td class="py-3 px-4 text-center text-sm text-gray-600">{row.diy}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-4xl font-bold text-slate-900 mb-4">
+            Frequently Asked Questions
+          </h2>
+        </div>
+
+        <div class="space-y-4">
+          {faqs.map(item => (
+            <details class="bg-white rounded-lg border border-gray-100 group shadow-sm">
+              <summary class="p-6 cursor-pointer list-none flex items-center justify-between hover:bg-gray-50 rounded-lg">
+                <span class="font-semibold text-slate-900 pr-4">{item.question}</span>
+                <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </summary>
+              <div class="px-6 pb-6">
+                <p class="text-gray-600">{item.answer}</p>
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SmartCTA -->
+  <section class="py-20 bg-slate-900 text-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <SmartCTA
+        heading="Ready to Get Started?"
+        text="Tell me what you need and I'll give you an honest, fixed quote. No obligation, no pressure."
+        primaryWhatsappMessage="Hi Sam, I've been looking at your pricing. Here's what I need:"
+        secondaryLabel="View My Work"
+        secondaryHref="/work"
+      />
+      <div class="text-center mt-6">
+        <FreshnessBadge />
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQPage Schema -->
+  <script type="application/ld+json">
+    {JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": faqs.map(faq => ({
+        "@type": "Question",
+        "name": faq.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": faq.answer
+        }
+      }))
+    })}
+  </script>
+</Layout>
