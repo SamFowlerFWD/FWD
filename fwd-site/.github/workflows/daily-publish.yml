@@ -1,0 +1,78 @@
+name: Daily Blog Publish
+
+on:
+  schedule:
+    # 07:00 UTC daily (covers GMT; adjust to 06:00 UTC for BST if preferred)
+    - cron: '0 7 * * *'
+  workflow_dispatch: # allow manual trigger for testing
+
+jobs:
+  publish:
+    name: Rebuild site & notify
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Find posts going live today
+        id: live-today
+        run: |
+          TODAY=$(date -u +%Y-%m-%d)
+          echo "Checking for posts with pubDate on or before $TODAY"
+
+          # Find MDX files whose pubDate frontmatter matches today
+          LIVE_POSTS=""
+          for f in src/content/blog/*.mdx src/content/blog/*.md; do
+            [ -f "$f" ] || continue
+            PUB=$(grep -m1 '^pubDate:' "$f" | sed 's/pubDate:[[:space:]]*//' | tr -d '"'"'" | cut -c1-10)
+            DRAFT=$(grep -m1 '^draft:' "$f" | sed 's/draft:[[:space:]]*//' | tr -d '"'"'")
+            SLUG=$(basename "$f" | sed 's/\.\(mdx\|md\)$//')
+            if [ "$PUB" = "$TODAY" ] && [ "$DRAFT" != "true" ]; then
+              TITLE=$(grep -m1 '^title:' "$f" | sed "s/title:[[:space:]]*//" | tr -d '"'"'")
+              LIVE_POSTS="${LIVE_POSTS}- **${TITLE}** → https://f-w-d.co.uk/blog/${SLUG}\n"
+            fi
+          done
+
+          if [ -n "$LIVE_POSTS" ]; then
+            echo "has_new=true" >> $GITHUB_OUTPUT
+            # Use a delimiter to handle multi-line output safely
+            {
+              echo "posts<<EOF"
+              printf "%b" "$LIVE_POSTS"
+              echo "EOF"
+            } >> $GITHUB_OUTPUT
+          else
+            echo "has_new=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Trigger Cloudflare Pages rebuild
+        run: |
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST "${{ secrets.CF_DEPLOY_HOOK }}")
+          if [ "$HTTP_STATUS" -ne 200 ]; then
+            echo "Deploy hook returned HTTP $HTTP_STATUS — failing build"
+            exit 1
+          fi
+          echo "Deploy triggered successfully (HTTP $HTTP_STATUS)"
+
+      - name: Post Paperclip notification (new posts)
+        if: steps.live-today.outputs.has_new == 'true' && secrets.PAPERCLIP_API_KEY != ''
+        run: |
+          BODY=$(printf "## Posts live today\n\n%b\nReady to post to socials!" "${{ steps.live-today.outputs.posts }}")
+          curl -s -X POST "${{ secrets.PAPERCLIP_API_URL }}/api/companies/${{ secrets.PAPERCLIP_COMPANY_ID }}/issues" \
+            -H "Authorization: Bearer ${{ secrets.PAPERCLIP_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d "$(jq -n \
+              --arg title "Blog posts live $(date -u +%d/%m/%Y)" \
+              --arg body "$BODY" \
+              --arg projectId "${{ secrets.PAPERCLIP_CONTENT_HUB_PROJECT_ID }}" \
+              '{title: $title, description: $body, status: "todo", projectId: $projectId}')"
+          echo "Paperclip task created"
+
+      - name: Summary
+        run: |
+          if [ "${{ steps.live-today.outputs.has_new }}" = "true" ]; then
+            echo "### New posts went live today" >> $GITHUB_STEP_SUMMARY
+            printf "%b" "${{ steps.live-today.outputs.posts }}" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "### No new posts today — rebuild keeps site fresh" >> $GITHUB_STEP_SUMMARY
+          fi

@@ -6,7 +6,8 @@ import HeroSequence from '../components/homepage/HeroSequence.tsx';
 import TestimonialCarousel from '../components/homepage/TestimonialCarousel.tsx';
 import { getCollection } from 'astro:content';
 
-const posts = (await getCollection('blog', ({ data }) => !data.draft))
+const now = new Date();
+const posts = (await getCollection('blog', ({ data }) => !data.draft && data.pubDate <= now))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 3);
 

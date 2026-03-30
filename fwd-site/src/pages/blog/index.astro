@@ -5,7 +5,8 @@ import SmartCTA from '../../components/interactive/SmartCTA.astro';
 import PostCard from '../../components/blog/PostCard.astro';
 import { getCollection } from 'astro:content';
 
-const posts = (await getCollection('blog', ({ data }) => !data.draft))
+const now = new Date();
+const posts = (await getCollection('blog', ({ data }) => !data.draft && data.pubDate <= now))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 

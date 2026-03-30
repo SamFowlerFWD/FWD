@@ -9,7 +9,8 @@ export interface Props {
 
 const { currentSlug, category } = Astro.props;
 
-const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const now = new Date();
+const allPosts = await getCollection('blog', ({ data }) => !data.draft && data.pubDate <= now);
 
 // Filter out current post and prefer same category
 const related = allPosts
