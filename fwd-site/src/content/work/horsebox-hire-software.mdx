@@ -1,0 +1,62 @@
+---
+title: "Horsebox Hire Software: Multi-Tenant SaaS for Vehicle Hire"
+client: "Wee Horsebox Hire / Horsebox Hire Software"
+industry: "technology-saas"
+services: ["apps", "automation", "hosting"]
+description: "A multi-tenant SaaS booking platform for horsebox hire businesses. AI-powered document verification, DVLA licence checks, pre-authorised security deposits, and digital contract signing built into a single checkout flow."
+thumbnail: "/portfolio/wee-horsebox-hire.webp"
+results:
+  - "Replaced 5-tool patchwork workflow with a single integrated platform"
+  - "AI document verification on every booking, with fresh DVLA checks each time"
+  - "Automated deposit pre-authorisation and post-return release"
+  - "Multi-tenant architecture ready to onboard the wider horsebox hire industry"
+techStack: ["React", "TypeScript", "Supabase", "Stripe"]
+timeline: "12 weeks"
+pubDate: 2026-03-04
+featured: true
+---
+
+## The Problem
+
+Wee Horsebox Hire in East Lothian, Scotland runs a fleet of four vehicles. Their existing booking setup was a mix of a generic plugin, a separate signature app, and manual document collection. It did not handle the specific requirements of vehicle hire.
+
+The gaps were real and costly in time:
+
+- No automated driving licence verification. A 7.5 tonne horsebox requires a C1 category licence, and there was no way to check this systematically
+- Document collection was manual with customers emailing PDFs
+- Contracts went out separately through a third-party signature tool
+- Security deposits were handled outside the booking system entirely
+
+Stitching these together manually worked when bookings were low. It does not scale.
+
+## Why Custom
+
+The horsebox hire market has a specific combination of requirements that generic platforms do not address: licence category verification (legally necessary for vehicles over 3.5 tonnes), pre-authorised deposits that are held but not charged until needed, AI document analysis to catch fraud and errors, and digital contract signing baked into the flow.
+
+We could not find a platform that handled more than two of these. So we built one.
+
+## What We Built
+
+A complete booking platform where the entire customer journey happens in one place.
+
+**Vehicle selection and availability**: Real-time availability checking across the fleet. Dynamic pricing for weekday, weekend, and weekly rates. Optional extras at checkout.
+
+**Document verification**: Customers upload their driving licence and a proof of address. AI analysis checks each document for authenticity and extracts key data. For vehicles requiring a C1 or HGV licence, the system integrates with the DVLA for an official verification check. Returning customers skip re-upload, but licence verification runs fresh every time: a licence valid last month could be revoked today.
+
+**Digital contract signing**: Previously a separate email with a separate link. Now it is step six of the checkout flow. The signed contract PDF is generated automatically after payment succeeds.
+
+**Two-stage payments**: Rental payment at booking. Pre-authorised deposit 12 hours before collection, held on the card but not charged. Automatic release after return. Manual capture available if there is damage.
+
+**Admin back office**: Full booking management, document review, fleet tracking, and revenue reporting. Every admin action is logged for compliance purposes.
+
+## The Pivot to SaaS
+
+While building for Wee Horsebox Hire, it became clear that every horsebox hire company has the same problems. And the same set of tools is missing for plant hire, car hire, and motorhome rental businesses too.
+
+The platform was rebuilt as multi-tenant. Each business gets its own isolated environment with its own branding, vehicles, pricing, and customer data. Row-level security at the database layer ensures complete data separation between tenants.
+
+The resulting platform, [Horsebox Hire Software](https://horseboxhiresoftware.co.uk), offers a flat monthly fee plus a small percentage per booking. No per-vehicle charges, no setup fees. Businesses get a system that would cost tens of thousands to commission from scratch.
+
+---
+
+*Running a hire business on a patchwork of tools that do not talk to each other? [Get in touch](/contact) and we can show you what an integrated platform looks like.*

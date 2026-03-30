@@ -1,0 +1,55 @@
+---
+title: "Fakenham Dog Field: Automated Booking with Gate Access Control"
+client: "Fakenham Dog Field"
+industry: "pet-services"
+services: ["apps", "automation"]
+description: "A custom booking and payment system with automated Paxton gate access code generation for a secure dog exercise field at Fakenham Racecourse, Norfolk. Every booking creates a time-limited access code without any manual involvement."
+thumbnail: "/portfolio/fakenham-dog-field.webp"
+results:
+  - "Fully self-service from day one, zero manual bookings to process"
+  - "24/7 availability with no staff involvement required"
+  - "Automated access codes eliminate the need for on-site management"
+  - "Sub-2-minute booking flow from date selection to confirmation email"
+techStack: ["Cloudflare Pages", "Stripe", "Paxton Cloud API"]
+timeline: "6 weeks"
+pubDate: 2026-02-15
+featured: true
+---
+
+## The Problem
+
+Fakenham Dog Field is a secure dog exercise field at Fakenham Racecourse. The owner needed a booking system that could handle payments and, critically, generate gate access codes automatically after payment.
+
+The field is behind a Paxton-controlled gate. Without the right code, you cannot get in. Manual code distribution meant someone would need to be available every time a booking came in, which is not a sustainable model for a small business.
+
+Off-the-shelf booking platforms were ruled out quickly. None of them could talk to a Paxton access control system. The ones that came closest would have required expensive customisation and still would not have done exactly what was needed.
+
+## What We Built
+
+A custom booking system deployed on Cloudflare Pages that handles everything without manual intervention.
+
+**Availability and booking**: Customers browse available time slots, check what is free, and select a date and time. The calendar accounts for operating hours, existing bookings, and any blocked dates set by the owner.
+
+**Payment**: Stripe handles checkout. No account creation required. The customer enters card details, pays, and the booking is confirmed.
+
+**Access code generation**: Immediately after payment confirmation, the system calls the Paxton Cloud API to generate a time-limited access code. The code is valid only during the booked session window.
+
+**Confirmation**: An automated email goes out with the booking details and the gate code. The whole process takes under two minutes.
+
+**Admin dashboard**: The owner can view all bookings, manage availability, block dates, and see revenue reports. Full control, no technical knowledge required.
+
+## The Integration That Made It Work
+
+The hardware was installed and configured by [Surelock Security](https://www.surelocksecurity.co.uk) in Dereham, who handled the physical Paxton gate system on site. The software layer connects to the Paxton Cloud API so that booking confirmations automatically trigger valid, time-bound access credentials.
+
+This combination of hardware expertise from Surelock and custom software integration from us meant the owner got a complete solution rather than two disconnected pieces.
+
+## Business Impact
+
+The system has been running reliably since launch. The owner has no manual tasks in the booking process. Customers can book and arrive without anyone else needing to be involved. The automated access codes work every time.
+
+A testimonial from the owner would capture the day-to-day experience better than we can. If you would like to speak to them directly about how the system works in practice, get in touch and we can make an introduction.
+
+---
+
+*Interested in connecting an online system to real-world hardware or access control? [Get in touch](/contact) and we can talk through what is possible.*
