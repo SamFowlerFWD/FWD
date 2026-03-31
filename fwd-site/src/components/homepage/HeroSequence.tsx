@@ -338,7 +338,7 @@ export default function HeroSequence() {
                   <span className="w-2 h-2 rounded-full bg-red-400" />
                   <span className="w-2 h-2 rounded-full bg-yellow-400" />
                   <span className="w-2 h-2 rounded-full bg-green-400" />
-                  <span className="ml-2 text-[9px] text-slate-400 bg-white rounded px-2 py-0.5">yourbusiness.co.uk</span>
+                  <span className="ml-2 text-[9px] text-slate-600 bg-white rounded px-2 py-0.5">yourbusiness.co.uk</span>
                 </div>
                 <div className="p-3 space-y-2.5 min-h-[180px]">
                   <div className={`flex items-center justify-between transition-opacity duration-300 ${buildPhase >= 1 ? 'opacity-100' : 'opacity-0'}`}>

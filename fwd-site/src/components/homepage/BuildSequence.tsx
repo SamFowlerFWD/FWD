@@ -89,7 +89,7 @@ function BuildPanel({ visible }: { visible: boolean }) {
           <span className="w-2.5 h-2.5 rounded-full bg-red-400" />
           <span className="w-2.5 h-2.5 rounded-full bg-yellow-400" />
           <span className="w-2.5 h-2.5 rounded-full bg-green-400" />
-          <span className="ml-2 text-[10px] text-slate-400 bg-white rounded px-2 py-0.5 flex-1 max-w-[200px]">yourbusiness.co.uk</span>
+          <span className="ml-2 text-[10px] text-slate-600 bg-white rounded px-2 py-0.5 flex-1 max-w-[200px]">yourbusiness.co.uk</span>
         </div>
 
         {/* Website content building up */}
