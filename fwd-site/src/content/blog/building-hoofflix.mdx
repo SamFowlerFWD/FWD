@@ -32,9 +32,9 @@ Not a spec. A shared language.
 
 "Hoofflix" wasn't one thing. It was two WordPress sites with a scattering of accounts round the edges.
 
-**hoofflix.com** was the home of the video — hundreds of hours of Vimeo teaching library sat behind a members' area, billing through Stripe plans set up years earlier and never touched since.
+**hoofflix.com** was the home of the video — hundreds of hours of teaching library sat behind a members' area, billing through subscriptions set up years earlier and never touched since.
 
-**scientifichorseshoeing.co.uk** was a separate site entirely, running Divi, with LearnDash for the courses, WooCommerce for the shop and another plugin again for the events.
+**scientifichorseshoeing.co.uk** was a separate site entirely, with one plugin bolted on for the courses, another for the shop and a third for the events.
 
 And the articles were on both. Not divided by topic, or audience, or anything you could explain to another human being — just wherever they happened to get written that year. The same man, on the same subject, in two places, with no way of telling which without going and looking.
 
@@ -76,35 +76,27 @@ What's grown out of that, over a long time, is a fondness — and an understandi
 
 That's the actual working relationship, and I'd take it over a polite one every day of the week. Politeness gets you a project that ships something nobody argued hard enough about.
 
-## The Laminitis Tool
+## The Job Changed Again, Halfway Through
 
-The first thing we built together, and it's still not finished.
+Partway into the rebuild, Mark brought out the laminitis work.
 
-Laminitis is the condition that keeps farriers and vets awake. Assessing it properly means calibrated radiographs and real geometry — rotation, sole depth, palmar angle, breakover. Mark had spent years on the clinical model. He had no way to give it to anyone except by teaching it in a room, one group at a time.
+Laminitis is the condition that keeps farriers and vets awake. Assessing it properly means calibrated radiographs and real geometry — rotation, sole depth, palmar angle, breakover. He'd spent years on the clinical model and had no way of giving it to anybody except by standing in a room and teaching it, one group at a time.
 
-So we built it around his maths. Place landmarks on the radiographs, calibrate off a marker of known length, and the engine derives the measurements and a shoeing prescription, with every safety boundary he insisted on. He still works on that engine now. He'll still find something in it he wants changed.
+He hadn't handed that to anyone before. A website is one thing. The method you've spent a career refining is another. That he brought it out halfway through rather than at the start tells you roughly when the job stopped being a job.
 
-And then we made exactly the mistake the rest of the business had already made: we launched it on its own domain, with its own login, database and billing. Another island. We caught it before it had real users and folded it into the platform.
+So we built it round his maths. Place the landmarks on the radiographs, calibrate off a marker of known length, and it derives the measurements and a shoeing prescription with every safety boundary he insisted on. He still works on that engine. He'll still find something in it he wants changed. It still isn't finished.
+
+And then we went and made the same mistake the rest of the business had already made: launched it on its own domain, with its own login and its own billing. Another island. We caught it before it had real users and folded it in.
 
 Slightly embarrassing to admit in a post about fragmentation, which is why I'm admitting it. It's an easy trap and we walked into it with our eyes open.
 
 ## What It Does Now
 
-One platform. Next.js on Railway, Postgres on Supabase, Stripe, Vimeo, and native iOS and Android apps from the same codebase.
+One platform, one login, one bill. Video, structured courses, podcasts and articles in the same place, with apps on both stores.
 
-**Four ways to learn.** Netflix-style video streaming, a full course LMS with drip release and timestamped notes, podcasts, and evidence-based articles.
+Underneath that, the things that actually keep a professional subscribed. CPD that records itself as you learn and produces the report your governing body wants. Assessment that goes well past multiple choice — clinical scenarios that branch, radiographs you have to put a finger on, practical work an apprentice photographs for marking. More than 8,600 peer-reviewed papers you can search by meaning rather than keyword, with a checker that takes any claim an owner found online and tells you what the evidence actually says. A handout generator, so you finish a job and hand the owner something evidence-backed with your name on it. Case reviews with Mark over Zoom. A directory so clients can find you.
 
-**Assessment that isn't just multiple choice.** Seven question types including image hotspots — which matters when you're asking someone to find the navicular bone on a radiograph. Nine interactive activity types on top: branching clinical scenarios, interactive video, case-study walkthroughs, and practical submissions where an apprentice photographs their work for marking. Plus anatomy labelling, a 3D distal limb model, and spaced-repetition flashcards.
-
-**CPD that produces the record.** Watch time and completed assessments accrue points against the categories the professional bodies actually use. Annual goal, running log, PDF report for FRC, BFBA, AFA or WCF. Certificates with unique numbers and a public verification portal.
-
-**The research layer.** More than 8,600 peer-reviewed papers, enriched with evidence levels and searchable by meaning rather than keywords. An evidence checker for owner claims. A supplement checker. A writing studio with cite-as-you-write for anyone building a Fellowship submission.
-
-**The tools that make the week easier.** A client handout generator — finish a job, tap a condition, hand the owner an evidence-backed sheet with your name on it. One-to-one case reviews over Zoom with Mark. A practitioner directory with a map.
-
-**And the commercial side**: subscription tiers, course purchases, a shop with print-on-demand books, gift subscriptions, referrals, webinars, team plans with aggregated CPD reporting for practices and colleges, and free access for verified apprentices, because the people who need it most have no money.
-
-Behind that: a large admin panel, an instructor dashboard with earnings and payouts, a marketing engine, scheduled jobs, six languages, and the security and GDPR work nobody notices until it's missing. None of it glamorous. All of it the difference between a demo and a business.
+Then the business end: subscriptions, individual course sales, a shop, team plans for practices and colleges, and free access for verified apprentices, because the people who need it most have no money.
 
 ## Teaching a Technophobe to Run Agentic Workflows
 
@@ -114,7 +106,7 @@ All of the above is worthless without content, and the content lives in one head
 
 So I gave him a direct line into the platform.
 
-Hoofflix runs a Model Context Protocol server. Mark's Claude app connects to it. He says *"I want to write an article about navicular syndrome, here are my notes"*, reads it back, says *"that's too technical"* as many times as he likes, then says *"push that to Hoofflix as a draft"* — and it lands in the admin panel for review. He has skills for articles, for building whole courses from a book chapter at any level from Diploma to Fellowship, and for finding and verifying real references. He attaches a chapter, says *"do a Level 3 and a Level 5 version"*, and gets two courses.
+There's a connector built into Hoofflix that his AI assistant plugs straight into. He says *"I want to write an article about navicular syndrome, here are my notes"*, reads it back, says *"that's too technical"* as many times as he likes, then says *"push that to Hoofflix as a draft"* — and it lands in the admin panel for review. He has skills for articles, for building whole courses from a book chapter at any level from Diploma to Fellowship, and for finding and verifying real references. He attaches a chapter, says *"do a Level 3 and a Level 5 version"*, and gets two courses.
 
 No terminal. No admin login. He talks, and it lands.
 
