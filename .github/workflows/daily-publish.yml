@@ -22,7 +22,7 @@ jobs:
 
           # Find MDX files whose pubDate frontmatter matches today
           LIVE_POSTS=""
-          for f in src/content/blog/*.mdx src/content/blog/*.md; do
+          for f in fwd-site/src/content/blog/*.mdx fwd-site/src/content/blog/*.md; do
             [ -f "$f" ] || continue
             PUB=$(grep -m1 '^pubDate:' "$f" | sed 's/pubDate:[[:space:]]*//' | tr -d '"'"'" | cut -c1-10)
             DRAFT=$(grep -m1 '^draft:' "$f" | sed 's/draft:[[:space:]]*//' | tr -d '"'"'")
