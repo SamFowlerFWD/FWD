@@ -1,0 +1,161 @@
+---
+title: "Building Hoofflix: From a Marketing Brief to a Platform the Equine Industry Actually Deserves"
+description: "I was brought in to help with marketing. What I found was five disconnected platforms and a genuine gap in the market. Here's the full story of building Hoofflix, and of teaching a nearly-70-year-old technophobe to run agentic AI workflows."
+pubDate: 2026-09-20
+heroImage: "/portfolio/hoofflix.webp"
+heroImageAlt: "The Hoofflix platform showing the streaming library, CPD dashboard, and clinical measurement tools"
+category: "case-studies"
+tags: ["case study", "equestrian", "LMS", "AI", "agentic workflows", "custom app", "CPD"]
+featured: true
+draft: false
+---
+
+## I Was Brought In to Do Marketing
+
+That was the job. Hoofflix had content, an audience, and a founder with genuine authority in his field — Mark Caldwell FWCF, a Fellowship farrier who has spent a career on the science of the equine foot and literally wrote the book on it. What it didn't have was traction. So I was asked to look at the marketing.
+
+I lasted about a fortnight on that brief before I had to go back and say: the marketing isn't the problem.
+
+## The Problem Was That "Hoofflix" Was Five Different Things
+
+When I actually audited what existed, here's what I found:
+
+- **hoofflix.com** — a WordPress site with 168 blog posts and 18 pages
+- **A members' area** bolted onto that WordPress site, with around 143 paying subscribers on Stripe plans that had been created years earlier and never touched since
+- **scientifichorseshoeing.co.uk** — a second WordPress site running Divi, LearnDash (20 courses, 256 lessons), WooCommerce (175 products) and The Events Calendar (41 events)
+- **laminitistool.com** — a standalone clinical calculator, brilliant, and completely separate from everything else
+- **A Vimeo library** of hundreds of hours of teaching video with no index anyone else could use, plus Mailchimp for email and a print-on-demand account for the books
+
+Five logins. Five bills. Five places for a customer to end up. A farrier who paid for the members' area couldn't see the courses. Someone who bought a course couldn't find the videos. Nobody's CPD was recorded anywhere.
+
+You can't market your way out of that. No amount of clever copy fixes a product that makes people log in three times to get what they paid for.
+
+## The Bigger Realisation
+
+Consolidating five platforms into one is a worthwhile job, but it's a *tidying* job. The more interesting thing I found was the gap underneath it.
+
+Farriers, equine vets, physios, trimmers and saddle fitters all carry a professional obligation to keep learning and to evidence it. Most of them manage that with a shoebox of certificates. The general platforms — YouTube, Udemy, Teachable — were never built for them: no CPD records, no credentialing, no concept of a practitioner having clients.
+
+But here's the part that actually mattered. The value isn't only in the teaching. It's in the ninety minutes a week a farrier spends doing everything *around* the teaching:
+
+- Explaining to an owner, at the side of a stable, why the horse needs six weeks of a particular shoeing plan
+- Measuring hoof balance by eye and hoping their memory of the last cycle is accurate
+- Fielding a supplement claim an owner read on Facebook and having nothing to hand to answer it
+- Writing up a case for a Fellowship submission with no decent reference library to cite from
+
+None of that is education. All of it is the job. If a platform could make that part of the week easier, the education becomes the reason they stay rather than the reason they join. That's a fundamentally different product — not "pay to learn", but "pay to run a better practice".
+
+So the brief changed. We weren't rebuilding a website. We were building the thing the industry should have had a decade ago.
+
+## What Hoofflix Is Now
+
+One platform. 347 pages, 713 API endpoints, 235 database tables. Next.js and TypeScript on Railway, PostgreSQL on Supabase, Stripe for money, Vimeo for video, Cloudflare R2 for everything else, and native iOS and Android apps from the same codebase via Capacitor.
+
+That's the plumbing. Here's what it actually does.
+
+### The Core: Four Ways to Learn
+
+**Watch** — a Netflix-style streaming hub. Series, episodes, categories, featured rows, continue-watching, free preview episodes. It's the bit that gave the platform its name and it behaves the way people expect streaming to behave.
+
+**Learn** — a full LMS. Courses split into modules and lessons, drip release so content unlocks on a schedule, timestamped notes bookmarked to the video timeline, chapter navigation, per-lesson Q&A, progress tracking, reviews and ratings, and a certificate at the end.
+
+**Listen** — podcast shows and episodes with listen history and continue-listening, because a lot of this audience is in a van between yards.
+
+**Read** — evidence-based scientific articles with categories, reading progress, and DOI/PubMed import so research papers come in properly referenced rather than retyped.
+
+### Assessment That Isn't Just Multiple Choice
+
+Seven question types: multiple choice, true/false, multiple select, fill-in-the-blank, drag-to-order, matching, and image hotspot — which matters a lot when you're asking someone to identify the navicular bone on an actual radiograph.
+
+Then nine interactive activity types on top: sequencing, matching, hotspot exploration, interactive video that pauses to ask questions, branching clinical scenarios with consequences, before-and-after sliders, multi-phase case-study walkthroughs, and practical submissions where an apprentice photographs their work and an instructor marks it against a rubric.
+
+Quizzes can sit at lesson, module or course level, draw randomly from a question bank, adapt their difficulty to previous scores, and ask for the learner's confidence on each answer — then show them a calibration chart afterwards, which is a genuinely uncomfortable and genuinely useful thing to see.
+
+Around that: drag-and-drop anatomy labelling, an interactive 3D model of the equine distal limb with gait controls, and flashcard decks running SM-2 spaced repetition with a review queue that resurfaces the things you got wrong at increasing intervals.
+
+### CPD, Done Properly
+
+This was a design requirement from day one, not a bolt-on. Watch time and completed assessments automatically accrue CPD points against the categories professional bodies actually use — practical skills, theory, business, health and safety, emerging tech. There's an annual goal, a running log, and a PDF report you can export and send to FRC, BFBA, AFA or WCF. Minimum watch percentages are enforced so the record means something.
+
+Certificates are auto-generated with unique numbers and a public verification portal, so a client or an employer can check a credential is real.
+
+### Keeping People Coming Back
+
+Learning streaks with a weekly minimum, a twelve-week activity calendar, and four streak freezes a year so one bad week doesn't wipe out six months. Achievement badges. A community reputation system that promotes people from New Member through to Expert based on genuinely helpful contributions. Leaderboards. Personal watchlists, colour-coded notes, and a recommendation engine.
+
+## The Extras — The Bit That Actually Sells It
+
+Everything above is a very good education platform. This next part is why a professional keeps paying for it.
+
+**A reference library of over 14,000 peer-reviewed papers**, ingested from sixteen-plus journals, AI-enriched with evidence levels, key findings and practical takeaways, and searchable semantically — by meaning, not just keywords — using pgvector embeddings. Plus a 12,000-entry evidence-linked glossary.
+
+**An Evidence Checker.** Paste in a claim — anything an owner has read online — and get a verdict backed by the corpus: supported, partially supported, or contradicted, with the evidence quality rated.
+
+**A Supplement Checker** that does the same for any equine supplement or ingredient, with dosage and safety notes.
+
+**A Condition Explorer and Case Lookup** — enter the case, get the matched research, ranked by evidence level.
+
+**A Client Handout Generator.** The farrier finishes a job, taps a condition, and produces an evidence-backed, branded information sheet for the owner — shareable by link, no account needed at the owner's end. Fifteen minutes of explaining, replaced by something the owner can take away and actually read.
+
+**A Writing Studio** at `/write`. A proper document editor for articles, case studies, research papers and theses, with cite-as-you-write pulling straight from the reference library, Harvard/APA/Vancouver formatting, Zotero import, auto-generated bibliographies and DOCX/PDF export. Built for the Fellowship candidate who currently does this in Word at midnight.
+
+**The measurement suite** at `/measure`, which is the one I'm proudest of:
+
+- **The Clinical Laminitis Tool** — the old laminitistool.com, absorbed and rebuilt. Calibrated markup of lateral and DP radiographs, per-limb landmark geometry, a compound palmar-angle model that activates automatically past five degrees, and the F9 heel-elevation protocol with every safety boundary enforced. All four limbs in one case, with cross-limb patterns surfaced.
+- **Hoof Analysis** — per-horse case management with standardised photo capture, landmark annotation, computed hoof proportions, progression tracking across shoeing cycles, voice notes, and printable case reports with CSV export.
+- **Physics for Horseshoers** — force, lever-arm and load-distribution calculators for everyday decisions.
+- **HoofScan** — a free companion iOS app that uses the LiDAR sensor on a Pro iPhone to capture the foot in 3D, then orthographically projects that mesh into the four standard views the measurement engine already understands. The scan doesn't replace the maths; it fills the photo slots automatically so the farrier goes straight to tapping landmarks.
+
+The `/measure` URL is printed as a QR code in the books. Someone reads a chapter, scans the page, and lands on the working tool. That's the whole strategy in one link.
+
+**One-to-one case reviews.** Stuck on a case? Upload your photos, video and notes, then book a thirty-minute Zoom with Mark. Members get an automatic discount.
+
+**A practitioner directory** — searchable, map-based, filtered by profession and location, with a paid "seeking work" badge. Pro Plus practitioners get an auto-generated website on their own domain, fed from the same profile data.
+
+**And the commercial machinery around all of it**: subscription tiers from Free through to Enterprise, individual course purchases, a shop handling digital downloads, physical stock and print-on-demand books, gift subscriptions, discount codes, trade-association discounts, a tiered referral programme, webinars with Zoom integration and ticketing, an events calendar, synchronous watch parties, team and enterprise seats with aggregated CPD reporting for a veterinary practice or a college, and free verified access for farriery apprentices — because the people who need it most are the ones with no money.
+
+## The Machinery Nobody Sees
+
+154 admin pages. A full instructor dashboard with analytics, earnings and payout tracking. A marketing engine with campaigns, audiences, sequences, suppression lists and conversion attribution. Push notifications. 44 scheduled jobs handling drip emails, content publishing, journal ingestion, transcript processing, reference enrichment, research roundups and social posting. Six languages. Full audit logging, rate limiting, CSRF, CSP, brute-force protection and GDPR export and deletion. Sentry on everything.
+
+None of that is glamorous. All of it is the difference between a demo and a business.
+
+## Teaching a Technophobe to Run Agentic Workflows
+
+Here's the part I didn't plan for.
+
+All of this is worthless without content, and the content lives in one head. Mark is nearly 70, a self-confessed technophobe, and had no interest whatsoever in learning a CMS. The honest options were: he dictates, I type, and I become the bottleneck forever — or I find another way.
+
+So I gave him a direct line into the platform.
+
+Hoofflix runs a Model Context Protocol server. Mark's Claude desktop app connects to it with a personal bearer token. He opens Claude, says *"I want to write an article about navicular syndrome, here are my notes"*, reads what comes back, says *"that's too technical, add a section on shoeing"* as many times as he likes, and then says *"push that to Hoofflix as a draft."* It appears in the admin panel for review.
+
+On top of that he has three skills that switch themselves on: one that writes articles in the house style, one that builds an entire course — modules, lessons, quizzes, interactive activities — from a book chapter at whatever level he specifies from Diploma up to Fellowship, and one that finds and verifies real Harvard-style references. He attaches a chapter and says *"do a Level 3 and a Level 5 version of this"*, and gets two complete courses.
+
+No terminal. No admin login. No file paths. He talks, and it lands.
+
+The thing that made it work wasn't the prompting — it was where I put the safety. **Every tool on that connector can only ever create a draft.** Nothing goes live without a human pressing Publish. The platform independently validates the shape of everything that comes in and throws out anything malformed. So the guardrails live in the system, not in the instructions, which means Mark genuinely cannot break anything. I could tell him that honestly, and once he believed it, he stopped being frightened of it.
+
+That's the whole trick with getting a nervous user onto AI tooling. Don't teach them to be careful. Build something where carelessness is harmless, then tell them the truth.
+
+He now produces more content in a week than we used to get in a month, in his own voice, properly referenced. And I got out of the way.
+
+## Where It's Actually At
+
+I'm not going to pretend it's finished, because it isn't. Hoof Analysis is built and sitting behind a launch flag while it's verified. HoofScan is in TestFlight. The Pro Plus auto-site engine is designed and not yet built. The migration of 143 legacy members off the old WordPress subscriptions is being done one at a time, carefully, because they're real people's real direct debits.
+
+But the shape is right, and the shape was the hard part. When it's done it will be, without much argument, the most complete system the equine professional world has — and that's not because of any single clever feature. It's because somebody finally sat down and asked what the whole week looks like for a farrier, rather than just what a lesson looks like.
+
+## What I'd Take From This
+
+Three things, and they apply well outside the equine world:
+
+**Audit before you advertise.** If you're paying someone to market a product and the funnel is leaking through five disconnected systems, you're buying traffic for a bucket with a hole in it. I'd rather lose a marketing retainer and tell you that than take the money.
+
+**The retention feature is rarely the headline feature.** People join Hoofflix for the video library. They stay for the CPD report and the handout generator. Work out what makes your customer's actual week easier, and build that.
+
+**AI tooling is only as good as the safety net under it.** The reason a 70-year-old technophobe is confidently running agentic workflows every day isn't that he became technical. It's that the system was built so that nothing he does can hurt it.
+
+---
+
+If you're sitting on a business spread across four platforms that don't talk to each other, or you've got deep expertise and no good way to get it out of your head and in front of people, [that's exactly the sort of thing I like working on](/services/custom-app-development). And if the blocker is that someone on your team is terrified of the tooling, [that's solvable too](/services/ai-training).
