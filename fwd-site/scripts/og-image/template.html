@@ -1,0 +1,118 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:1200px; height:630px; }
+  body {
+    font-family: -apple-system, "SF Pro Display", system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background:#0a0e27;
+    position:relative;
+    overflow:hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  .bg {
+    position:absolute; inset:0;
+    background:
+      radial-gradient(900px 620px at 78% 8%, rgba(124,58,237,0.30) 0%, rgba(124,58,237,0) 62%),
+      radial-gradient(700px 520px at 6% 96%, rgba(57,181,255,0.16) 0%, rgba(57,181,255,0) 65%),
+      linear-gradient(160deg, #0a0e27 0%, #14113a 48%, #0a0e27 100%);
+  }
+  /* faint chevron watermark, right side */
+  .mark-wm {
+    position:absolute; right:-96px; top:52%; transform:translateY(-50%) scale(0.88);
+    transform-origin:right center;
+    opacity:0.075;
+  }
+  .frame {
+    position:absolute; inset:0;
+    padding:70px 78px 78px;
+    display:flex; flex-direction:column; justify-content:space-between;
+  }
+  /* ---- lockup ---- */
+  .lockup { display:flex; align-items:center; gap:28px; }
+  .tile {
+    width:172px; height:132px; flex:0 0 172px;
+    background:#ffffff;
+    border-radius:26px;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow: 0 18px 44px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.10);
+  }
+  .tile img { width:138px; height:auto; display:block; }
+  .word { display:flex; flex-direction:column; gap:6px; }
+  .word .fwd {
+    font-size:76px; font-weight:800; color:#ffffff;
+    letter-spacing:-0.03em; line-height:1;
+  }
+  .word .sub {
+    font-size:23px; font-weight:500; color:#9aa4bf;
+    letter-spacing:0.16em; text-transform:uppercase;
+  }
+  /* ---- headline ---- */
+  .headline {
+    font-size:47px; font-weight:650; color:#ffffff;
+    line-height:1.24; letter-spacing:-0.022em;
+    max-width:830px;
+  }
+  .headline .hl {
+    background:linear-gradient(95deg, #7DD956 0%, #39B5FF 100%);
+    -webkit-background-clip:text; background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  /* ---- footer ---- */
+  .foot { display:flex; flex-direction:column; gap:20px; }
+  .rule {
+    height:1px; width:100%;
+    background:linear-gradient(90deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.04) 55%, rgba(255,255,255,0) 100%);
+  }
+  .meta { display:flex; align-items:center; gap:18px; }
+  .meta .place {
+    font-size:22px; font-weight:600; color:#7DD956; letter-spacing:0.005em;
+  }
+  .meta .dot { width:5px; height:5px; border-radius:50%; background:rgba(255,255,255,0.28); }
+  .meta .url { font-size:22px; font-weight:500; color:#c3cbe0; }
+  /* ---- accent bar ---- */
+  .bar {
+    position:absolute; left:0; right:0; bottom:0; height:12px;
+    background:linear-gradient(90deg, #0a0e27 0%, #39B5FF 22%, #7c3aed 58%, #7DD956 88%, #7DD956 100%);
+  }
+</style>
+</head>
+<body>
+  <div class="bg"></div>
+
+  <svg class="mark-wm" width="560" height="420" viewBox="0 0 560 420" fill="none">
+    <g stroke-width="10" fill="none">
+      <path d="M120 70 L320 210 L120 350 Z" stroke="#ffffff" stroke-linejoin="round"/>
+      <path d="M240 70 L440 210 L240 350 Z" stroke="#39B5FF" stroke-linejoin="round"/>
+      <path d="M360 70 L560 210 L360 350 Z" stroke="#7DD956" stroke-linejoin="round"/>
+    </g>
+  </svg>
+
+  <div class="frame">
+    <div class="lockup">
+      <div class="tile"><img src="fwd-mark.png" alt=""></div>
+      <div class="word">
+        <div class="fwd">FWD</div>
+        <div class="sub">Thinking Solutions</div>
+      </div>
+    </div>
+
+    <div class="headline">
+      Websites, apps and automation<br>
+      for <span class="hl">UK businesses</span>.
+    </div>
+
+    <div class="foot">
+      <div class="rule"></div>
+      <div class="meta">
+        <span class="place">Norwich, Norfolk</span>
+        <span class="dot"></span>
+        <span class="url">f-w-d.co.uk</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="bar"></div>
+</body>
+</html>

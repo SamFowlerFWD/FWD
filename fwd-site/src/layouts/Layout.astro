@@ -7,6 +7,8 @@ import '../styles/tokens.css';
 import '../styles/animations.css';
 import '../styles/global.css';
 
+const DEFAULT_OG_IMAGE = "/og-image.png";
+
 export interface Props {
   title: string;
   description?: string;
@@ -18,12 +20,14 @@ export interface Props {
 const {
   title,
   description = "Professional web development and business automation in Norwich, Norfolk. Websites, apps, booking systems and hosting for UK businesses.",
-  ogImage = "/og-image.png",
+  ogImage = DEFAULT_OG_IMAGE,
   noindex = false,
   hideBreadcrumbs = false
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogImageURL = new URL(ogImage, Astro.site).href;
+const isDefaultOgImage = ogImage === DEFAULT_OG_IMAGE;
 const isHomepage = Astro.url.pathname === '/' || Astro.url.pathname === '';
 const pageTitle = isHomepage ? title : `${title} | FWD`;
 ---
@@ -63,7 +67,14 @@ const pageTitle = isHomepage ? title : `${title} | FWD`;
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={ogImage} />
+    <meta property="og:image" content={ogImageURL} />
+    {isDefaultOgImage && (
+      <>
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content="FWD Thinking Solutions: web development and business automation in Norwich, Norfolk" />
+      </>
+    )}
     <meta property="og:locale" content="en_GB" />
     <meta property="og:site_name" content="FWD Thinking Solutions" />
 
@@ -72,7 +83,7 @@ const pageTitle = isHomepage ? title : `${title} | FWD`;
     <meta property="twitter:url" content={canonicalURL} />
     <meta property="twitter:title" content={pageTitle} />
     <meta property="twitter:description" content={description} />
-    <meta property="twitter:image" content={ogImage} />
+    <meta property="twitter:image" content={ogImageURL} />
 
     <!-- Robots -->
     {noindex && <meta name="robots" content="noindex, nofollow" />}
