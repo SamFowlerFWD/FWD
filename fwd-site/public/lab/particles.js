@@ -62,6 +62,11 @@
      reads as dust. A few hundred actual glyphs riding the same flock positions
      give it species — drawn over the cloud, not instead of it. */
   const BIRD_N = 170;
+  /* The flock briefly pulls itself into one enormous bird, holds a beat, then
+     releases. Real murmurations throw shapes like this for a second or two.
+     Drawn almost face-on, because a silhouette squashed onto the ground plane
+     is just a smear. */
+  const SIL_TILT = 9 * Math.PI / 180;
   const NET_TILT = 40 * Math.PI / 180;
   /* the feature map: what is needed, and how it hangs together */
   const NET = [
@@ -86,7 +91,7 @@
   /* phase boundaries are MEASURED from where each section sits, not hardcoded —
      the layout reflows and the page keeps growing */
   const PH = { flockA:0.5, flockB:1, netA:1.1, netB:1.6, layA:1.7, layB:2.2,
-               growA:2.3, growB:2.8, max:4.0 };
+               growA:2.3, growB:2.8, birdC:1.15, max:4.0 };
 
   const LUT_N = 8192, LUT = new Float32Array(LUT_N), LUT_K = LUT_N / TAU;
   for (let i = 0; i < LUT_N; i++) LUT[i] = Math.sin(i / LUT_N * TAU);
@@ -107,6 +112,8 @@
   let birdCount = 0, birdVis = 0;
   /* murmuration, cartesian */
   let mxa = null, mya = null, mza = null;
+  /* giant bird silhouette, cartesian + span param */
+  let bxa = null, bya = null, bza = null, bua = null;
   /* feature map, cartesian */
   let nxa = null, nya = null, nza = null;
   /* layer stack, cartesian */
@@ -120,11 +127,12 @@
   let motes = [], sparks = [];
   let palR = null, palG = null, palB = null, palA = null;
 
-  const FX_STATE = { cosT: 0, sinT: 1, lca: 1, lsa: 0, layerK: 0, nca: 1, nsa: 0, netK: 0, gca: 1, gsa: 0, growK: 0 };
+  const FX_STATE = { cosT: 0, sinT: 1, lca: 1, lsa: 0, layerK: 0, nca: 1, nsa: 0, netK: 0, gca: 1, gsa: 0, growK: 0, silK: 0 };
   const O = { cx: 0, cy: 0, R: 0, tube: 0, ox: 0, oy: 0, cosT: 0, sinT: 1,
               sw: 0, sh: 0, offX: 0, mcx: 0, mcy: 0, mscale: 1,
               lcx: 0, lcy: 0, lscale: 1, ncx: 0, ncy: 0, nscale: 1,
-              gcx: 0, gcy: 0, gscale: 1, growTilt: GROW_TILT };
+              gcx: 0, gcy: 0, gscale: 1, growTilt: GROW_TILT,
+              bcx: 0, bcy: 0, bscale: 1 };
   const COL = { hot: '#ffd9a8' };
   let accCur = { r: 255, g: 95, b: 31 }, accTgt = { r: 255, g: 95, b: 31 };
 
@@ -198,6 +206,8 @@
     pw = new Float32Array(n); pw2 = new Float32Array(n);
     pom = new Float32Array(n); pst = new Float32Array(n);
     mxa = new Float32Array(n); mya = new Float32Array(n); mza = new Float32Array(n);
+    bxa = new Float32Array(n); bya = new Float32Array(n);
+    bza = new Float32Array(n); bua = new Float32Array(n);
     nxa = new Float32Array(n); nya = new Float32Array(n); nza = new Float32Array(n);
     lxa = new Float32Array(n); lya = new Float32Array(n); lza = new Float32Array(n);
     gxa = new Float32Array(n); gya = new Float32Array(n); gza = new Float32Array(n);
@@ -238,6 +248,51 @@
       mxa[i] = mr * Math.cos(mth) * 1.45 + gauss() * 0.14;
       mya[i] = fold * 0.82 + gauss() * 0.21;
       mza[i] = mr * Math.sin(mth) * 0.85 + gauss() * 0.14;
+
+      /* ── giant bird ──
+         built from parametric parts rather than rejection-sampled against an
+         outline: wings carry most of the area, and `bua` records how far out
+         the span each point sits so the wings can flap later. */
+      {
+        /* NOTE the negated y throughout: screen y runs DOWN, so a bird built
+           with the head at +y comes out upside down. Head is up, tail and
+           swept wingtips trail down-and-back. */
+        const q = Math.random();
+        if (q < 0.70) {                                  /* wings */
+          const side = Math.random() < 0.5 ? -1 : 1;
+          const u = Math.pow(Math.random(), 0.80);       /* denser at the root */
+          const v = Math.random();
+          /* chord tapers to an actual point at the tip and the centreline
+             curves back — a linear taper leaves a plank with a hard trailing
+             edge, which is what the first version looked like */
+          const cc = 0.11 - 0.25 * Math.pow(u, 1.28);
+          const ch = 0.215 * Math.pow(1 - u, 0.58);
+          bxa[i] = side * (0.06 + 1.00 * u);
+          bya[i] = -(cc + (v * 2 - 1) * ch + gauss() * 0.012);
+          bza[i] = gauss() * 0.035;
+          bua[i] = u;
+        } else if (q < 0.855) {                          /* body */
+          const tt = Math.random() * 2 - 1;
+          const w = 0.062 * (1 - Math.pow(Math.abs(tt), 1.5));
+          bxa[i] = (Math.random() * 2 - 1) * w;
+          bya[i] = -(tt * 0.33);
+          bza[i] = gauss() * 0.04;
+          bua[i] = 0;
+        } else if (q < 0.945) {                          /* tail, lightly forked */
+          const ss = Math.random();
+          const xx = (Math.random() * 2 - 1) * (0.040 + 0.075 * ss);
+          bxa[i] = xx;
+          bya[i] = 0.29 + ss * (0.18 + Math.abs(xx) * 1.6);
+          bza[i] = gauss() * 0.03;
+          bua[i] = 0;
+        } else {                                         /* head */
+          const a = Math.random() * TAU, rr = Math.sqrt(Math.random()) * 0.062;
+          bxa[i] = rr * Math.cos(a);
+          bya[i] = -(0.40 + rr * Math.sin(a) * 0.95);
+          bza[i] = gauss() * 0.03;
+          bua[i] = 0;
+        }
+      }
 
       /* ── feature map: nodes, and the links between them ── */
       if (Math.random() < 0.40) {
@@ -346,6 +401,17 @@
     if (pg !== null) { PH.growB = pg; PH.growA = pg - 0.52; }
     PH.max = (pg !== null ? pg : pb !== null ? pb : 2.2) + 1;
 
+    /* the silhouette lives in the gap between the flock settling and the map
+       beginning, centred in the frame and sized to fill it */
+    PH.birdC = (PH.flockB + PH.netA) * 0.5;
+    /* Solve for the position that puts the bird dead centre of the viewport at
+       the exact scroll where the pulse peaks. Pinning it to the flock's centre
+       left it off the top of the screen, because the pulse fires in the gap
+       BETWEEN two sections, not inside either one. */
+    O.bcx = (BW / 2 - O.ox - O.cx);
+    O.bcy = PH.birdC * (heroH * 1.3) + innerHeight * 0.5 - O.oy - O.cy;
+    O.bscale = BW * (isWide ? 0.40 : 0.46);
+
     const mp = document.querySelector('.map');
     O.ncy = mp
       ? (mp.getBoundingClientRect().top - hr.top) + mp.offsetHeight * 0.60 - O.oy - O.cy
@@ -425,6 +491,10 @@
     const p = scrollP;
     const pourK = smooth(0.26, 0.72, p);          /* torus → helix        */
     const morphG = smooth(PH.flockA, PH.flockB, p); /* helix → murmuration */
+    /* a bump, not a ramp: rise, hold, release */
+    const bHold = 0.055, bSpan = 0.175, bC = PH.birdC;
+    const silK = Math.max(0, Math.min(smooth(bC - bSpan, bC - bHold, p),
+                                      1 - smooth(bC + bHold, bC + bSpan, p)));
     const netK   = smooth(PH.netA, PH.netB, p);   /* murmuration → map    */
     const layerK = smooth(PH.layA, PH.layB, p);   /* map → stack          */
     const growK  = smooth(PH.growA, PH.growB, p); /* stack → spiral       */
@@ -443,12 +513,13 @@
        lot of ground. Resolution therefore peaks exactly where the cloud is
        still and you can study it. */
     const spread = pourK * (1 - morphG);
-    const vHalf = lerp(lerp(lerp(lerp(O.sw * 0.70, O.mscale * 2.1, morphG), O.nscale * 1.5, netK),
+    const vHalf = lerp(lerp(lerp(lerp(lerp(O.sw * 0.70, O.mscale * 2.1, morphG),
+                       O.bscale * 1.22, silK), O.nscale * 1.5, netK),
                        O.lscale * 1.5, layerK), O.gscale * 1.45, growK) * (1 + spread * 1.9);
-    const vCx = lerp(lerp(lerp(lerp(0, O.mcx, morphG), O.ncx, netK), O.lcx, layerK), O.gcx, growK)
-              + lateral * 0.42 * (1 - netK);
-    const vCy = lerp(lerp(lerp(lerp(0, O.mcy, morphG), O.ncy, netK), O.lcy, layerK), O.gcy, growK)
-              + drop * 0.42 * (1 - netK);
+    const vCx = lerp(lerp(lerp(lerp(lerp(0, O.mcx, morphG), O.bcx, silK), O.ncx, netK), O.lcx, layerK), O.gcx, growK)
+              + lateral * 0.42 * (1 - netK) * (1 - silK);
+    const vCy = lerp(lerp(lerp(lerp(lerp(0, O.mcy, morphG), O.bcy, silK), O.ncy, netK), O.lcy, layerK), O.gcy, growK)
+              + drop * 0.42 * (1 - netK) * (1 - silK);
     O.vHalf = vHalf; O.vCx = vCx; O.vCy = vCy;
     const vk = BUF_PX / (2 * vHalf), HALF = BUF_PX * 0.5;   /* `vk`: `k` is taken by the splat loop */
     /* Brightness must track the mapping. N points spread across a content area
@@ -459,13 +530,21 @@
     const invSh = 1 / O.sh;
 
     /* the camera lifts out of the ground plane as the flock takes over */
-    const tiltNow = lerp(lerp(lerp(lerp(Math.acos(O.cosT), FLOCK_TILT, morphG), NET_TILT, netK),
+    const tiltNow = lerp(lerp(lerp(lerp(lerp(Math.acos(O.cosT), FLOCK_TILT, morphG),
+                          SIL_TILT, silK), NET_TILT, netK),
                           LAYER_TILT, layerK), O.growTilt, growK);
     const cosT = Math.cos(tiltNow), sinT = Math.sin(tiltNow);
     const FLOW = 0.30;                       /* flow-field amplitude */
     const surgeX = 0.11 * fsin(t * 0.37);    /* the whole flock leaning */
     const surgeY = 0.07 * fsin(t * 0.29 + 1.3);
     const mSpin = t * 0.055;
+    /* the silhouette banks gently rather than spinning — a rotating bird
+       reads as a logo turntable, not a bird */
+    const bYaw = fsin(t * 0.33) * 0.20;
+    const bca = fcos(bYaw), bsa = fsin(bYaw);
+    const bFlap = fsin(t * 1.45);
+    const bscale = O.bscale, bcx = O.bcx, bcy = O.bcy;
+    const invBDepth = 1 / (bscale * 0.6);
     const nSpin = t * 0.075;
     const nca = fcos(nSpin), nsa = fsin(nSpin);
     const nscale = O.nscale, ncx = O.ncx, ncy = O.ncy;
@@ -489,6 +568,7 @@
 
     /* birds belong to the flock: in as it forms, out as it becomes the map */
     birdVis = clamp01((morphG - 0.42) / 0.34) * (1 - clamp01(netK * 1.6));
+    FX_STATE.silK = silK;
     let bp = 0;
 
     for (let i = 0; i < n; i++) {
@@ -536,6 +616,26 @@
         /* DENSITY WAVE travelling through the flock. The rippling light and
            dark banding is the thing that actually reads as a murmuration. */
         bright = lerp(1, 0.4 + 1.25 * (0.5 + 0.5 * fsin(mxa[i] * 2.6 + mza[i] * 1.4 + t * 1.45)), m);
+      }
+
+      /* ── the whole flock resolves into one bird ── */
+      if (silK > 0.001) {
+        /* lighter stagger than the other shapes: this is a sudden coalescence,
+           not an arrival */
+        const sK = clamp01((silK - pst[i] * 0.22) / 0.78);
+        if (sK > 0.001) {
+          const sp = bua[i] * bua[i];                  /* wings flap, body does not */
+          const ax = bxa[i] * bscale;
+          const ay = (bya[i] + sp * bFlap * 0.17) * bscale;
+          const az = (bza[i] + sp * bFlap * 0.10) * bscale;
+          const rx6 = ax * bca - az * bsa, rz6 = ax * bsa + az * bca;
+          const bsy = ay * cosT - rz6 * sinT, bsz = ay * sinT + rz6 * cosT;
+          sx = lerp(sx, bcx + rx6, sK);
+          sy = lerp(sy, bcy + bsy, sK);
+          dep = lerp(dep, bsz * invBDepth * 0.5 + 0.5, sK);
+          sz = lerp(sz, bsz, sK);
+          bright = lerp(bright, 1, sK);               /* let the shape read clean */
+        }
       }
 
       /* ── through the feature map ── */
@@ -859,6 +959,8 @@
     },
     points: () => n,
     scroll: () => scrollP,
+    sil: () => FX_STATE.silK,
+    phases: () => ({ flockA:PH.flockA, flockB:PH.flockB, netA:PH.netA, netB:PH.netB, birdC:PH.birdC }),
   };
 
   const startProj = getComputedStyle(document.documentElement).getPropertyValue('--proj');
