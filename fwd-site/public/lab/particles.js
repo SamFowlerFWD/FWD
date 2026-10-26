@@ -67,6 +67,9 @@
      Drawn almost face-on, because a silhouette squashed onto the ground plane
      is just a smear. */
   const SIL_TILT = 9 * Math.PI / 180;
+  const DNA_TILT = 12 * Math.PI / 180;   /* side on, so the twist reads   */
+  const MIC_TILT = 30 * Math.PI / 180;
+  const DNA_TURNS = 2.6;
   const NET_TILT = 40 * Math.PI / 180;
   /* the feature map: what is needed, and how it hangs together */
   const NET = [
@@ -90,7 +93,7 @@
   ];
   /* phase boundaries are MEASURED from where each section sits, not hardcoded —
      the layout reflows and the page keeps growing */
-  const PH = { flockA:0.5, flockB:1, netA:1.1, netB:1.6, layA:1.7, layB:2.2,
+  const PH = { dnaA:0.3, dnaB:0.8, micA:0.9, micB:1.4, flockA:1.5, flockB:2, netA:1.1, netB:1.6, layA:1.7, layB:2.2,
                growA:2.3, growB:2.8, birdC:1.15, max:4.0 };
 
   const LUT_N = 8192, LUT = new Float32Array(LUT_N), LUT_K = LUT_N / TAU;
@@ -104,7 +107,7 @@
   let scrollP = 0, heroH = 1, isWide = true;
 
   /* torus, polar */
-  let pth = null, prd = null, pzz = null, pw = null, pw2 = null, pom = null, pst = null;
+  let pth = null, prd = null, pzz = null, pw = null, pw2 = null, pom = null, pst = null, loud = null;
   const birdIdx = new Int32Array(BIRD_N), birdPh = new Float32Array(BIRD_N);
   const birdX = new Float32Array(BIRD_N), birdY = new Float32Array(BIRD_N);
   const birdD = new Float32Array(BIRD_N);
@@ -112,6 +115,9 @@
   let birdCount = 0, birdVis = 0;
   /* murmuration, cartesian */
   let mxa = null, mya = null, mza = null;
+  /* double helix, and the microscopic field */
+  let dxa = null, dya = null, dza = null;
+  let uxa = null, uya = null, uza = null;
   /* giant bird silhouette, cartesian + span param */
   let bxa = null, bya = null, bza = null, bua = null;
   /* feature map, cartesian */
@@ -132,7 +138,8 @@
               sw: 0, sh: 0, offX: 0, mcx: 0, mcy: 0, mscale: 1,
               lcx: 0, lcy: 0, lscale: 1, ncx: 0, ncy: 0, nscale: 1,
               gcx: 0, gcy: 0, gscale: 1, growTilt: GROW_TILT,
-              bcx: 0, bcy: 0, bscale: 1 };
+              bcx: 0, bcy: 0, bscale: 1,
+              dcx: 0, dcy: 0, dscale: 1, ucx: 0, ucy: 0, uscale: 1 };
   const COL = { hot: '#ffd9a8' };
   let accCur = { r: 255, g: 95, b: 31 }, accTgt = { r: 255, g: 95, b: 31 };
 
@@ -205,7 +212,10 @@
     pth = new Float32Array(n); prd = new Float32Array(n); pzz = new Float32Array(n);
     pw = new Float32Array(n); pw2 = new Float32Array(n);
     pom = new Float32Array(n); pst = new Float32Array(n);
+    loud = new Float32Array(n);
     mxa = new Float32Array(n); mya = new Float32Array(n); mza = new Float32Array(n);
+    dxa = new Float32Array(n); dya = new Float32Array(n); dza = new Float32Array(n);
+    uxa = new Float32Array(n); uya = new Float32Array(n); uza = new Float32Array(n);
     bxa = new Float32Array(n); bya = new Float32Array(n);
     bza = new Float32Array(n); bua = new Float32Array(n);
     nxa = new Float32Array(n); nya = new Float32Array(n); nza = new Float32Array(n);
@@ -213,6 +223,7 @@
     gxa = new Float32Array(n); gya = new Float32Array(n); gza = new Float32Array(n);
 
     const clumps = Array.from({ length: 7 }, () => Math.random() * TAU);
+    let seedCells = null;
     const flockClumps = Array.from({ length: 6 }, () => Math.random());
 
     for (let i = 0; i < n; i++) {
@@ -233,6 +244,7 @@
       /* arrival order: mostly by position along the pour, so the flock
          assembles leading-edge first rather than all at once */
       pst[i] = clamp01(pth[i] / TAU * 0.72 + Math.random() * 0.28);
+      loud[i] = Math.random();           /* who joins the murmur, and when */
 
       /* ── murmuration ──
          a BROAD, SHALLOW folded sheet. The camera is near face-on by the
@@ -248,6 +260,46 @@
       mxa[i] = mr * Math.cos(mth) * 1.45 + gauss() * 0.14;
       mya[i] = fold * 0.82 + gauss() * 0.21;
       mza[i] = mr * Math.sin(mth) * 0.85 + gauss() * 0.14;
+
+      /* ── double helix: two strands plus the rungs between them ── */
+      {
+        const q = Math.random();
+        if (q < 0.76) {                                /* the strands */
+          const strand = Math.random() < 0.5 ? 0 : Math.PI;
+          const v = Math.random();
+          const th = v * DNA_TURNS * TAU + strand;
+          const jr = 0.052 * Math.sqrt(Math.random());  /* strands have thickness */
+          const ja = Math.random() * TAU;
+          dxa[i] = 0.42 * Math.cos(th) + jr * Math.cos(ja);
+          dya[i] = (v - 0.5) * 1.95;
+          dza[i] = 0.42 * Math.sin(th) + jr * Math.sin(ja);
+        } else {                                        /* rungs, at discrete steps */
+          const step = Math.round(Math.random() * 17) / 17;
+          const th = step * DNA_TURNS * TAU;
+          const w = Math.random() * 2 - 1;
+          dxa[i] = 0.42 * Math.cos(th) * w + gauss() * 0.012;
+          dya[i] = (step - 0.5) * 1.95 + gauss() * 0.012;
+          dza[i] = 0.42 * Math.sin(th) * w + gauss() * 0.012;
+        }
+      }
+
+      /* ── microscopic: a field of cells, seen close ── */
+      {
+        if (!seedCells) {
+          seedCells = Array.from({ length: 240 }, () => ({
+            x: rnd(-1, 1), y: rnd(-0.85, 0.85), z: rnd(-0.55, 0.55), r: rnd(0.030, 0.082),
+          }));
+        }
+        const c = seedCells[(Math.random() * seedCells.length) | 0];
+        /* ring-weighted, so each reads as a membrane with a nucleus rather
+           than a uniform blob */
+        const onRim = Math.random() < 0.62;
+        const rr = onRim ? c.r * rnd(0.86, 1.0) : c.r * Math.pow(Math.random(), 1.8) * 0.5;
+        const a = Math.random() * TAU, b2 = Math.random() * TAU;
+        uxa[i] = c.x + rr * Math.cos(a) * Math.cos(b2);
+        uya[i] = c.y + rr * Math.sin(b2) * 0.8;
+        uza[i] = c.z + rr * Math.sin(a) * Math.cos(b2);
+      }
 
       /* ── giant bird ──
          built from parametric parts rather than rejection-sampled against an
@@ -393,9 +445,12 @@
       if (!el) return null;
       return (el.offsetTop + el.offsetHeight * 0.5 - innerHeight * 0.5) / Math.max(1, heroH * 1.3);
     };
-    const pn = phaseEnd('.next'), pm = phaseEnd('.map'),
+    const pd = phaseEnd('.dna'), pu = phaseEnd('.micro'),
+          pn = phaseEnd('.next'), pm = phaseEnd('.map'),
           pb = phaseEnd('.build'), pg = phaseEnd('.grow');
-    if (pn !== null) { PH.flockB = pn; PH.flockA = pn - 0.55; }
+    if (pd !== null) { PH.dnaB = pd; PH.dnaA = pd - 0.52; }
+    if (pu !== null) { PH.micB = pu; PH.micA = pu - 0.50; }
+    if (pn !== null) { PH.flockB = pn; PH.flockA = pn - 0.50; }
     if (pm !== null) { PH.netB = pm; PH.netA = pm - 0.52; }
     if (pb !== null) { PH.layB = pb; PH.layA = pb - 0.52; }
     if (pg !== null) { PH.growB = pg; PH.growA = pg - 0.52; }
@@ -411,6 +466,16 @@
     O.bcx = (BW / 2 - O.ox - O.cx);
     O.bcy = PH.birdC * (heroH * 1.3) + innerHeight * 0.5 - O.oy - O.cy;
     O.bscale = BW * (isWide ? 0.40 : 0.46);
+
+    const dn = document.querySelector('.dna'), mc = document.querySelector('.micro');
+    O.dcy = dn ? (dn.getBoundingClientRect().top - hr.top) + dn.offsetHeight * 0.56 - O.oy - O.cy : 0;
+    O.dcx = (BW / 2 - O.ox - O.cx);
+    O.dscale = BW * (isWide ? 0.21 : 0.30);
+    O.ucy = mc ? (mc.getBoundingClientRect().top - hr.top) + mc.offsetHeight * 0.60 - O.oy - O.cy : 0;
+    O.ucx = (BW / 2 - O.ox - O.cx);
+    /* deliberately oversized: we are looking THROUGH it, so most of the field
+       falls outside the frame. That is what makes it read as magnification. */
+    O.uscale = BW * (isWide ? 0.42 : 0.52);
 
     const mp = document.querySelector('.map');
     O.ncy = mp
@@ -490,7 +555,12 @@
 
     const p = scrollP;
     const pourK = smooth(0.26, 0.72, p);          /* torus → helix        */
-    const morphG = smooth(PH.flockA, PH.flockB, p); /* helix → murmuration */
+    const dnaK = smooth(PH.dnaA, PH.dnaB, p);     /* pour → double helix  */
+    const micK = smooth(PH.micA, PH.micB, p);     /* helix → the detail   */
+    const morphG = smooth(PH.flockA, PH.flockB, p); /* detail → murmuration */
+    /* the murmur IS the murmuration with almost everyone silent. One ramp,
+       and the pun lands as a visual rather than only as a line of copy. */
+    const voices = clamp01((p - (PH.flockB - 0.34)) / 0.44);
     /* a bump, not a ramp: rise, hold, release */
     const bHold = 0.055, bSpan = 0.175, bC = PH.birdC;
     const silK = Math.max(0, Math.min(smooth(bC - bSpan, bC - bHold, p),
@@ -524,12 +594,13 @@
        lot of ground. Resolution therefore peaks exactly where the cloud is
        still and you can study it. */
     const spread = pourK * (1 - morphG);
-    const vHalf = lerp(lerp(lerp(lerp(lerp(O.sw * 0.70, O.mscale * 2.1, morphG),
+    const vHalf = lerp(lerp(lerp(lerp(lerp(lerp(lerp(O.sw * 0.70, O.dscale * 1.35, dnaK),
+                       O.uscale * 1.12, micK), O.mscale * 2.1, morphG),
                        O.bscale * 1.32, silK), O.nscale * 1.5, netK),
                        O.lscale * 1.5, layerK), O.gscale * 1.45, growK) * (1 + spread * 1.9);
-    const vCx = lerp(lerp(lerp(lerp(lerp(0, O.mcx, morphG), (O.bcx + swX), silK), O.ncx, netK), O.lcx, layerK), O.gcx, growK)
+    const vCx = lerp(lerp(lerp(lerp(lerp(lerp(lerp(0, O.dcx, dnaK), O.ucx, micK), O.mcx, morphG), (O.bcx + swX), silK), O.ncx, netK), O.lcx, layerK), O.gcx, growK)
               + lateral * 0.42 * (1 - netK) * (1 - silK);
-    const vCy = lerp(lerp(lerp(lerp(lerp(0, O.mcy, morphG), (O.bcy + swY), silK), O.ncy, netK), O.lcy, layerK), O.gcy, growK)
+    const vCy = lerp(lerp(lerp(lerp(lerp(lerp(lerp(0, O.dcy, dnaK), O.ucy, micK), O.mcy, morphG), (O.bcy + swY), silK), O.ncy, netK), O.lcy, layerK), O.gcy, growK)
               + drop * 0.42 * (1 - netK) * (1 - silK);
     O.vHalf = vHalf; O.vCx = vCx; O.vCy = vCy;
     const vk = BUF_PX / (2 * vHalf), HALF = BUF_PX * 0.5;   /* `vk`: `k` is taken by the splat loop */
@@ -541,7 +612,8 @@
     const invSh = 1 / O.sh;
 
     /* the camera lifts out of the ground plane as the flock takes over */
-    const tiltNow = lerp(lerp(lerp(lerp(lerp(Math.acos(O.cosT), FLOCK_TILT, morphG),
+    const tiltNow = lerp(lerp(lerp(lerp(lerp(lerp(lerp(Math.acos(O.cosT), DNA_TILT, dnaK),
+                          MIC_TILT, micK), FLOCK_TILT, morphG),
                           SIL_TILT, silK), NET_TILT, netK),
                           LAYER_TILT, layerK), O.growTilt, growK);
     const cosT = Math.cos(tiltNow), sinT = Math.sin(tiltNow);
@@ -551,6 +623,9 @@
     const mSpin = t * 0.055;
     /* the silhouette banks gently rather than spinning — a rotating bird
        reads as a logo turntable, not a bird */
+    const dSpin = t * 0.10, uSpin = t * 0.045;
+    const dca = fcos(dSpin), dsa = fsin(dSpin);
+    const uca = fcos(uSpin), usa = fsin(uSpin);
     const bYaw = fsin(t * 0.33) * 0.20;
     const bca = fcos(bYaw), bsa = fsin(bYaw);
     const bFlap = fsin(t * 1.45);
@@ -601,7 +676,30 @@
       let dep = sz * invDepth * 0.5 + 0.5;
 
       /* ── murmuration, projected in its own right then blended ── */
-      let bright = 1;
+      /* ── the structure, then the detail ── */
+      if (dnaK > 0.001) {
+        const k2 = clamp01((dnaK - pst[i] * 0.34) / 0.66);
+        if (k2 > 0.001) {
+          const ax = dxa[i] * O.dscale, ay = dya[i] * O.dscale, az = dza[i] * O.dscale;
+          const rx = ax * dca - az * dsa, rz = ax * dsa + az * dca;
+          const sy2 = ay * cosT - rz * sinT, sz2 = ay * sinT + rz * cosT;
+          sx = lerp(sx, O.dcx + rx, k2); sy = lerp(sy, O.dcy + sy2, k2);
+          dep = lerp(dep, sz2 / (O.dscale * 1.1) * 0.5 + 0.5, k2); sz = lerp(sz, sz2, k2);
+        }
+      }
+      if (micK > 0.001) {
+        const k3 = clamp01((micK - pst[i] * 0.30) / 0.70);
+        if (k3 > 0.001) {
+          const ax = uxa[i] * O.uscale, ay = uya[i] * O.uscale, az = uza[i] * O.uscale;
+          const rx = ax * uca - az * usa, rz = ax * usa + az * uca;
+          const sy2 = ay * cosT - rz * sinT, sz2 = ay * sinT + rz * cosT;
+          sx = lerp(sx, O.ucx + rx, k3); sy = lerp(sy, O.ucy + sy2, k3);
+          dep = lerp(dep, sz2 / (O.uscale * 0.7) * 0.5 + 0.5, k3); sz = lerp(sz, sz2, k3);
+        }
+      }
+
+      /* in the murmur, only a handful are speaking */
+      let bright = (morphG > 0.001 && voices < 1 && loud[i] > voices) ? 0 : 1;
       if (m > 0.001) {
         /* FLOW FIELD. Three sines sampled at the bird's OWN position (not just
            its private phase) and cross-combined into a swirl. Sampling by

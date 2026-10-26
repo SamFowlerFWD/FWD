@@ -96,7 +96,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 @keyframes haze{to{transform:translate3d(2.5%,-2%,0) scale(1.06)}}
 
 /* ── the particle field + film artifacts ── */
-#fx{position:absolute;left:0;top:0;z-index:-2;pointer-events:none;width:100%;height:700%}
+#fx{position:absolute;left:0;top:0;z-index:-2;pointer-events:none;width:100%;height:1000%}
 /* the near half of the orbit, painted over the device so particles
    genuinely pass in front of it */
 /* taller than the scene: the helix draws down past it as the hero exits */
@@ -327,6 +327,16 @@ h1 em::after{content:"";position:absolute;left:.04em;right:.1em;bottom:-.04em;he
 }
 .gcard span{display:block;font-weight:500;font-size:13.5px;line-height:1.3;margin-top:5px;color:var(--tx)}
 
+
+/* ── the zoom: structure, then detail ── */
+.dna,.micro{position:relative;z-index:1;min-height:116svh;padding:12svh 18px 10svh;background:none;
+  display:grid;place-items:start center}
+.dna>div,.micro>div{position:relative;z-index:3;text-align:center;max-width:36em}
+.dna h2,.micro h2{font-weight:300;font-size:clamp(38px,8vw,66px);line-height:1;
+  letter-spacing:-.045em;margin:0 0 16px}
+.dna h2 em,.micro h2 em{color:var(--hot)}
+.dna p,.micro p{max-width:34em;margin:0 auto;color:#cdc0b6;font-size:16.5px}
+
 /* ── section: the feature map ── */
 .map{position:relative;z-index:1;min-height:118svh;padding:12svh 18px 10svh;background:none;
   display:grid;place-items:start center}
@@ -457,10 +467,25 @@ h1 em::after{content:"";position:absolute;left:.04em;right:.1em;bottom:-.04em;he
 </section>
 
 
+
+<section class="dna grain" id="dna">
+  <div>
+    <h2>Underneath, they all share a <em>structure</em></h2>
+    <p>Different businesses, same bones. Something to show people, somewhere to put the data, and the rules that join the two.</p>
+  </div>
+</section>
+
+<section class="micro grain" id="micro">
+  <div>
+    <h2>Go close enough and it is all <em>detail</em></h2>
+    <p>The gap between a site that works and one that wins is thousands of small decisions nobody ever sees.</p>
+  </div>
+</section>
+
 <section class="next grain">
   <div>
     <h2>It starts with a <em>murmur</em></h2>
-    <p>One conversation, straight with the person who will build it. No brief template, no account manager, no relay.</p>
+    <p>Closer still, and all of it starts the same way. One conversation, straight with the person who will build it.</p>
   </div>
 </section>
 
