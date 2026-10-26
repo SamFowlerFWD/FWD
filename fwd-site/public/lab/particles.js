@@ -261,7 +261,7 @@
         if (q < 0.70) {                                  /* wings */
           const side = Math.random() < 0.5 ? -1 : 1;
           const u = Math.pow(Math.random(), 0.80);       /* denser at the root */
-          const v = Math.random();
+          const v = (Math.random() + Math.random()) * 0.5;  /* soft chord edges */
           /* chord tapers to an actual point at the tip and the centreline
              curves back — a linear taper leaves a plank with a hard trailing
              edge, which is what the first version looked like */
@@ -274,13 +274,13 @@
         } else if (q < 0.855) {                          /* body */
           const tt = Math.random() * 2 - 1;
           const w = 0.062 * (1 - Math.pow(Math.abs(tt), 1.5));
-          bxa[i] = (Math.random() * 2 - 1) * w;
+          bxa[i] = ((Math.random() + Math.random()) - 1) * w;
           bya[i] = -(tt * 0.33);
           bza[i] = gauss() * 0.04;
           bua[i] = 0;
         } else if (q < 0.945) {                          /* tail, lightly forked */
           const ss = Math.random();
-          const xx = (Math.random() * 2 - 1) * (0.040 + 0.075 * ss);
+          const xx = ((Math.random() + Math.random()) - 1) * (0.040 + 0.075 * ss);
           bxa[i] = xx;
           bya[i] = 0.29 + ss * (0.18 + Math.abs(xx) * 1.6);
           bza[i] = gauss() * 0.03;
@@ -508,17 +508,28 @@
        lands in far fewer pixels and saturates. damp it on narrow layouts. */
     const boost = (1 + pourK * 1.45 - morphG * 1.18) * (isWide ? 1 : 1 - morphG * 0.52);
 
+    /* It flies through rather than appearing in place: a monotonic parameter
+       across the WHOLE pulse window, so the bird materialises mid-flight,
+       swoops, and dissolves still moving. silK is only the form/dissolve
+       envelope — it says how solid, not where. */
+    const flightT = clamp01((p - (bC - bSpan)) / (2 * bSpan));
+    const SWY_MID = 0.1238;                        /* keeps the peak centred */
+    const swX = (flightT - 0.5) * 1.25 * O.bscale;
+    const swY = ((-0.50 + 2.40 * flightT - 1.90 * flightT * flightT) * 0.55 - SWY_MID) * O.bscale;
+    /* bank follows the tangent of its own path, damped so it does not cartwheel */
+    const roll = Math.atan2((2.40 - 3.80 * flightT) * 0.55, 1.25) * 0.55;
+    const cRoll = Math.cos(roll), sRoll = Math.sin(roll);
     /* the view rect: tight on the torus at rest, tight on the flock at the
        end, widening through the pour where the content really does span a
        lot of ground. Resolution therefore peaks exactly where the cloud is
        still and you can study it. */
     const spread = pourK * (1 - morphG);
     const vHalf = lerp(lerp(lerp(lerp(lerp(O.sw * 0.70, O.mscale * 2.1, morphG),
-                       O.bscale * 1.22, silK), O.nscale * 1.5, netK),
+                       O.bscale * 1.32, silK), O.nscale * 1.5, netK),
                        O.lscale * 1.5, layerK), O.gscale * 1.45, growK) * (1 + spread * 1.9);
-    const vCx = lerp(lerp(lerp(lerp(lerp(0, O.mcx, morphG), O.bcx, silK), O.ncx, netK), O.lcx, layerK), O.gcx, growK)
+    const vCx = lerp(lerp(lerp(lerp(lerp(0, O.mcx, morphG), (O.bcx + swX), silK), O.ncx, netK), O.lcx, layerK), O.gcx, growK)
               + lateral * 0.42 * (1 - netK) * (1 - silK);
-    const vCy = lerp(lerp(lerp(lerp(lerp(0, O.mcy, morphG), O.bcy, silK), O.ncy, netK), O.lcy, layerK), O.gcy, growK)
+    const vCy = lerp(lerp(lerp(lerp(lerp(0, O.mcy, morphG), (O.bcy + swY), silK), O.ncy, netK), O.lcy, layerK), O.gcy, growK)
               + drop * 0.42 * (1 - netK) * (1 - silK);
     O.vHalf = vHalf; O.vCx = vCx; O.vCy = vCy;
     const vk = BUF_PX / (2 * vHalf), HALF = BUF_PX * 0.5;   /* `vk`: `k` is taken by the splat loop */
@@ -624,17 +635,26 @@
            not an arrival */
         const sK = clamp01((silK - pst[i] * 0.22) / 0.78);
         if (sK > 0.001) {
+          /* Not every bird commits. A third stay loose, which gives the
+             silhouette a halo and internal texture instead of a stencilled
+             edge — the shape emerges from the flock rather than replacing it. */
+          const loose = pw2[i] * (1 / TAU);
+          const sKi = sK * (0.54 + 0.46 * (1 - loose * loose * loose));
+          const jit = loose * 0.055 * bscale;
           const sp = bua[i] * bua[i];                  /* wings flap, body does not */
-          const ax = bxa[i] * bscale;
-          const ay = (bya[i] + sp * bFlap * 0.17) * bscale;
+          const ax = bxa[i] * bscale + fsin(pw[i] * 1.7 + t * 0.9) * jit;
+          const ay = (bya[i] + sp * bFlap * 0.17) * bscale + fsin(pw2[i] * 1.3 - t * 0.75) * jit;
           const az = (bza[i] + sp * bFlap * 0.10) * bscale;
           const rx6 = ax * bca - az * bsa, rz6 = ax * bsa + az * bca;
           const bsy = ay * cosT - rz6 * sinT, bsz = ay * sinT + rz6 * cosT;
-          sx = lerp(sx, bcx + rx6, sK);
-          sy = lerp(sy, bcy + bsy, sK);
-          dep = lerp(dep, bsz * invBDepth * 0.5 + 0.5, sK);
-          sz = lerp(sz, bsz, sK);
-          bright = lerp(bright, 1, sK);               /* let the shape read clean */
+          /* bank, in screen space */
+          const rrx = rx6 * cRoll - bsy * sRoll;
+          const rry = rx6 * sRoll + bsy * cRoll;
+          sx = lerp(sx, bcx + swX + rrx, sKi);
+          sy = lerp(sy, bcy + swY + rry, sKi);
+          dep = lerp(dep, bsz * invBDepth * 0.5 + 0.5, sKi);
+          sz = lerp(sz, bsz, sKi);
+          bright = lerp(bright, 1, sKi);
         }
       }
 
