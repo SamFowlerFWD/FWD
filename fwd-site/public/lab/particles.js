@@ -127,7 +127,7 @@
   let motes = [], sparks = [];
   let palR = null, palG = null, palB = null, palA = null;
 
-  const FX_STATE = { cosT: 0, sinT: 1, lca: 1, lsa: 0, layerK: 0, nca: 1, nsa: 0, netK: 0, gca: 1, gsa: 0, growK: 0, silK: 0 };
+  const FX_STATE = { cosT: 0, sinT: 1, lca: 1, lsa: 0, layerK: 0, nca: 1, nsa: 0, netK: 0, gca: 1, gsa: 0, growK: 0, silK: 0, swY: 0 };
   const O = { cx: 0, cy: 0, R: 0, tube: 0, ox: 0, oy: 0, cosT: 0, sinT: 1,
               sw: 0, sh: 0, offX: 0, mcx: 0, mcy: 0, mscale: 1,
               lcx: 0, lcy: 0, lscale: 1, ncx: 0, ncy: 0, nscale: 1,
@@ -579,7 +579,7 @@
 
     /* birds belong to the flock: in as it forms, out as it becomes the map */
     birdVis = clamp01((morphG - 0.42) / 0.34) * (1 - clamp01(netK * 1.6));
-    FX_STATE.silK = silK;
+    FX_STATE.silK = silK; FX_STATE.swY = swY;
     let bp = 0;
 
     for (let i = 0; i < n; i++) {
@@ -830,12 +830,35 @@
 
   const LAYER_ANCHORS = [3, 2, 1, 0].map(j => ({ x: 1.2, y: LY[j], z: 0 }));
 
+  /* The line belongs to the silhouette rather than to a section: it fades up
+     with the shape and travels with it, so the copy and the visual are the
+     same beat instead of two things that happen near each other. */
+  let murmurEl, murmurHost;
+  function syncMurmur(silK, swY) {
+    if (murmurEl === undefined) {
+      murmurEl = document.getElementById('murmur') || null;
+      murmurHost = murmurEl ? murmurEl.offsetParent || document.body : null;
+    }
+    if (!murmurEl) return;
+    const vis = clamp01((silK - 0.22) / 0.4);
+    murmurEl.style.opacity = vis.toFixed(3);
+    if (vis <= 0.001) return;
+    /* top:0 anchors it to the document origin, so this is an absolute document
+       position. Leaving it at its static flow position and transforming on top
+       double-counted and put it off-frame. */
+    /* clear of the tail, but clamped so it cannot drop below the fold on a
+       short viewport */
+    const y = O.oy + O.cy + O.bcy + swY + Math.min(O.bscale * 0.62, innerHeight * 0.33);
+    murmurEl.style.transform = `translateY(${y.toFixed(1)}px)`;
+  }
+
   function draw() {
     bx.clearRect(0, 0, BW, BH);
     if (fx) fx.clearRect(0, 0, O.sw * BUF_WM, O.sh * BUF_HF);
     if (density === 0 || !datB) return;
 
     syncChips(t * 0.16 * 0.96);
+    syncMurmur(FX_STATE.silK, FX_STATE.swY);
     accumulate();
     placeCards('ncards', NET, O.ncx, O.ncy, O.nscale, FX_STATE.nca, FX_STATE.nsa,
                FX_STATE.cosT, FX_STATE.sinT, clamp01((FX_STATE.netK - 0.3) / 0.45) * (1 - FX_STATE.layerK), 0);

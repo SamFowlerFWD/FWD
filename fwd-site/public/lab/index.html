@@ -292,6 +292,14 @@ h1 em::after{content:"";position:absolute;left:.04em;right:.1em;bottom:-.04em;he
 
 
 
+
+/* a line of copy that belongs to the silhouette, not to a section */
+.murmur{position:absolute;left:0;right:0;top:0;z-index:6;pointer-events:none;text-align:center;opacity:0;
+  padding:0 18px}
+.murmur span{display:inline-block;font-weight:300;font-size:clamp(26px,5vw,46px);line-height:1.05;
+  letter-spacing:-.04em;color:var(--tx);text-shadow:0 2px 30px #000a}
+.murmur em{color:var(--hot)}
+
 /* ── section: growth ── */
 .grow{position:relative;z-index:1;min-height:124svh;padding:12svh 18px 12svh;background:none;
   display:grid;place-items:start center}
@@ -451,19 +459,18 @@ h1 em::after{content:"";position:absolute;left:.04em;right:.1em;bottom:-.04em;he
 
 <section class="next grain">
   <div>
-    <div class="k">Step 01</div>
-    <h2>We <em>Talk</em></h2>
-    <p>You tell me what you need. I listen, ask the right questions, and give you honest advice. No jargon, no pressure.</p>
+    <h2>It starts with a <em>murmur</em></h2>
+    <p>One conversation, straight with the person who will build it. No brief template, no account manager, no relay.</p>
   </div>
 </section>
 
 
 
+<div class="murmur" id="murmur"><span>and becomes a <em>murmuration</em></span></div>
 <section class="map grain" id="map">
   <div class="copy2">
-    <div class="k">Step 02</div>
-    <h2>We <em>Map</em></h2>
-    <p>Before anything gets built, we work out what you actually need — and what can wait. Most of the savings happen here.</p>
+    <h2>We work out what it <em>wants to be</em></h2>
+    <p>And what it doesn't. Most of the saving happens here, before a line of code gets written.</p>
   </div>
   <div class="ncards" id="ncards">
     <div class="ncard"><b>Must have</b><span>Online booking</span><i>Calendar · live slots</i></div>
@@ -477,9 +484,8 @@ h1 em::after{content:"";position:absolute;left:.04em;right:.1em;bottom:-.04em;he
 
 <section class="build grain" id="build">
   <div class="copy3">
-    <div class="k">Step 03</div>
-    <h2>I <em>Build</em></h2>
-    <p>You see progress throughout, not a big reveal after weeks of silence. Every decision is yours.</p>
+    <h2>Then it gets <em>built</em></h2>
+    <p>Interface, logic, data, infrastructure. You watch it happen rather than waiting for a reveal.</p>
   </div>
   <div class="lcards" id="lcards">
     <div class="lcard"><b>Layer 04</b><span>Interface</span><i>Astro · React · Tailwind</i></div>
@@ -492,9 +498,8 @@ h1 em::after{content:"";position:absolute;left:.04em;right:.1em;bottom:-.04em;he
 
 <section class="grow grain" id="grow">
   <div class="copy4">
-    <div class="k">Step 04</div>
-    <h2>You <em>Grow</em></h2>
-    <p>It goes live and starts working for you. These are the actual outcomes, from the case studies — not rounded-up numbers.</p>
+    <h2>And then it <em>flies</em></h2>
+    <p>Four that already have. These are their actual outcomes, lifted straight from the case studies.</p>
   </div>
   <div class="gcards" id="gcards">
     <div class="gcard"><b>Fakenham Dog Field</b><span>Fully self-service from day one, zero manual bookings to process</span></div>
