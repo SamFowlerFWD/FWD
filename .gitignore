@@ -42,3 +42,5 @@ test-animation.js
 test-animation-headless.js
 validate-animation.html
 verify-smooth-scroll.js
+# Local design mockups (not part of the site)
+.mockups/
