@@ -58,6 +58,10 @@
   const FLOCK_TILT = 22 * Math.PI / 180;   /* camera lifts as the flock forms  */
   const LAYER_TILT = 26 * Math.PI / 180;   /* and settles for the stack        */
   const LY = [-0.93, -0.31, 0.31, 0.93];   /* the four planes, in unit space   */
+  /* A murmuration is made of BIRDS. 95k points give it mass, but mass alone
+     reads as dust. A few hundred actual glyphs riding the same flock positions
+     give it species — drawn over the cloud, not instead of it. */
+  const BIRD_N = 170;
   const NET_TILT = 40 * Math.PI / 180;
   /* the feature map: what is needed, and how it hangs together */
   const NET = [
@@ -96,6 +100,11 @@
 
   /* torus, polar */
   let pth = null, prd = null, pzz = null, pw = null, pw2 = null, pom = null, pst = null;
+  const birdIdx = new Int32Array(BIRD_N), birdPh = new Float32Array(BIRD_N);
+  const birdX = new Float32Array(BIRD_N), birdY = new Float32Array(BIRD_N);
+  const birdD = new Float32Array(BIRD_N);
+  const birdPX = new Float32Array(BIRD_N), birdPY = new Float32Array(BIRD_N);
+  let birdCount = 0, birdVis = 0;
   /* murmuration, cartesian */
   let mxa = null, mya = null, mza = null;
   /* feature map, cartesian */
@@ -275,6 +284,12 @@
       life: rnd(0, 1), rate: rnd(0.014, 0.032), ph: rnd(0, TAU), sway: rnd(3, 9),
     }));
     sparks = [];
+
+    for (let k = 0; k < BIRD_N; k++) {
+      birdIdx[k] = Math.min(n - 1, Math.round((k + 0.5) * n / BIRD_N));
+      birdPh[k] = Math.random() * TAU;
+      birdPX[k] = birdPY[k] = 0;
+    }
   }
 
   function resize() {
@@ -428,7 +443,7 @@
        lot of ground. Resolution therefore peaks exactly where the cloud is
        still and you can study it. */
     const spread = pourK * (1 - morphG);
-    const vHalf = lerp(lerp(lerp(lerp(O.sw * 0.70, O.mscale * 1.55, morphG), O.nscale * 1.5, netK),
+    const vHalf = lerp(lerp(lerp(lerp(O.sw * 0.70, O.mscale * 2.1, morphG), O.nscale * 1.5, netK),
                        O.lscale * 1.5, layerK), O.gscale * 1.45, growK) * (1 + spread * 1.9);
     const vCx = lerp(lerp(lerp(lerp(0, O.mcx, morphG), O.ncx, netK), O.lcx, layerK), O.gcx, growK)
               + lateral * 0.42 * (1 - netK);
@@ -471,6 +486,10 @@
     const mscale = O.mscale, mcx = O.mcx, mcy = O.mcy;
     const invDepth = 1 / (O.R * 1.5 + O.tube);
     const invMDepth = 1 / (mscale * 1.1);
+
+    /* birds belong to the flock: in as it forms, out as it becomes the map */
+    birdVis = clamp01((morphG - 0.42) / 0.34) * (1 - clamp01(netK * 1.6));
+    let bp = 0;
 
     for (let i = 0; i < n; i++) {
       /* per-point arrival: staggered, so the flock forms in a wave */
@@ -565,6 +584,10 @@
         }
       }
 
+      if (birdVis > 0.004 && bp < BIRD_N && i === birdIdx[bp]) {
+        birdX[bp] = sx; birdY[bp] = sy; birdD[bp] = dep; bp++;
+      }
+
       const fxp = (sx - vCx) * vk + HALF, fyp = (sy - vCy) * vk + HALF;
       const x = fxp | 0, y = fyp | 0;
       if (x < 0 || y < 0 || x >= BUF_PX - 1 || y >= BUF_PX - 1) continue;
@@ -596,6 +619,7 @@
         v = dat[o + 3] + pa * k; dat[o + 3] = v > 255 ? 255 : v;
       }
     }
+    birdCount = bp;
     ctxB.putImageData(imgB, 0, 0);
     ctxF.putImageData(imgF, 0, 0);
   }
@@ -704,6 +728,56 @@
     /* back canvas is in hero coords; front canvas starts one scene-width left */
     bx.drawImage(bufB, O.ox + O.cx + O.vCx - O.vHalf, O.oy + O.cy + O.vCy - O.vHalf, vs, vs);
     if (fx) fx.drawImage(bufF, O.sw + O.cx + O.vCx - O.vHalf, O.cy + O.vCy - O.vHalf, vs, vs);
+
+    /* Wings span perpendicular to travel, so each bird is rotated to its own
+       heading — taken from where it was last frame rather than from the flow
+       field, which stays honest while the cloud is also morphing.
+
+       The glyph points are rotated BY HAND and the birds batched into four
+       depth buckets, one stroke each. Using translate/rotate/setTransform per
+       bird churns canvas state 240 times a frame and cost two thirds of the
+       frame rate. */
+    if (birdVis > 0.01 && birdCount) {
+      const base = Math.max(1.8, BW * 0.0023);
+      const BK = 4;
+      for (let g = 0; g < BK; g++) {
+        const lo = g / BK, hi = (g + 1) / BK, dm = (lo + hi) * 0.5;
+        let opened = false;
+        for (let k = 0; k < birdCount; k++) {
+          const d = birdD[k];
+          if (d < lo || d >= hi) continue;
+          const x = O.ox + O.cx + birdX[k], y = O.oy + O.cy + birdY[k];
+          if (y < -40 || y > BH + 40) { birdPX[k] = x; birdPY[k] = y; continue; }
+          const dx = x - birdPX[k], dy = y - birdPY[k];
+          birdPX[k] = x; birdPY[k] = y;
+          const ang = (dx || dy) ? Math.atan2(dy, dx) + Math.PI / 2 : 0;
+          const ca = Math.cos(ang), sa = Math.sin(ang);
+          const sz = base * (0.55 + 1.15 * d);
+          const fl = sz * (0.30 + 0.70 * Math.abs(fsin(t * 7.5 + birdPh[k])));
+          const px0 = -sz,        py0 = 0;
+          const pc1 = -sz * 0.42, qc1 = -fl;
+          const pm  = 0,          qm  = -sz * 0.14;
+          const pc2 = sz * 0.42,  qc2 = -fl;
+          const px1 = sz,         py1 = 0;
+          if (!opened) { bx.beginPath(); opened = true; }
+          bx.moveTo(x + px0 * ca - py0 * sa, y + px0 * sa + py0 * ca);
+          bx.quadraticCurveTo(x + pc1 * ca - qc1 * sa, y + pc1 * sa + qc1 * ca,
+                              x + pm  * ca - qm  * sa, y + pm  * sa + qm  * ca);
+          bx.quadraticCurveTo(x + pc2 * ca - qc2 * sa, y + pc2 * sa + qc2 * ca,
+                              x + px1 * ca - py1 * sa, y + px1 * sa + py1 * ca);
+        }
+        if (opened) {
+          bx.globalAlpha = birdVis * (0.30 + 0.70 * dm);
+          bx.lineWidth = Math.max(0.75, base * (0.55 + 1.15 * dm) * 0.2);
+          bx.lineCap = 'round';
+          bx.strokeStyle = `rgb(${(accCur.r * 0.45 + 255 * 0.55) | 0},`
+                         + `${(accCur.g * 0.45 + 255 * 0.55) | 0},`
+                         + `${(accCur.b * 0.45 + 255 * 0.55) | 0})`;
+          bx.stroke();
+        }
+      }
+      bx.globalAlpha = 1;
+    }
 
     bx.globalCompositeOperation = 'lighter';
     for (const p of motes) {
