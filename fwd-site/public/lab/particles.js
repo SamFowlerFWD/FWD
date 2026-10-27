@@ -53,6 +53,15 @@
   const BUF_WM = 2.0;        /* front canvas CSS width  vs scene */
   const BUF_HF = 2.3;        /* front canvas CSS height vs scene */
   const YB = 8, DB = 6, NB = YB * DB;
+  /* Six bands past the scene gradient, reserved for the helix: one per
+     backbone and four for the base pairs. They are extra ROWS of the same
+     palette, so the hot loop indexes them exactly like any other band and
+     keeps its depth shading for free — no branch, no second code path.
+     Hues are offsets from the live project accent, so the whole scheme
+     rotates with whichever client is on screen instead of being pasted on. */
+  const DNA_BANDS = 6, YB_ALL = YB + DNA_BANDS, NB_ALL = YB_ALL * DB;
+  const DNA_HUE = [-8, 46, 100, -24, 34, 200];
+  const DNA_STEPS = 12;
   const TAU = Math.PI * 2;
   const HELIX_TURNS = 2.6;
   const FLOCK_TILT = 22 * Math.PI / 180;   /* camera lifts as the flock forms  */
@@ -139,6 +148,7 @@
   let mxa = null, mya = null, mza = null;
   /* double helix, and the microscopic field */
   let dxa = null, dya = null, dza = null, dcb = null;
+  let dox = null, doy = null, doz = null;
   let uxa = null, uya = null, uza = null;
   /* giant bird silhouette, cartesian + span param */
   let bxa = null, bya = null, bza = null, bua = null;
@@ -204,8 +214,8 @@
        from, but not so wide that a warm accent swings right round into green
        and the two strands read as a traffic light */
     const sec = rotateHue(accCur, 64);
-    palR = new Float32Array(NB); palG = new Float32Array(NB);
-    palB = new Float32Array(NB); palA = new Float32Array(NB);
+    palR = new Float32Array(NB_ALL); palG = new Float32Array(NB_ALL);
+    palB = new Float32Array(NB_ALL); palA = new Float32Array(NB_ALL);
     for (let y = 0; y < YB; y++) {
       const ky = y / (YB - 1);
       const fade = y >= YB - 1 ? 0.5 : y === YB - 2 ? 0.8 : 1;
@@ -216,6 +226,27 @@
         palR[i] = lerp(lerp(accCur.r, sec.r, ky), 255, kd * 0.12) * w;
         palG[i] = lerp(lerp(accCur.g, sec.g, ky), 255, kd * 0.12) * w;
         palB[i] = lerp(lerp(accCur.b, sec.b, ky), 255, kd * 0.12) * w;
+        palA[i] = 255 * w * 0.8;
+      }
+    }
+    /* the helix's own bands. No scene fade on these: they are a diagram, not
+       a gradient, and dimming the bottom two would lose a base pair. */
+    for (let k = 0; k < DNA_BANDS; k++) {
+      const h = rotateHue(accCur, DNA_HUE[k]);
+      for (let d = 0; d < DB; d++) {
+        const kd = d / (DB - 1);
+        const i = (YB + k) * DB + d;
+        /* lighter per point than the scene bands, and barely any white mix.
+           Accumulation clips the dominant channel first, so a point that
+           carries too much of its colour turns the condensed ribbon white and
+           throws the base pairs away — the thing the colour is here for. */
+        /* The backbones are 70% of the points and so clip first; held back,
+           they keep their own hue and stop drowning the base pairs, which is
+           the hierarchy a DNA diagram actually has. */
+        const w = (0.10 + 0.42 * kd * kd) * (k < 2 ? 0.56 : 0.86);
+        palR[i] = lerp(h.r, 255, kd * 0.05) * w;
+        palG[i] = lerp(h.g, 255, kd * 0.05) * w;
+        palB[i] = lerp(h.b, 255, kd * 0.05) * w;
         palA[i] = 255 * w * 0.8;
       }
     }
@@ -242,6 +273,7 @@
     mxa = new Float32Array(n); mya = new Float32Array(n); mza = new Float32Array(n);
     dxa = new Float32Array(n); dya = new Float32Array(n); dza = new Float32Array(n);
     dcb = new Float32Array(n);
+    dox = new Float32Array(n); doy = new Float32Array(n); doz = new Float32Array(n);
     uxa = new Float32Array(n); uya = new Float32Array(n); uza = new Float32Array(n);
     bxa = new Float32Array(n); bya = new Float32Array(n);
     bza = new Float32Array(n); bua = new Float32Array(n);
@@ -293,28 +325,43 @@
 
       /* ── double helix: two strands plus the rungs between them ── */
       {
+        /* The curve and the scatter around it are stored APART. That is the
+           whole trick behind the condense: dial the scatter to nothing and
+           every point lands on an exact curve, which accumulates into a solid
+           ribbon; dial it back up and the ribbon breaks into particles again.
+           Baking the two together, as this did, leaves no handle to turn. */
         const q = Math.random();
         if (q < 0.70) {                                /* the strands */
           const b3 = Math.random() < 0.5;
           const v = Math.random();
           const th = v * DNA_TURNS * TAU + (b3 ? 0 : Math.PI);
-          const jr = 0.036 * Math.sqrt(Math.random());  /* strands have thickness */
-          const ja = Math.random() * TAU;
-          dxa[i] = DNA_RAD * Math.cos(th) + jr * Math.cos(ja);
+          dxa[i] = DNA_RAD * Math.cos(th);
           dya[i] = (v - 0.5) * DNA_H;
-          dza[i] = DNA_RAD * Math.sin(th) + jr * Math.sin(ja);
-          /* one band per strand: the two sides of the ladder are different
-             colours, which is what makes it read as two strands and not as
-             one rope seen from the side */
-          dcb[i] = b3 ? 0.5 : 4.9;
-        } else {                                        /* rungs, at discrete steps */
-          const step = Math.round(Math.random() * 12) / 12;
+          dza[i] = DNA_RAD * Math.sin(th);
+          const jr = 0.054 * Math.sqrt(Math.random());  /* strands have thickness */
+          const ja = Math.random() * TAU;
+          dox[i] = jr * Math.cos(ja);
+          doy[i] = gauss() * 0.014;
+          doz[i] = jr * Math.sin(ja);
+          dcb[i] = YB + (b3 ? 0 : 1);
+        } else {                                        /* rungs: the base pairs */
+          const ki = Math.round(Math.random() * DNA_STEPS);
+          const step = ki / DNA_STEPS;
           const th = step * DNA_TURNS * TAU;
           const w = Math.random() * 2 - 1;
-          dxa[i] = DNA_RAD * Math.cos(th) * w + gauss() * 0.013;
-          dya[i] = (step - 0.5) * DNA_H + gauss() * 0.013;
-          dza[i] = DNA_RAD * Math.sin(th) * w + gauss() * 0.013;
-          dcb[i] = 2.6;
+          dxa[i] = DNA_RAD * Math.cos(th) * w;
+          dya[i] = (step - 0.5) * DNA_H;
+          dza[i] = DNA_RAD * Math.sin(th) * w;
+          dox[i] = gauss() * 0.022;
+          doy[i] = gauss() * 0.022;
+          doz[i] = gauss() * 0.022;
+          /* Each rung is one base pair, and a base pair is two complementary
+             bases: the half on each backbone takes the partner of the other's
+             colour. That two-tone bar is what a DNA diagram actually looks
+             like, and it is the one place on this page where the colour is
+             carrying information rather than mood. */
+          const pair = ki & 3;
+          dcb[i] = YB + 2 + (w >= 0 ? pair : (pair ^ 1));
         }
       }
 
@@ -764,6 +811,17 @@
     const settle = 1 - 0.66 * Math.max(dnaK * (1 - micK), micK * 0.30);
     const boost = (1 + pourK * 1.45 * settle - morphG * 1.18) * (isWide ? 1 : 1 - morphG * 0.52);
     const dnaBand = dnaK * (1 - micK);
+    /* Condense and disperse. Peaks with the helix whole and falls to nothing
+       at both ends of its beat, so you watch the particles gather into a
+       solid ribbon and then come apart again. `scat` squeezes every point
+       onto its exact curve; the brightness comes down to match, because the
+       same points in a sixth of the area would otherwise just clip to white
+       and take the base-pair colours with them. */
+    const dnaMid = PH.dnaB + 0.04;
+    const dnaSpan = 0.36;
+    const sRaw = clamp01(1 - Math.abs(p - dnaMid) / dnaSpan);
+    const solid = sRaw * sRaw * (3 - 2 * sRaw);
+    const scat = 1.25 - 0.91 * solid;
 
     /* It flies through rather than appearing in place: a monotonic parameter
        across the WHOLE pulse window, so the bird materialises mid-flight,
@@ -808,6 +866,14 @@
        vk^2 — raise the resolution and the same cloud goes faint. 0.52 is the
        old fixed scale this was balanced against. */
     const resK = (vk / 0.52) * (vk / 0.52);
+    /* The helix is a filament: it keeps its points on two thin curves however
+       far in you zoom, so resK over-exposes it — and by DIFFERENT amounts on
+       different viewports, because the zoom is set by the frame. A phone gets
+       about half as much again as a desktop, which was enough to clip the
+       whole ribbon to flat white and throw away every base pair. Normalise it
+       to the exposure a desktop frame produces, then apply the condense on
+       top: brighter as it goes solid, dimmer as it comes apart. */
+    const dnaExp = (1 - (0.56 - 0.20 * solid)) * Math.min(1, 5.3 / resK);
     const invSh = 1 / O.sh;
 
     /* the camera lifts out of the ground plane as the flock takes over */
@@ -892,7 +958,9 @@
       if (dnaK > 0.001) {
         const k2 = clamp01((dnaK - pst[i] * 0.34) / 0.66);
         if (k2 > 0.001) {
-          const ax = dxa[i] * O.dscale, ay = dya[i] * O.dscale, az = dza[i] * O.dscale;
+          const ax = (dxa[i] + dox[i] * scat) * O.dscale,
+                ay = (dya[i] + doy[i] * scat) * O.dscale,
+                az = (dza[i] + doz[i] * scat) * O.dscale;
           const rx = ax * dca - az * dsa, rz = ax * dsa + az * dca;
           const sy2 = ay * cosT - rz * sinT, sz2 = ay * sinT + rz * cosT;
           sx = lerp(sx, O.dcx + rx, k2); sy = lerp(sy, O.dcy + sy2, k2);
@@ -918,7 +986,7 @@
          and the strand cores clip to flat white, taking their colour with
          them. Dim the helix specifically rather than capping the
          compensation, which the feature map genuinely needs all of. */
-      if (dnaBand > 0.004) bright *= 1 - 0.50 * dnaBand;
+      if (dnaBand > 0.004) bright *= 1 - (1 - dnaExp) * dnaBand;
       if (m > 0.001) {
         /* FLOW FIELD. Three sines sampled at the bird's OWN position (not just
            its private phase) and cross-combined into a swirl. Sampling by
@@ -1063,8 +1131,11 @@
       /* colour band keyed to position in the SCENE, not in the buffer, so the
          gradient does not swim about as the view rect moves */
       let ybf = ((sy + O.cy) * invSh) * YB;
+      if (ybf < 0) ybf = 0; else if (ybf > YB - 1) ybf = YB - 1;
+      /* blends OUT of the scene gradient and INTO the helix's own rows, which
+         live past YB — so the clamp below has to allow the whole table */
       if (dnaBand > 0.004) ybf += (dcb[i] - ybf) * dnaBand;
-      let yb = ybf | 0; if (yb < 0) yb = 0; else if (yb >= YB) yb = YB - 1;
+      let yb = ybf | 0; if (yb < 0) yb = 0; else if (yb >= YB_ALL) yb = YB_ALL - 1;
       const c = yb * DB + db;
       const bw = boost * bright * resK;
       const pr = palR[c] * bw, pg = palG[c] * bw, pb = palB[c] * bw, pa = palA[c] * bw;
