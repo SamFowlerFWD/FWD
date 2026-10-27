@@ -59,9 +59,35 @@
      keeps its depth shading for free — no branch, no second code path.
      Hues are offsets from the live project accent, so the whole scheme
      rotates with whichever client is on screen instead of being pasted on. */
-  const DNA_BANDS = 6, YB_ALL = YB + DNA_BANDS, NB_ALL = YB_ALL * DB;
+  /* Two more past those for the cells: membrane and nucleus. Same reason as
+     the helix rows — a stain separating the two is what lets you read the
+     condensed state as a cell rather than a bright coin. */
+  const DNA_BANDS = 6, MIC_BANDS = 2;
+  const MIC_B = YB + DNA_BANDS;
+  const YB_ALL = YB + DNA_BANDS + MIC_BANDS, NB_ALL = YB_ALL * DB;
   const DNA_HUE = [-8, 46, 100, -24, 34, 200];
+  const MIC_HUE = [14, 188];
   const DNA_STEPS = 12;
+  const MIC_RIM = 0.62;        /* share of each cell's points on the membrane */
+  /* The membrane is a line and the nucleus an area, so the membrane collects
+     an order of magnitude more points per pixel. These two weights are what
+     hold them in the same picture: without them the rims clip to white and
+     the nuclei vanish inside the glare. */
+  const MIC_W = [0.34, 0.25];
+  /* The exposure the field is balanced at. The cells are specified in unit
+     space and scaled by the same uscale that sets the frame, so their points
+     per buffer pixel are the SAME on a phone as on a desktop — and resK,
+     which assumes a cloud fixed in scene pixels, therefore over-corrects by
+     almost three times on a phone. Here it has to be cancelled, not applied. */
+  const MIC_REF = 3.3;
+  /* How much of the condense's density gain is allowed through as
+     brightness. All of it clips; none of it and the condense changes nothing
+     you can see. One figure for each structure, because they do not gain the
+     same: a membrane landing on an exact circle concentrates about tenfold,
+     a nucleus flattening from a ball to a disc barely twice. Dimming both by
+     the membrane's figure is what made the nuclei disappear at the very
+     moment they were supposed to become solid bodies. */
+  const MIC_GAIN = [0.62, 0.10];
   const TAU = Math.PI * 2;
   const HELIX_TURNS = 2.6;
   const FLOCK_TILT = 22 * Math.PI / 180;   /* camera lifts as the flock forms  */
@@ -147,9 +173,10 @@
   /* murmuration, cartesian */
   let mxa = null, mya = null, mza = null;
   /* double helix, and the microscopic field */
-  let dxa = null, dya = null, dza = null, dcb = null;
+  let dxa = null, dya = null, dza = null, dcb = null;   /* dcb/ucb: band ids */
   let dox = null, doy = null, doz = null;
-  let uxa = null, uya = null, uza = null;
+  let uxa = null, uya = null, uza = null, ucb = null;
+  let uox = null, uoy = null, uoz = null;
   /* giant bird silhouette, cartesian + span param */
   let bxa = null, bya = null, bza = null, bua = null;
   /* feature map, cartesian */
@@ -243,10 +270,29 @@
         /* The backbones are 70% of the points and so clip first; held back,
            they keep their own hue and stop drowning the base pairs, which is
            the hierarchy a DNA diagram actually has. */
-        const w = (0.10 + 0.42 * kd * kd) * (k < 2 ? 0.56 : 0.86);
+        const w = (0.10 + 0.42 * kd * kd) * (k < 2 ? 0.56 : 0.74);
         palR[i] = lerp(h.r, 255, kd * 0.05) * w;
         palG[i] = lerp(h.g, 255, kd * 0.05) * w;
         palB[i] = lerp(h.b, 255, kd * 0.05) * w;
+        palA[i] = 255 * w * 0.8;
+      }
+    }
+    /* and the cells'. The membrane is a line and the nucleus an area, so the
+       membrane gets far more points per pixel and is held back to compensate
+       — otherwise the rims clip and the nuclei disappear inside them. */
+    for (let k = 0; k < MIC_BANDS; k++) {
+      const h = rotateHue(accCur, MIC_HUE[k]);
+      for (let d = 0; d < DB; d++) {
+        const kd = d / (DB - 1);
+        const i = (MIC_B + k) * DB + d;
+        /* flatter in depth than the scene bands. The camera's tilt maps
+           scene y into depth, so a 5x depth ramp becomes a 5x vertical
+           brightness ramp across the field and half the cells go dark. A
+           microscope field is evenly lit; that is rather the point of it. */
+        const w = (0.22 + 0.26 * kd * kd) * MIC_W[k];
+        palR[i] = lerp(h.r, 255, kd * 0.06) * w;
+        palG[i] = lerp(h.g, 255, kd * 0.06) * w;
+        palB[i] = lerp(h.b, 255, kd * 0.06) * w;
         palA[i] = 255 * w * 0.8;
       }
     }
@@ -272,9 +318,11 @@
     loud = new Float32Array(n);
     mxa = new Float32Array(n); mya = new Float32Array(n); mza = new Float32Array(n);
     dxa = new Float32Array(n); dya = new Float32Array(n); dza = new Float32Array(n);
-    dcb = new Float32Array(n);
+    dcb = new Uint8Array(n);
     dox = new Float32Array(n); doy = new Float32Array(n); doz = new Float32Array(n);
     uxa = new Float32Array(n); uya = new Float32Array(n); uza = new Float32Array(n);
+    ucb = new Uint8Array(n);
+    uox = new Float32Array(n); uoy = new Float32Array(n); uoz = new Float32Array(n);
     bxa = new Float32Array(n); bya = new Float32Array(n);
     bza = new Float32Array(n); bua = new Float32Array(n);
     nxa = new Float32Array(n); nya = new Float32Array(n); nza = new Float32Array(n);
@@ -375,29 +423,55 @@
              smeared over a sphere and the whole thing read as a starfield —
              "a lot of small things", which is not the same as "detail you can
              inspect", and inspecting them is the entire line of copy. */
-          seedCells = Array.from({ length: 34 }, () => ({
+          seedCells = Array.from({ length: 40 }, () => ({
             x: rnd(-1, 1), y: rnd(-0.82, 0.82), z: rnd(-0.5, 0.5), r: rnd(0.090, 0.215),
           }));
         }
         const c = seedCells[(Math.random() * seedCells.length) | 0];
-        /* ring-weighted, so each reads as a membrane with a nucleus rather
-           than a uniform blob */
-        if (Math.random() < 0.74) {
+        /* Exact form and scatter stored apart, exactly as the helix does it,
+           so the same dial condenses these too. What differs is what reads as
+           solid. For a filament it was continuity; for a cell it is an EDGE.
+           The membrane collapses onto its exact circle and the nucleus inside
+           a hard boundary, and the scatter is what blurs both back to grains. */
+        if (Math.random() < MIC_RIM) {
           /* The membrane is a RING, not a sphere shell. Scattering the rim
              over a sphere spreads it across an area instead of a line, and a
              diffuse ball at this density is invisible — which is why only the
              nuclei were showing up, as specks. */
           const a = Math.random() * TAU;
-          const rr = c.r * rnd(0.93, 1.0);
+          const ca = Math.cos(a), sa2 = Math.sin(a);
+          uxa[i] = c.x + c.r * ca;
+          uya[i] = c.y + c.r * sa2;
+          uza[i] = c.z;
+          /* the blur runs ALONG the radius, not in x and y independently: a
+             ring smeared isotropically grows in circumference as well as
+             width and stops being one ring */
+          const jr = gauss() * c.r * 0.115;
+          uox[i] = jr * ca;
+          uoy[i] = jr * sa2;
+          uoz[i] = gauss() * c.r * 0.30;
+          ucb[i] = MIC_B;
+        } else {
+          /* The nucleus, area-uniform so that it has a boundary instead of
+             fading out. A centre-weighted ball, which is what this was, has
+             no edge to sharpen and so cannot go solid at all — it just sits
+             there being the same soft blob at both ends of the beat. */
+          const a = Math.random() * TAU;
+          /* area-uniform, so the density is flat right up to a hard stop.
+             Any centre bias and the boundary is the faintest part of the
+             nucleus, which is the one part of it that has to read. */
+          const rr = c.r * 0.34 * Math.sqrt(Math.random());
           uxa[i] = c.x + rr * Math.cos(a);
           uya[i] = c.y + rr * Math.sin(a);
-          uza[i] = c.z + gauss() * c.r * 0.11;
-        } else {                                       /* nucleus */
-          const a = Math.random() * TAU, b2 = Math.random() * TAU;
-          const rr = c.r * Math.pow(Math.random(), 1.5) * 0.40;
-          uxa[i] = c.x + rr * Math.cos(a) * Math.cos(b2);
-          uya[i] = c.y + rr * Math.sin(b2);
-          uza[i] = c.z + rr * Math.sin(a) * Math.cos(b2);
+          uza[i] = c.z;
+          /* nearly as wide as the nucleus itself, so that dispersed it is a
+             cloud and not merely a softer ball. A ball of points piles its
+             whole depth into the middle, which came out as a hot white core
+             exactly where the cell was supposed to be coming apart. */
+          uox[i] = gauss() * c.r * 0.26;
+          uoy[i] = gauss() * c.r * 0.26;
+          uoz[i] = gauss() * c.r * 0.34;
+          ucb[i] = MIC_B + 1;
         }
       }
 
@@ -647,6 +721,16 @@
        finish exactly there, so the rocket leaves rather than stalling. */
     PH.endP = Math.max(PH.growB + 0.06,
       (document.documentElement.scrollHeight - innerHeight) / Math.max(1, heroH * 1.3));
+    /* Where the front canvas stops covering the viewport. Near-side points are
+       drawn to it so they can pass IN FRONT of the project card, but it is only
+       as tall as the hero — so from here down they were being drawn off the end
+       of it and silently dropped. That cost the helix and the cells between a
+       half and two thirds of their points, and it is why every membrane came
+       out as the top half of a ring. */
+    const frb = front ? front.getBoundingClientRect() : null;
+    PH.frontEnd = frb
+      ? ((frb.bottom + scrollY) - innerHeight) / Math.max(1, heroH * 1.3)
+      : 0;
 
     /* the silhouette lives in the gap between the flock settling and the map
        beginning, centred in the frame and sized to fill it */
@@ -794,6 +878,10 @@
        shot instead of sliding off the top of a fixed one and leaving an empty
        screen. Tracking the scroll DELTA instead leaves it wherever its anchor
        happened to sit, which was 270px low for the whole ride. */
+    /* and hand those points back before it runs out, staggered per point so
+       the change of layer is a dissolve rather than a step */
+    const frontK = clamp01((PH.frontEnd - p) / 0.22);
+
     const trackK = clamp01((p - PH.growB) / 0.10);
     const gcyLive = lerp(O.gcy,
       p * heroH * 1.3 + innerHeight * 0.5 - O.oy - O.cy, trackK);
@@ -822,6 +910,24 @@
     const sRaw = clamp01(1 - Math.abs(p - dnaMid) / dnaSpan);
     const solid = sRaw * sRaw * (3 - 2 * sRaw);
     const scat = 1.25 - 0.91 * solid;
+    /* and the cells, on their own beat: they gather as grains, land as a
+       field of cells you could count, and come apart again as the flock
+       starts pulling them away. */
+    const micMid = PH.micB + 0.05;
+    const micSpan = 0.32;
+    const uRaw = clamp01(1 - Math.abs(p - micMid) / micSpan);
+    const micSolid = uRaw * uRaw * (3 - 2 * uRaw);
+    /* Lands at a twentieth, where the helix stopped at a third. These
+       offsets start far bigger than the helix's — a membrane has to blur all
+       the way to a haze, not just soften — so the same floor left the rims
+       spread over six pixels, and a line sampled that thinly comes out
+       dotted: a quarter of its pixels catch no point at all. */
+    const micScat = 1.12 - 1.06 * micSolid;
+    const micForm = micK * (1 - morphG);
+    /* The stain comes up with the condense. Hue separating nucleus from
+       membrane earns its place once there is an edge to see; over a haze of
+       specks it is just noise, so it arrives with the structure it labels. */
+    const micBand = micForm * (0.18 + 0.82 * micSolid);
 
     /* It flies through rather than appearing in place: a monotonic parameter
        across the WHOLE pulse window, so the bird materialises mid-flight,
@@ -873,7 +979,16 @@
        whole ribbon to flat white and throw away every base pair. Normalise it
        to the exposure a desktop frame produces, then apply the condense on
        top: brighter as it goes solid, dimmer as it comes apart. */
-    const dnaExp = (1 - (0.56 - 0.20 * solid)) * Math.min(1, 5.3 / resK);
+    const dnaExp = (1 - (0.68 - 0.20 * solid)) * Math.min(1, 5.3 / resK);
+    /* The membranes concentrate about tenfold as they land on their exact
+       circles — a band fifteen pixels wide becoming a line. Unchecked they
+       clip to white, which costs the condense the one thing it is for: the
+       edge. Unlike the helix this needs no per-viewport normalisation; the
+       field is scaled by the same uscale that sets the frame, so its points
+       per pixel come out the same on a phone as on a desktop. */
+    const micNorm = MIC_REF / resK;
+    const micExpR = micNorm * (1 - MIC_GAIN[0] * micSolid);
+    const micExpN = micNorm * (1 - MIC_GAIN[1] * micSolid);
     const invSh = 1 / O.sh;
 
     /* the camera lifts out of the ground plane as the flock takes over */
@@ -894,7 +1009,14 @@
     /* A helix is almost symmetric about its own axis, so turning it about
        that axis is a barber pole: the shape never changes, it just slides.
        The tumble below is what actually makes it look like an object. */
-    const dSpin = t * 0.34, uSpin = t * 0.045;
+    /* The cells' turn is BOUNDED, where it used to accumulate with t. A flat
+       ring rotated about the vertical squashes to a slit, which did not show
+       while the rims were a blur but would have, once they went crisp — and
+       t never resets, so it would have shown worse the longer anyone stayed.
+       A microscope field does not rotate; it drifts. The sway is here for the
+       parallax between cells at different depths, and the drift that replaces
+       the spin is applied per point below. */
+    const dSpin = t * 0.34, uSpin = 0.17 * fsin(t * 0.075);
     const dca = fcos(dSpin), dsa = fsin(dSpin);
     const uca = fcos(uSpin), usa = fsin(uSpin);
     const bYaw = fsin(t * 0.33) * 0.20;
@@ -933,6 +1055,7 @@
     /* birds belong to the flock: in as it forms, out as it becomes the map */
     birdVis = clamp01((morphG - 0.42) / 0.34) * (1 - clamp01(netK * 1.6));
     FX_STATE.silK = silK; FX_STATE.swY = swY;
+    FX_STATE.dnaSolid = solid; FX_STATE.micSolid = micSolid; FX_STATE.resK = resK;
     let bp = 0;
 
     for (let i = 0; i < n; i++) {
@@ -970,7 +1093,15 @@
       if (micK > 0.001) {
         const k3 = clamp01((micK - pst[i] * 0.30) / 0.70);
         if (k3 > 0.001) {
-          const ax = uxa[i] * O.uscale, ay = uya[i] * O.uscale, az = uza[i] * O.uscale;
+          /* The field drifts. Sampled at the point's OWN position, as the
+             flock's flow field is, so a whole cell moves as one body; and at
+             a low spatial frequency, so it translates rather than wobbling
+             like jelly, which a crisp rim would show up at once. */
+          const fa = 0.034 * fsin(uya[i] * 0.9 + t * 0.21);
+          const fb = 0.034 * fsin(uxa[i] * 0.8 - t * 0.17);
+          const ax = (uxa[i] + uox[i] * micScat + fa) * O.uscale,
+                ay = (uya[i] + uoy[i] * micScat + fb) * O.uscale,
+                az = (uza[i] + uoz[i] * micScat) * O.uscale;
           const rx = ax * uca - az * usa, rz = ax * usa + az * uca;
           const sy2 = ay * cosT - rz * sinT, sz2 = ay * sinT + rz * cosT;
           sx = lerp(sx, O.ucx + rx, k3); sy = lerp(sy, O.ucy + sy2, k3);
@@ -987,6 +1118,10 @@
          them. Dim the helix specifically rather than capping the
          compensation, which the feature map genuinely needs all of. */
       if (dnaBand > 0.004) bright *= 1 - (1 - dnaExp) * dnaBand;
+      if (micForm > 0.004) {
+        const me = ucb[i] === MIC_B ? micExpR : micExpN;
+        bright *= 1 - (1 - me) * micForm;
+      }
       if (m > 0.001) {
         /* FLOW FIELD. Three sines sampled at the bird's OWN position (not just
            its private phase) and cross-combined into a swirl. Sampling by
@@ -1125,20 +1260,33 @@
 
       /* once the cloud has dropped past the device there is nothing left to
          occlude, so the near/far split stops mattering and it all goes back */
-      const useFront = sz > 0 && fx && m < 0.5;
+      const useFront = sz > 0 && fx && m < 0.5 && pst[i] < frontK;
 
       let db = (dep * DB) | 0; if (db < 0) db = 0; else if (db >= DB) db = DB - 1;
       /* colour band keyed to position in the SCENE, not in the buffer, so the
          gradient does not swim about as the view rect moves */
       let ybf = ((sy + O.cy) * invSh) * YB;
       if (ybf < 0) ybf = 0; else if (ybf > YB - 1) ybf = YB - 1;
-      /* blends OUT of the scene gradient and INTO the helix's own rows, which
-         live past YB — so the clamp below has to allow the whole table */
-      if (dnaBand > 0.004) ybf += (dcb[i] - ybf) * dnaBand;
-      let yb = ybf | 0; if (yb < 0) yb = 0; else if (yb >= YB_ALL) yb = YB_ALL - 1;
-      const c = yb * DB + db;
+      const c = (ybf | 0) * DB + db;
+      let fr = palR[c], fg = palG[c], fb = palB[c], fa = palA[c];
+      /* Blend the COLOUR out of the scene gradient and into the shape's own
+         rows — not the band INDEX, which is what this used to do. The special
+         rows sit past the scene's in one table, so interpolating the index
+         walks through whatever rows happen to lie between: on its way from
+         the gradient to its azure the nucleus passed straight through the
+         helix's base-pair purple, and wore it for most of the section. */
+      if (dnaBand > 0.004) {
+        const cs = dcb[i] * DB + db, k1 = 1 - dnaBand;
+        fr = fr * k1 + palR[cs] * dnaBand; fg = fg * k1 + palG[cs] * dnaBand;
+        fb = fb * k1 + palB[cs] * dnaBand; fa = fa * k1 + palA[cs] * dnaBand;
+      }
+      if (micBand > 0.004) {
+        const cs = ucb[i] * DB + db, k1 = 1 - micBand;
+        fr = fr * k1 + palR[cs] * micBand; fg = fg * k1 + palG[cs] * micBand;
+        fb = fb * k1 + palB[cs] * micBand; fa = fa * k1 + palA[cs] * micBand;
+      }
       const bw = boost * bright * resK;
-      const pr = palR[c] * bw, pg = palG[c] * bw, pb = palB[c] * bw, pa = palA[c] * bw;
+      const pr = fr * bw, pg = fg * bw, pb = fb * bw, pa = fa * bw;
       const dat = useFront ? datF : datB;
 
       const uu = fxp - x, ww = fyp - y;
@@ -1439,6 +1587,9 @@
     points: () => n,
     scroll: () => scrollP,
     sil: () => FX_STATE.silK,
+    /* how far through each condense, and the live resolution compensation —
+       the two numbers a test needs to check exposure at a given beat */
+    solidity: () => ({ dna: FX_STATE.dnaSolid, mic: FX_STATE.micSolid, resK: FX_STATE.resK }),
     /* every phase boundary plus the live scroll parameter: enough to drive a
        test at any beat without it having to guess where the beats are */
     phases: () => ({ dnaA:PH.dnaA, dnaB:PH.dnaB, micA:PH.micA, micB:PH.micB,
