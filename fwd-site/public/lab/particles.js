@@ -61,7 +61,7 @@
   /* A murmuration is made of BIRDS. 95k points give it mass, but mass alone
      reads as dust. A few hundred actual glyphs riding the same flock positions
      give it species — drawn over the cloud, not instead of it. */
-  const BIRD_N = 170;
+  const BIRD_N = 240;
   /* The flock briefly pulls itself into one enormous bird, holds a beat, then
      releases. Real murmurations throw shapes like this for a second or two.
      Drawn almost face-on, because a silhouette squashed onto the ground plane
@@ -78,23 +78,45 @@
     { x: 0.70, y:-0.84, z:-0.34 }, { x: 0.08, y:-0.10, z:-0.92 },
   ];
   const NET_EDGES = [[0,1],[0,2],[0,5],[1,3],[2,3],[2,4],[4,3],[5,3],[1,5]];
-  const GROW_TILT      = 54 * Math.PI / 180;   /* desktop: looking down onto it */
-  const GROW_TILT_NARROW = 74 * Math.PI / 180; /* phone: much closer to face-on */
-  const ARMS = 3, ARM_WIND = 3.5;
-  /* one card per arm tip, plus one near the core */
+  /* A rocket is a surface of revolution, so seen from above it is a circle.
+     The spiral this replaced wanted a camera looking down onto it; this wants
+     one almost level with the pad. */
+  const GROW_TILT        = 15 * Math.PI / 180;
+  const GROW_TILT_NARROW = 11 * Math.PI / 180;
+  const FINS = 3;
+  /* y runs DOWN the screen, so the airframe is built in negatives and the
+     exhaust in positives. Every rocket figure below is in these units. */
+  const R_NOSE = -0.98, R_SHOULDER = -0.80, R_ENGINE = -0.12, R_SKIRT = -0.02;
+  const R_RAD = 0.115, R_FLARE = 0.172, R_FIN = 0.355;
+  /* The view rect is square and 1.45 units half-height, so the column has to
+     die inside that or it ends on a razor-straight horizontal cut. */
+  const PLUME_LEN = 1.25;
+  /* The view square is 1.45 units half-height but a 16:9 viewport only shows
+     the middle ~1.27 of that, so the airframe has to live inside the smaller
+     number or the nose leaves the screen a third of the way up the climb.
+     GROW_DROP sits the whole thing lower at rest to buy the climb its room. */
+  const GROW_DROP = 0.12;
+  /* the cards flank it rather than pinning to it: these label clients, not
+     parts of the airframe, so they are annotation and stay put */
   const GROW_ANCHORS = [
-    { x: 0.92 * Math.cos(0 / ARMS * Math.PI * 2 + 0.95 * ARM_WIND),
-      y: 0, z: 0.92 * Math.sin(0 / ARMS * Math.PI * 2 + 0.95 * ARM_WIND) },
-    { x: 0.92 * Math.cos(1 / ARMS * Math.PI * 2 + 0.95 * ARM_WIND),
-      y: 0, z: 0.92 * Math.sin(1 / ARMS * Math.PI * 2 + 0.95 * ARM_WIND) },
-    { x: 0.92 * Math.cos(2 / ARMS * Math.PI * 2 + 0.95 * ARM_WIND),
-      y: 0, z: 0.92 * Math.sin(2 / ARMS * Math.PI * 2 + 0.95 * ARM_WIND) },
-    { x: 0.30, y: 0.06, z: -0.30 },
+    { x: -0.62, y: -0.74, z: 0 },
+    { x:  0.62, y: -0.40, z: 0 },
+    { x: -0.62, y:  0.02, z: 0 },
+    { x:  0.62, y:  0.38, z: 0 },
+  ];
+  /* Two columns do not fit on a phone, so the relaxation stacks them into one
+     and that column lands straight on the airframe. Below the engine instead,
+     over the plume, which is a soft column that reads fine behind text. */
+  const GROW_ANCHORS_NARROW = [
+    { x: -0.42, y: 0.24, z: 0 },
+    { x: -0.42, y: 0.60, z: 0 },
+    { x: -0.42, y: 0.96, z: 0 },
+    { x: -0.42, y: 1.32, z: 0 },
   ];
   /* phase boundaries are MEASURED from where each section sits, not hardcoded —
      the layout reflows and the page keeps growing */
   const PH = { dnaA:0.3, dnaB:0.8, micA:0.9, micB:1.4, flockA:1.5, flockB:2, netA:1.1, netB:1.6, layA:1.7, layB:2.2,
-               growA:2.3, growB:2.8, birdC:1.15, max:4.0 };
+               growA:2.3, growB:2.8, birdC:1.15, max:4.0, endP:3.4 };
 
   const LUT_N = 8192, LUT = new Float32Array(LUT_N), LUT_K = LUT_N / TAU;
   for (let i = 0; i < LUT_N; i++) LUT[i] = Math.sin(i / LUT_N * TAU);
@@ -124,16 +146,17 @@
   let nxa = null, nya = null, nza = null;
   /* layer stack, cartesian */
   let lxa = null, lya = null, lza = null;
-  /* growth spiral, cartesian */
+  /* the rocket: airframe points are cartesian, exhaust points bake an angle
+     and a seed and are placed per frame so the plume actually flows */
   let gxa = null, gya = null, gza = null;
-  let n = 0;
+  let n = 0, plumeFrom = 0;
 
   let bufB = null, bufF = null, ctxB = null, ctxF = null;
   let imgB = null, imgF = null, datB = null, datF = null;
   let motes = [], sparks = [];
   let palR = null, palG = null, palB = null, palA = null;
 
-  const FX_STATE = { cosT: 0, sinT: 1, lca: 1, lsa: 0, layerK: 0, nca: 1, nsa: 0, netK: 0, gca: 1, gsa: 0, growK: 0, silK: 0, swY: 0 };
+  const FX_STATE = { cosT: 0, sinT: 1, lca: 1, lsa: 0, layerK: 0, nca: 1, nsa: 0, netK: 0, gca: 1, gsa: 0, growK: 0, gcy: 0, silK: 0, swY: 0 };
   const O = { cx: 0, cy: 0, R: 0, tube: 0, ox: 0, oy: 0, cosT: 0, sinT: 1,
               sw: 0, sh: 0, offX: 0, mcx: 0, mcy: 0, mscale: 1,
               lcx: 0, lcy: 0, lscale: 1, ncx: 0, ncy: 0, nscale: 1,
@@ -221,6 +244,9 @@
     nxa = new Float32Array(n); nya = new Float32Array(n); nza = new Float32Array(n);
     lxa = new Float32Array(n); lya = new Float32Array(n); lza = new Float32Array(n);
     gxa = new Float32Array(n); gya = new Float32Array(n); gza = new Float32Array(n);
+    /* split by index rather than by coin toss, so the airframe/exhaust ratio
+       is exact instead of binomial */
+    plumeFrom = (n * 0.46) | 0;
 
     const clumps = Array.from({ length: 7 }, () => Math.random() * TAU);
     let seedCells = null;
@@ -310,37 +336,72 @@
            with the head at +y comes out upside down. Head is up, tail and
            swept wingtips trail down-and-back. */
         const q = Math.random();
-        if (q < 0.70) {                                  /* wings */
+        if (q < 0.56) {                                  /* wings: arm + hand */
           const side = Math.random() < 0.5 ? -1 : 1;
           const u = Math.pow(Math.random(), 0.80);       /* denser at the root */
           const v = (Math.random() + Math.random()) * 0.5;  /* soft chord edges */
-          /* chord tapers to an actual point at the tip and the centreline
-             curves back — a linear taper leaves a plank with a hard trailing
-             edge, which is what the first version looked like */
-          const cc = 0.11 - 0.25 * Math.pow(u, 1.28);
-          const ch = 0.215 * Math.pow(1 - u, 0.58);
-          bxa[i] = side * (0.06 + 1.00 * u);
-          bya[i] = -(cc + (v * 2 - 1) * ch + gauss() * 0.012);
+          /* A real wing bends at the wrist: the arm reaches out and a little
+             forward, then the hand sweeps hard back. One smooth taper from
+             root to tip is a glider wing, and that is most of why this read
+             as a drawn mark rather than an animal. */
+          const WRIST = 0.48;
+          let cc, ch;
+          if (u < WRIST) {
+            const w = u / WRIST;
+            cc = 0.11 + 0.085 * w;
+            ch = 0.225 - 0.075 * w;                      /* broad at the root */
+          } else {
+            const w = (u - WRIST) / (1 - WRIST);
+            cc = 0.195 - 0.46 * w * (0.55 + 0.45 * w);
+            ch = 0.150 * Math.pow(1 - w, 0.72) + 0.020;  /* the hand stays narrow */
+          }
+          bxa[i] = side * (0.055 + 0.90 * u);
+          bya[i] = -(cc + (v * 2 - 1) * ch + gauss() * 0.010);
           bza[i] = gauss() * 0.035;
           bua[i] = u;
-        } else if (q < 0.855) {                          /* body */
+        } else if (q < 0.68) {                           /* primaries */
+          /* Five splayed fingers off the hand. In silhouette this is the most
+             recognisable thing about a big bird and the cheapest to add:
+             without them, a wingtip is just where the shape stops. */
+          const side = Math.random() < 0.5 ? -1 : 1;
+          const f = (Math.random() * 5) | 0;
+          const g = Math.pow(Math.random(), 0.85);       /* along the feather */
+          const len = 0.34 - f * 0.047;                  /* the outermost is longest */
+          const sw = 0.22 + f * 0.36;                    /* the inner ones fan back */
+          bxa[i] = side * (0.80 + f * 0.030 + len * g * Math.cos(sw));
+          bya[i] = 0.20 + len * g * Math.sin(sw) + gauss() * 0.011;
+          bza[i] = gauss() * 0.030;
+          bua[i] = 1;
+        } else if (q < 0.81) {                           /* body */
           const tt = Math.random() * 2 - 1;
           const w = 0.062 * (1 - Math.pow(Math.abs(tt), 1.5));
           bxa[i] = ((Math.random() + Math.random()) - 1) * w;
           bya[i] = -(tt * 0.33);
           bza[i] = gauss() * 0.04;
           bua[i] = 0;
-        } else if (q < 0.945) {                          /* tail, lightly forked */
+        } else if (q < 0.88) {                           /* tail, lightly forked */
           const ss = Math.random();
-          const xx = ((Math.random() + Math.random()) - 1) * (0.040 + 0.075 * ss);
+          const xx = ((Math.random() + Math.random()) - 1) * (0.036 + 0.072 * ss);
           bxa[i] = xx;
-          bya[i] = 0.29 + ss * (0.18 + Math.abs(xx) * 1.6);
+          bya[i] = 0.29 + ss * (0.17 + Math.abs(xx) * 1.7);
           bza[i] = gauss() * 0.03;
           bua[i] = 0;
-        } else {                                         /* head */
-          const a = Math.random() * TAU, rr = Math.sqrt(Math.random()) * 0.062;
-          bxa[i] = rr * Math.cos(a);
-          bya[i] = -(0.40 + rr * Math.sin(a) * 0.95);
+        } else {                                         /* neck, head, beak */
+          const s2 = Math.random();
+          if (s2 < 0.46) {                               /* neck */
+            const tt = Math.random();
+            const w = 0.050 * (1 - tt * 0.34);
+            bxa[i] = ((Math.random() + Math.random()) - 1) * w;
+            bya[i] = -(0.31 + tt * 0.13);
+          } else if (s2 < 0.88) {                        /* head */
+            const a = Math.random() * TAU, rr = Math.sqrt(Math.random()) * 0.057;
+            bxa[i] = rr * Math.cos(a) * 0.92;
+            bya[i] = -(0.458 + rr * Math.sin(a) * 0.88);
+          } else {                                       /* beak */
+            const g2 = Math.random();
+            bxa[i] = ((Math.random() + Math.random()) - 1) * 0.015 * (1 - g2 * 0.8);
+            bya[i] = -(0.505 + g2 * 0.082);
+          }
           bza[i] = gauss() * 0.03;
           bua[i] = 0;
         }
@@ -374,16 +435,60 @@
       lya[i] = ly + gauss() * 0.015;
       lza[i] = lz + gauss() * 0.012;
 
-      /* ── growth: arms winding out of a dense core ──
-         u^0.62 piles points up at the centre, so the core stays bright while
-         the arms thin out as they reach — growth, rather than a bar chart */
-      const arm = (Math.random() * ARMS) | 0;
-      const u = Math.pow(Math.random(), 0.62);
-      const gth = arm / ARMS * TAU + u * ARM_WIND + gauss() * 0.26;
-      const gr = u * 1.02;
-      gxa[i] = gr * Math.cos(gth);
-      gya[i] = gauss() * 0.14 * (1 - u * 0.45);
-      gza[i] = gr * Math.sin(gth);
+      /* ── growth: a rocket, lit and leaving ──
+         Ogive nose, fuselage, flared skirt, three fins, all turned about the
+         y axis so the slow roll reads as three dimensions. Over half the point
+         budget goes to the exhaust, which is the honest split: the plume is
+         what you actually look at in a launch photograph, and it is the one
+         thing on this page that particles are not a metaphor for. */
+      if (i >= plumeFrom) {
+        /* position is NOT baked. Only a bearing and a seed along the column,
+           so the exhaust can stream downstream every frame. */
+        const pa2 = Math.random() * TAU;
+        const rr2 = Math.pow(Math.random(), 0.55);   /* bright spine, frayed edge */
+        gxa[i] = Math.cos(pa2) * rr2;
+        gza[i] = Math.sin(pa2) * rr2;
+        gya[i] = Math.random();
+      } else {
+        const q2 = Math.random();
+        if (q2 < 0.17) {                             /* nose */
+          const u = Math.random();
+          /* a sine gives the convex ogive of a real fairing; a linear taper
+             leaves a cone, which reads as a party hat */
+          const rr = R_RAD * Math.sin(u * Math.PI * 0.5) * (0.72 + 0.28 * Math.random());
+          const a = Math.random() * TAU;
+          gxa[i] = rr * Math.cos(a);
+          gza[i] = rr * Math.sin(a);
+          gya[i] = R_NOSE + u * (R_SHOULDER - R_NOSE);
+        } else if (q2 < 0.70) {                      /* fuselage */
+          const a = Math.random() * TAU;
+          const rr = R_RAD * (0.80 + 0.20 * Math.random());
+          gxa[i] = rr * Math.cos(a);
+          gza[i] = rr * Math.sin(a);
+          gya[i] = R_SHOULDER + Math.random() * (R_ENGINE - R_SHOULDER);
+        } else if (q2 < 0.80) {                      /* flared engine skirt */
+          const u = Math.random();
+          const rr = R_RAD + (R_FLARE - R_RAD) * u * u;
+          const a = Math.random() * TAU;
+          gxa[i] = rr * Math.cos(a);
+          gza[i] = rr * Math.sin(a);
+          gya[i] = R_ENGINE + u * (R_SKIRT - R_ENGINE);
+        } else {                                     /* fins */
+          const fa = ((Math.random() * FINS) | 0) / FINS * TAU;
+          const u = Math.random(), v = Math.random();
+          const rr = R_RAD + (R_FIN - R_RAD) * u;
+          /* swept: a long root chord down the engine bay, a short tip chord
+             trailing well behind it */
+          const y0 = R_ENGINE - 0.30 * (1 - u);
+          const y1 = R_SKIRT + 0.055 * u;
+          gxa[i] = rr * Math.cos(fa);
+          gza[i] = rr * Math.sin(fa);
+          gya[i] = y0 + v * (y1 - y0);
+        }
+        gxa[i] += gauss() * 0.006;
+        gya[i] += gauss() * 0.006;
+        gza[i] += gauss() * 0.006;
+      }
     }
 
     motes = Array.from({ length: density ? 10 : 0 }, () => ({
@@ -401,6 +506,15 @@
 
   function resize() {
     DPR = Math.min(window.devicePixelRatio || 1, 2);
+    /* The canvas is an absolutely positioned child of the hero, so a
+       percentage height resolves against the HERO rather than the content —
+       and on a narrow layout those two diverge badly, leaving a blank stretch
+       of document you can scroll into below the last section. Measure the
+       bottom of that section and size the canvas to exactly that. Nothing is
+       circular here: an absolutely positioned child does not move its
+       siblings, so the offsets read above stay valid. */
+    const tail = document.querySelector('.grow');
+    if (tail) back.style.height = Math.round(tail.offsetTop + tail.offsetHeight) + 'px';
     const hr = back.getBoundingClientRect();
     BW = Math.max(1, hr.width); BH = Math.max(1, hr.height);
     heroH = hero.offsetHeight || BH;
@@ -455,6 +569,10 @@
     if (pb !== null) { PH.layB = pb; PH.layA = pb - 0.52; }
     if (pg !== null) { PH.growB = pg; PH.growA = pg - 0.52; }
     PH.max = (pg !== null ? pg : pb !== null ? pb : 2.2) + 1;
+    /* the last scroll position that actually exists. The climb is paced to
+       finish exactly there, so the rocket leaves rather than stalling. */
+    PH.endP = Math.max(PH.growB + 0.06,
+      (document.documentElement.scrollHeight - innerHeight) / Math.max(1, heroH * 1.3));
 
     /* the silhouette lives in the gap between the flock settling and the map
        beginning, centred in the frame and sized to fill it */
@@ -465,7 +583,10 @@
        BETWEEN two sections, not inside either one. */
     O.bcx = (BW / 2 - O.ox - O.cx);
     O.bcy = PH.birdC * (heroH * 1.3) + innerHeight * 0.5 - O.oy - O.cy;
-    O.bscale = BW * (isWide ? 0.40 : 0.46);
+    /* the span is 2.26 units now that the wings have primaries, and the view
+       square is wider than a phone screen, so this has to leave the outer
+       feathers inside the narrower of the two */
+    O.bscale = BW * (isWide ? 0.40 : 0.42);
 
     const dn = document.querySelector('.dna'), mc = document.querySelector('.micro');
     O.dcy = dn ? (dn.getBoundingClientRect().top - hr.top) + dn.offsetHeight * 0.56 - O.oy - O.cy : 0;
@@ -485,13 +606,22 @@
     O.nscale = BW * (isWide ? 0.20 : 0.28);
 
     const gw = document.querySelector('.grow');
+    /* Exactly the section centre, which is also where the viewport centre is
+       at PH.growB. That makes the handover from this anchor to the tracking
+       camera a no-op at the boundary; any other fraction and the whole frame
+       lurches by the difference the moment tracking takes over. */
     O.gcy = gw
-      ? (gw.getBoundingClientRect().top - hr.top) + gw.offsetHeight * (isWide ? 0.60 : 0.62) - O.oy - O.cy
+      ? (gw.getBoundingClientRect().top - hr.top) + gw.offsetHeight * 0.5 - O.oy - O.cy
       : O.lcy + O.sh * 1.5;
     O.gcx = (BW / 2 - O.ox - O.cx);
-    /* wider and flatter on a phone: the arms need both the room and the angle
-       to read as a spiral rather than a vertical slab */
-    O.gscale = BW * (isWide ? 0.23 : 0.44);
+    /* the airframe plus a full plume is about 2.9 units tall against 0.7
+       wide, and the view rect is square, so height is what sets the scale.
+       On a phone the frame is tall and narrow, and scaling off the width
+       alone left the rocket filling barely half the screen. */
+    /* match the view square to the viewport: vHalf is gscale * 1.45, and on a
+       phone scaling off the width alone left the rocket filling two thirds of
+       a tall screen with dead bands above and below it */
+    O.gscale = isWide ? BW * 0.23 : Math.min(BW * 0.78, innerHeight * 0.34);
     O.growTilt = isWide ? GROW_TILT : GROW_TILT_NARROW;
 
     const bd = document.querySelector('.build');
@@ -567,7 +697,28 @@
                                       1 - smooth(bC + bHold, bC + bSpan, p)));
     const netK   = smooth(PH.netA, PH.netB, p);   /* murmuration → map    */
     const layerK = smooth(PH.layA, PH.layB, p);   /* map → stack          */
-    const growK  = smooth(PH.growA, PH.growB, p); /* stack → spiral       */
+    const growK  = smooth(PH.growA, PH.growB, p); /* stack → the rocket   */
+
+    /* ── the launch ──
+       Lift keeps climbing after the morph has finished, so the section reads
+       as a launch rather than as a rocket that arrived already airborne:
+       growK saturates the moment the section centres, and this does not. It
+       is paced to finish at the last scroll position that exists. */
+    const liftStart = PH.growA + 0.24;
+    const liftT = clamp01((p - liftStart) / Math.max(0.25, PH.endP - liftStart));
+    const rise = liftT * liftT * 0.30;             /* accelerating, as it would  */
+    const splash = 1 - clamp01(liftT / 0.26);      /* blast still hitting the pad */
+    const plumeK = 0.62 + 0.38 * clamp01(liftT / 0.20);
+    const plumeT = t * 0.95;
+    const shake = (1 - clamp01(liftT / 0.34)) * 0.009;
+    /* and the camera goes with it. Once the section has centred, the frame
+       hands over to the viewport centre, so the rocket climbs WITHIN a moving
+       shot instead of sliding off the top of a fixed one and leaving an empty
+       screen. Tracking the scroll DELTA instead leaves it wherever its anchor
+       happened to sit, which was 270px low for the whole ride. */
+    const trackK = clamp01((p - PH.growB) / 0.10);
+    const gcyLive = lerp(O.gcy,
+      p * heroH * 1.3 + innerHeight * 0.5 - O.oy - O.cy, trackK);
 
     const angMult = 1 + pourK * (HELIX_TURNS - 1);
     const drop = pourK * O.sh * 1.55;
@@ -600,7 +751,7 @@
                        O.lscale * 1.5, layerK), O.gscale * 1.45, growK) * (1 + spread * 1.9);
     const vCx = lerp(lerp(lerp(lerp(lerp(lerp(lerp(0, O.dcx, dnaK), O.ucx, micK), O.mcx, morphG), (O.bcx + swX), silK), O.ncx, netK), O.lcx, layerK), O.gcx, growK)
               + lateral * 0.42 * (1 - netK) * (1 - silK);
-    const vCy = lerp(lerp(lerp(lerp(lerp(lerp(lerp(0, O.dcy, dnaK), O.ucy, micK), O.mcy, morphG), (O.bcy + swY), silK), O.ncy, netK), O.lcy, layerK), O.gcy, growK)
+    const vCy = lerp(lerp(lerp(lerp(lerp(lerp(lerp(0, O.dcy, dnaK), O.ucy, micK), O.mcy, morphG), (O.bcy + swY), silK), O.ncy, netK), O.lcy, layerK), gcyLive, growK)
               + drop * 0.42 * (1 - netK) * (1 - silK);
     O.vHalf = vHalf; O.vCx = vCx; O.vCy = vCy;
     const vk = BUF_PX / (2 * vHalf), HALF = BUF_PX * 0.5;   /* `vk`: `k` is taken by the splat loop */
@@ -628,7 +779,11 @@
     const uca = fcos(uSpin), usa = fsin(uSpin);
     const bYaw = fsin(t * 0.33) * 0.20;
     const bca = fcos(bYaw), bsa = fsin(bYaw);
-    const bFlap = fsin(t * 1.45);
+    /* The two wings run slightly out of phase. A real bird's wings beat
+       together, but a banking bird's do not LOOK like it, and exact mirror
+       symmetry is the biggest tell that a shape was drawn rather than flown. */
+    const bFlapL = fsin(t * 1.45);
+    const bFlapR = fsin(t * 1.45 + 0.42);
     const bscale = O.bscale, bcx = O.bcx, bcy = O.bcy;
     const invBDepth = 1 / (bscale * 0.6);
     const nSpin = t * 0.075;
@@ -639,14 +794,17 @@
     const lca = fcos(lSpin), lsa = fsin(lSpin);
     const lscale = O.lscale, lcx = O.lcx, lcy = O.lcy;
     const invLDepth = 1 / (lscale * 1.2);
+    /* Lift keeps climbing after the morph has finished, so the section reads
+       as a launch rather than as a rocket that arrived already airborne.
+       growK saturates the moment the section centres; this does not. */
     const gSpin = t * 0.050;
     const gca = fcos(gSpin), gsa = fsin(gSpin);
-    const gscale = O.gscale, gcx = O.gcx, gcy = O.gcy;
+    const gscale = O.gscale, gcx = O.gcx, gcy = gcyLive;
     const invGDepth = 1 / (gscale * 1.1);
     FX_STATE.cosT = cosT; FX_STATE.sinT = sinT;
     FX_STATE.lca = lca; FX_STATE.lsa = lsa; FX_STATE.layerK = layerK;
     FX_STATE.nca = nca; FX_STATE.nsa = nsa; FX_STATE.netK = netK;
-    FX_STATE.gca = gca; FX_STATE.gsa = gsa; FX_STATE.growK = growK;
+    FX_STATE.gca = gca; FX_STATE.gsa = gsa; FX_STATE.growK = growK; FX_STATE.gcy = gcy;
     const mca = fcos(mSpin), msa = fsin(mSpin);
     const mscale = O.mscale, mcx = O.mcx, mcy = O.mcy;
     const invDepth = 1 / (O.R * 1.5 + O.tube);
@@ -740,6 +898,7 @@
           const sKi = sK * (0.54 + 0.46 * (1 - loose * loose * loose));
           const jit = loose * 0.055 * bscale;
           const sp = bua[i] * bua[i];                  /* wings flap, body does not */
+          const bFlap = bxa[i] < 0 ? bFlapL : bFlapR;
           const ax = bxa[i] * bscale + fsin(pw[i] * 1.7 + t * 0.9) * jit;
           const ay = (bya[i] + sp * bFlap * 0.17) * bscale + fsin(pw2[i] * 1.3 - t * 0.75) * jit;
           const az = (bza[i] + sp * bFlap * 0.10) * bscale;
@@ -788,17 +947,42 @@
         }
       }
 
-      /* ── and out into the spiral ── */
+      /* ── and out into the rocket ── */
       if (growK > 0.001) {
         const w2 = clamp01((growK - pst[i] * 0.40) / 0.60);
         if (w2 > 0.001) {
-          const ax = gxa[i] * gscale, ay = gya[i] * gscale, az = gza[i] * gscale;
+          let ax, ay, az, gb = 1;
+          if (i >= plumeFrom) {
+            /* The exhaust streams. Each point runs the length of the column
+               and wraps, so the plume is moving even while the thing is still
+               sitting on the pad — a static cone reads as a tail fin. */
+            let sp2 = gya[i] + plumeT; sp2 -= sp2 | 0;
+            /* widens and frays downstream, and splays sideways for as long as
+               the blast is still hitting the ground */
+            const rad = (0.055 + 0.30 * Math.pow(sp2, 0.78)) * (1 + splash * sp2 * 2.6);
+            const wob = 0.045 * sp2 * fsin(pw[i] + sp2 * 7.4 + t * 3.1);
+            ax = (gxa[i] * rad + wob) * gscale;
+            az = (gza[i] * rad + wob * 0.8) * gscale;
+            ay = (R_SKIRT + GROW_DROP + sp2 * PLUME_LEN * plumeK * (1 - splash * 0.46) - rise) * gscale;
+            gb = Math.pow(1 - sp2, 0.75) * 1.5;   /* hot at the bell, gone downstream */
+          } else {
+            const yv = gya[i] + GROW_DROP - rise;
+            /* The view rect is 1.45 units half-height. Climbing straight into
+               that edge gives the airframe a razor-straight horizontal cut, so
+               the last 0.16 of a unit fades instead: the nose dissolves on its
+               way out of frame, which is what you want it to do anyway. */
+            gb = clamp01((yv + 1.46) * 6.25);
+            ax = (gxa[i] + fsin(t * 37 + pw[i]) * shake) * gscale;
+            ay = yv * gscale;
+            az = gza[i] * gscale;
+          }
           const rx5 = ax * gca - az * gsa, rz5 = ax * gsa + az * gca;
           const gsy = ay * cosT - rz5 * sinT, gsz = ay * sinT + rz5 * cosT;
           sx = lerp(sx, gcx + rx5, w2);
           sy = lerp(sy, gcy + gsy, w2);
           dep = lerp(dep, gsz * invGDepth * 0.5 + 0.5, w2);
           sz = lerp(sz, gsz, w2);
+          bright = lerp(bright, gb, w2);
         }
       }
 
@@ -963,8 +1147,12 @@
     placeCards('lcards', LAYER_ANCHORS, O.lcx, O.lcy, O.lscale, FX_STATE.lca, FX_STATE.lsa,
                FX_STATE.cosT, FX_STATE.sinT,
                clamp01((FX_STATE.layerK - 0.3) / 0.45) * (1 - FX_STATE.growK), 1);
-    placeCards('gcards', GROW_ANCHORS, O.gcx, O.gcy, O.gscale, FX_STATE.gca, FX_STATE.gsa,
-               FX_STATE.cosT, FX_STATE.sinT, clamp01((FX_STATE.growK - 0.3) / 0.45), 0);
+    /* 1,0 rather than the spin: these cards label clients, not parts of the
+       airframe, so they hold still either side instead of orbiting through it */
+    placeCards('gcards', isWide ? GROW_ANCHORS : GROW_ANCHORS_NARROW,
+               O.gcx, FX_STATE.gcy, O.gscale, 1, 0,
+               FX_STATE.cosT, FX_STATE.sinT, clamp01((FX_STATE.growK - 0.3) / 0.45),
+               isWide ? 0 : 1);
     const vs = 2 * O.vHalf;
     /* back canvas is in hero coords; front canvas starts one scene-width left */
     bx.drawImage(bufB, O.ox + O.cx + O.vCx - O.vHalf, O.oy + O.cy + O.vCy - O.vHalf, vs, vs);
@@ -975,12 +1163,19 @@
        field, which stays honest while the cloud is also morphing.
 
        The glyph points are rotated BY HAND and the birds batched into four
-       depth buckets, one stroke each. Using translate/rotate/setTransform per
+       depth buckets, one fill each. Using translate/rotate/setTransform per
        bird churns canvas state 240 times a frame and cost two thirds of the
        frame rate. */
     if (birdVis > 0.01 && birdCount) {
-      const base = Math.max(1.8, BW * 0.0023);
+      const base = Math.max(2.3, BW * 0.0032);
       const BK = 4;
+      /* these two do the hand rotation, reading the current bird's frame out
+         of the four mutables above them */
+      let bX = 0, bY = 0, bCa = 1, bSa = 0;
+      const mv = (p, q) => bx.moveTo(bX + p * bCa - q * bSa, bY + p * bSa + q * bCa);
+      const qc = (p1, q1, p2, q2) => bx.quadraticCurveTo(
+        bX + p1 * bCa - q1 * bSa, bY + p1 * bSa + q1 * bCa,
+        bX + p2 * bCa - q2 * bSa, bY + p2 * bSa + q2 * bCa);
       for (let g = 0; g < BK; g++) {
         const lo = g / BK, hi = (g + 1) / BK, dm = (lo + hi) * 0.5;
         let opened = false;
@@ -992,29 +1187,47 @@
           const dx = x - birdPX[k], dy = y - birdPY[k];
           birdPX[k] = x; birdPY[k] = y;
           const ang = (dx || dy) ? Math.atan2(dy, dx) + Math.PI / 2 : 0;
-          const ca = Math.cos(ang), sa = Math.sin(ang);
+          bX = x; bY = y; bCa = Math.cos(ang); bSa = Math.sin(ang);
           const sz = base * (0.55 + 1.15 * d);
-          const fl = sz * (0.30 + 0.70 * Math.abs(fsin(t * 7.5 + birdPh[k])));
-          const px0 = -sz,        py0 = 0;
-          const pc1 = -sz * 0.42, qc1 = -fl;
-          const pm  = 0,          qm  = -sz * 0.14;
-          const pc2 = sz * 0.42,  qc2 = -fl;
-          const px1 = sz,         py1 = 0;
+
+          /* A wingbeat, not a sine wave. The phase is warped so the downstroke
+             is quick and the recovery slow, and what you actually SEE from
+             behind a flock is the span foreshortening as the wing swings out
+             of plane — that, rather than a flapping outline, is the cue that
+             reads at this size. */
+          const ph0 = t * (6.3 + 2.9 * fsin(birdPh[k] * 2.7)) + birdPh[k];
+          const ph = ph0 + 0.62 * fsin(ph0);
+          const e = fsin(ph);                             /* elevation, -1..1 */
+          const th = e * 1.34;
+          /* the floor matters: let the span foreshorten past the length of
+             the body and the glyph stops being a bird and becomes an arrowhead */
+          const fore = 0.66 + 0.34 * Math.abs(fcos(th));
+          /* and all of them are banking, so no two wings are ever mirrors */
+          const rl = fsin(t * 0.62 + birdPh[k] * 1.9) * 0.22;
+          const spL = sz * fore * (1 + rl), spR = sz * fore * (1 - rl);
+          const tq = sz * (0.13 + 0.24 * Math.abs(e));    /* tips trail back */
+          const sh = sz * 0.16, shq = -sz * 0.26;         /* shoulder */
+
           if (!opened) { bx.beginPath(); opened = true; }
-          bx.moveTo(x + px0 * ca - py0 * sa, y + px0 * sa + py0 * ca);
-          bx.quadraticCurveTo(x + pc1 * ca - qc1 * sa, y + pc1 * sa + qc1 * ca,
-                              x + pm  * ca - qm  * sa, y + pm  * sa + qm  * ca);
-          bx.quadraticCurveTo(x + pc2 * ca - qc2 * sa, y + pc2 * sa + qc2 * ca,
-                              x + px1 * ca - py1 * sa, y + px1 * sa + py1 * ca);
+          /* One closed dart per bird: left tip, leading edge in to the
+             shoulder, head, out to the right tip, then the concave trailing
+             edge home via the tail. Filled, because a stroked outline four
+             pixels across is a hairline, which is precisely why the version
+             before this read as a tick mark. */
+          mv(-spL, tq);
+          qc(-spL * 0.50, shq * 1.18, -sh, shq);
+          qc(-sh * 0.45, -sz * 0.40, 0, -sz * 0.44);
+          qc(sh * 0.45, -sz * 0.40, sh, shq);
+          qc(spR * 0.50, shq * 1.18, spR, tq);
+          qc(spR * 0.44, sz * 0.03, 0, sz * 0.38);
+          qc(-spL * 0.44, sz * 0.03, -spL, tq);
         }
         if (opened) {
-          bx.globalAlpha = birdVis * (0.30 + 0.70 * dm);
-          bx.lineWidth = Math.max(0.75, base * (0.55 + 1.15 * dm) * 0.2);
-          bx.lineCap = 'round';
-          bx.strokeStyle = `rgb(${(accCur.r * 0.45 + 255 * 0.55) | 0},`
-                         + `${(accCur.g * 0.45 + 255 * 0.55) | 0},`
-                         + `${(accCur.b * 0.45 + 255 * 0.55) | 0})`;
-          bx.stroke();
+          bx.globalAlpha = birdVis * (0.26 + 0.56 * dm);
+          bx.fillStyle = `rgb(${(accCur.r * 0.45 + 255 * 0.55) | 0},`
+                       + `${(accCur.g * 0.45 + 255 * 0.55) | 0},`
+                       + `${(accCur.b * 0.45 + 255 * 0.55) | 0})`;
+          bx.fill();
         }
       }
       bx.globalAlpha = 1;
