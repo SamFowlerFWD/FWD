@@ -69,7 +69,7 @@
   const SIL_TILT = 9 * Math.PI / 180;
   const DNA_TILT = 12 * Math.PI / 180;   /* side on, so the twist reads   */
   const MIC_TILT = 30 * Math.PI / 180;
-  const DNA_TURNS = 2.6;
+  const DNA_TURNS = 2.1, DNA_RAD = 0.46, DNA_H = 1.78;
   const NET_TILT = 40 * Math.PI / 180;
   /* the feature map: what is needed, and how it hangs together */
   const NET = [
@@ -138,7 +138,7 @@
   /* murmuration, cartesian */
   let mxa = null, mya = null, mza = null;
   /* double helix, and the microscopic field */
-  let dxa = null, dya = null, dza = null;
+  let dxa = null, dya = null, dza = null, dcb = null;
   let uxa = null, uya = null, uza = null;
   /* giant bird silhouette, cartesian + span param */
   let bxa = null, bya = null, bza = null, bua = null;
@@ -200,7 +200,10 @@
   }
 
   function buildPalette() {
-    const sec = rotateHue(accCur, 48);
+    /* a wider sweep than the 48 it had, so the helix has two ends to pick
+       from, but not so wide that a warm accent swings right round into green
+       and the two strands read as a traffic light */
+    const sec = rotateHue(accCur, 64);
     palR = new Float32Array(NB); palG = new Float32Array(NB);
     palB = new Float32Array(NB); palA = new Float32Array(NB);
     for (let y = 0; y < YB; y++) {
@@ -238,6 +241,7 @@
     loud = new Float32Array(n);
     mxa = new Float32Array(n); mya = new Float32Array(n); mza = new Float32Array(n);
     dxa = new Float32Array(n); dya = new Float32Array(n); dza = new Float32Array(n);
+    dcb = new Float32Array(n);
     uxa = new Float32Array(n); uya = new Float32Array(n); uza = new Float32Array(n);
     bxa = new Float32Array(n); bya = new Float32Array(n);
     bza = new Float32Array(n); bua = new Float32Array(n);
@@ -290,41 +294,64 @@
       /* ── double helix: two strands plus the rungs between them ── */
       {
         const q = Math.random();
-        if (q < 0.76) {                                /* the strands */
-          const strand = Math.random() < 0.5 ? 0 : Math.PI;
+        if (q < 0.70) {                                /* the strands */
+          const b3 = Math.random() < 0.5;
           const v = Math.random();
-          const th = v * DNA_TURNS * TAU + strand;
-          const jr = 0.052 * Math.sqrt(Math.random());  /* strands have thickness */
+          const th = v * DNA_TURNS * TAU + (b3 ? 0 : Math.PI);
+          const jr = 0.036 * Math.sqrt(Math.random());  /* strands have thickness */
           const ja = Math.random() * TAU;
-          dxa[i] = 0.42 * Math.cos(th) + jr * Math.cos(ja);
-          dya[i] = (v - 0.5) * 1.95;
-          dza[i] = 0.42 * Math.sin(th) + jr * Math.sin(ja);
+          dxa[i] = DNA_RAD * Math.cos(th) + jr * Math.cos(ja);
+          dya[i] = (v - 0.5) * DNA_H;
+          dza[i] = DNA_RAD * Math.sin(th) + jr * Math.sin(ja);
+          /* one band per strand: the two sides of the ladder are different
+             colours, which is what makes it read as two strands and not as
+             one rope seen from the side */
+          dcb[i] = b3 ? 0.5 : 4.9;
         } else {                                        /* rungs, at discrete steps */
-          const step = Math.round(Math.random() * 17) / 17;
+          const step = Math.round(Math.random() * 12) / 12;
           const th = step * DNA_TURNS * TAU;
           const w = Math.random() * 2 - 1;
-          dxa[i] = 0.42 * Math.cos(th) * w + gauss() * 0.012;
-          dya[i] = (step - 0.5) * 1.95 + gauss() * 0.012;
-          dza[i] = 0.42 * Math.sin(th) * w + gauss() * 0.012;
+          dxa[i] = DNA_RAD * Math.cos(th) * w + gauss() * 0.013;
+          dya[i] = (step - 0.5) * DNA_H + gauss() * 0.013;
+          dza[i] = DNA_RAD * Math.sin(th) * w + gauss() * 0.013;
+          dcb[i] = 2.6;
         }
       }
 
       /* ── microscopic: a field of cells, seen close ── */
       {
         if (!seedCells) {
-          seedCells = Array.from({ length: 240 }, () => ({
-            x: rnd(-1, 1), y: rnd(-0.85, 0.85), z: rnd(-0.55, 0.55), r: rnd(0.030, 0.082),
+          /* Far fewer and far bigger than they were.
+             There are 95k points and about 1.3M pixels of frame, so a field of
+             structures can only be legible if there are few enough of them to
+             give each one real point density. At 240 cells each got 400 points
+             smeared over a sphere and the whole thing read as a starfield —
+             "a lot of small things", which is not the same as "detail you can
+             inspect", and inspecting them is the entire line of copy. */
+          seedCells = Array.from({ length: 34 }, () => ({
+            x: rnd(-1, 1), y: rnd(-0.82, 0.82), z: rnd(-0.5, 0.5), r: rnd(0.090, 0.215),
           }));
         }
         const c = seedCells[(Math.random() * seedCells.length) | 0];
         /* ring-weighted, so each reads as a membrane with a nucleus rather
            than a uniform blob */
-        const onRim = Math.random() < 0.62;
-        const rr = onRim ? c.r * rnd(0.86, 1.0) : c.r * Math.pow(Math.random(), 1.8) * 0.5;
-        const a = Math.random() * TAU, b2 = Math.random() * TAU;
-        uxa[i] = c.x + rr * Math.cos(a) * Math.cos(b2);
-        uya[i] = c.y + rr * Math.sin(b2) * 0.8;
-        uza[i] = c.z + rr * Math.sin(a) * Math.cos(b2);
+        if (Math.random() < 0.74) {
+          /* The membrane is a RING, not a sphere shell. Scattering the rim
+             over a sphere spreads it across an area instead of a line, and a
+             diffuse ball at this density is invisible — which is why only the
+             nuclei were showing up, as specks. */
+          const a = Math.random() * TAU;
+          const rr = c.r * rnd(0.93, 1.0);
+          uxa[i] = c.x + rr * Math.cos(a);
+          uya[i] = c.y + rr * Math.sin(a);
+          uza[i] = c.z + gauss() * c.r * 0.11;
+        } else {                                       /* nucleus */
+          const a = Math.random() * TAU, b2 = Math.random() * TAU;
+          const rr = c.r * Math.pow(Math.random(), 1.5) * 0.40;
+          uxa[i] = c.x + rr * Math.cos(a) * Math.cos(b2);
+          uya[i] = c.y + rr * Math.sin(b2);
+          uza[i] = c.z + rr * Math.sin(a) * Math.cos(b2);
+        }
       }
 
       /* ── giant bird ──
@@ -591,12 +618,16 @@
     const dn = document.querySelector('.dna'), mc = document.querySelector('.micro');
     O.dcy = dn ? (dn.getBoundingClientRect().top - hr.top) + dn.offsetHeight * 0.56 - O.oy - O.cy : 0;
     O.dcx = (BW / 2 - O.ox - O.cx);
-    O.dscale = BW * (isWide ? 0.21 : 0.30);
+    /* The helix is 1.78 units tall against 0.92 wide and the view square is
+       square, so on a phone the width is the wrong thing to scale from: at
+       BW * 0.30 it filled a quarter of a tall screen and sat in a void. */
+    O.dscale = isWide ? BW * 0.21 : Math.min(BW * 0.66, innerHeight * 0.33);
     O.ucy = mc ? (mc.getBoundingClientRect().top - hr.top) + mc.offsetHeight * 0.60 - O.oy - O.cy : 0;
     O.ucx = (BW / 2 - O.ox - O.cx);
     /* deliberately oversized: we are looking THROUGH it, so most of the field
-       falls outside the frame. That is what makes it read as magnification. */
-    O.uscale = BW * (isWide ? 0.42 : 0.52);
+       falls outside the frame. That is what makes it read as magnification.
+       Scaled off the height on a phone for the same reason as the helix. */
+    O.uscale = isWide ? BW * 0.42 : Math.min(BW * 0.95, innerHeight * 0.46);
 
     const mp = document.querySelector('.map');
     O.ncy = mp
@@ -727,7 +758,12 @@
     const spin = t * 0.16;
     /* the flock is scaled to the viewport, so on a phone the same point count
        lands in far fewer pixels and saturates. damp it on narrow layouts. */
-    const boost = (1 + pourK * 1.45 - morphG * 1.18) * (isWide ? 1 : 1 - morphG * 0.52);
+    /* The pour needs the lift; the shapes it lands in do not, and leaving it
+       at full strength clipped the helix to flat white, which is where its
+       colour was going. */
+    const settle = 1 - 0.66 * Math.max(dnaK * (1 - micK), micK * 0.30);
+    const boost = (1 + pourK * 1.45 * settle - morphG * 1.18) * (isWide ? 1 : 1 - morphG * 0.52);
+    const dnaBand = dnaK * (1 - micK);
 
     /* It flies through rather than appearing in place: a monotonic parameter
        across the WHOLE pulse window, so the bird materialises mid-flight,
@@ -744,15 +780,27 @@
        end, widening through the pour where the content really does span a
        lot of ground. Resolution therefore peaks exactly where the cloud is
        still and you can study it. */
-    const spread = pourK * (1 - morphG);
+    /* The pour genuinely spans a lot of ground, so the frame widens to 2.9x
+       to hold it. But pourK saturates a quarter of the way down the page and
+       never comes back, so that 2.9x was still applied through the helix and
+       the cells: a 4,000px view square crushed into a 1,470px window. It is
+       why the helix read as a thin scribble in an empty frame and why the
+       cells looked like they had not loaded. Let it go once the pour has
+       landed in something. */
+    const spread = pourK * (1 - morphG) * (1 - dnaK);
     const vHalf = lerp(lerp(lerp(lerp(lerp(lerp(lerp(O.sw * 0.70, O.dscale * 1.35, dnaK),
                        O.uscale * 1.12, micK), O.mscale * 2.1, morphG),
                        O.bscale * 1.32, silK), O.nscale * 1.5, netK),
                        O.lscale * 1.5, layerK), O.gscale * 1.45, growK) * (1 + spread * 1.9);
+    /* `held` retires the pour's offsets as the helix forms. The POINTS stop
+       pouring the moment they land in a shape, but the view was still aimed
+       down-and-left by the pour's drop and lateral, so it framed empty space
+       beside the helix. Same rot as `spread` above, same cause. */
+    const held = (1 - netK) * (1 - silK) * (1 - dnaK);
     const vCx = lerp(lerp(lerp(lerp(lerp(lerp(lerp(0, O.dcx, dnaK), O.ucx, micK), O.mcx, morphG), (O.bcx + swX), silK), O.ncx, netK), O.lcx, layerK), O.gcx, growK)
-              + lateral * 0.42 * (1 - netK) * (1 - silK);
+              + lateral * 0.42 * held;
     const vCy = lerp(lerp(lerp(lerp(lerp(lerp(lerp(0, O.dcy, dnaK), O.ucy, micK), O.mcy, morphG), (O.bcy + swY), silK), O.ncy, netK), O.lcy, layerK), gcyLive, growK)
-              + drop * 0.42 * (1 - netK) * (1 - silK);
+              + drop * 0.42 * held;
     O.vHalf = vHalf; O.vCx = vCx; O.vCy = vCy;
     const vk = BUF_PX / (2 * vHalf), HALF = BUF_PX * 0.5;   /* `vk`: `k` is taken by the splat loop */
     /* Brightness must track the mapping. N points spread across a content area
@@ -763,7 +811,10 @@
     const invSh = 1 / O.sh;
 
     /* the camera lifts out of the ground plane as the flock takes over */
-    const tiltNow = lerp(lerp(lerp(lerp(lerp(lerp(lerp(Math.acos(O.cosT), DNA_TILT, dnaK),
+    /* gentle: past about 25 degrees you are looking down the helix and the
+       strands cross into arcs that do not read as a ladder */
+    const dnaTilt = DNA_TILT + 0.15 * fsin(t * 0.21);
+    const tiltNow = lerp(lerp(lerp(lerp(lerp(lerp(lerp(Math.acos(O.cosT), dnaTilt, dnaK),
                           MIC_TILT, micK), FLOCK_TILT, morphG),
                           SIL_TILT, silK), NET_TILT, netK),
                           LAYER_TILT, layerK), O.growTilt, growK);
@@ -774,7 +825,10 @@
     const mSpin = t * 0.055;
     /* the silhouette banks gently rather than spinning — a rotating bird
        reads as a logo turntable, not a bird */
-    const dSpin = t * 0.10, uSpin = t * 0.045;
+    /* A helix is almost symmetric about its own axis, so turning it about
+       that axis is a barber pole: the shape never changes, it just slides.
+       The tumble below is what actually makes it look like an object. */
+    const dSpin = t * 0.34, uSpin = t * 0.045;
     const dca = fcos(dSpin), dsa = fsin(dSpin);
     const uca = fcos(uSpin), usa = fsin(uSpin);
     const bYaw = fsin(t * 0.33) * 0.20;
@@ -858,6 +912,13 @@
 
       /* in the murmur, only a handful are speaking */
       let bright = (morphG > 0.001 && voices < 1 && loud[i] > voices) ? 0 : 1;
+      /* The resolution compensation assumes a cloud spreads to fill the frame.
+         True of a flock, false of a filament: the helix keeps its points on
+         two thin curves however far in you go, so it arrives 5x to 8x over
+         and the strand cores clip to flat white, taking their colour with
+         them. Dim the helix specifically rather than capping the
+         compensation, which the feature map genuinely needs all of. */
+      if (dnaBand > 0.004) bright *= 1 - 0.50 * dnaBand;
       if (m > 0.001) {
         /* FLOW FIELD. Three sines sampled at the bird's OWN position (not just
            its private phase) and cross-combined into a swirl. Sampling by
@@ -1001,7 +1062,9 @@
       let db = (dep * DB) | 0; if (db < 0) db = 0; else if (db >= DB) db = DB - 1;
       /* colour band keyed to position in the SCENE, not in the buffer, so the
          gradient does not swim about as the view rect moves */
-      let yb = (((sy + O.cy) * invSh) * YB) | 0; if (yb < 0) yb = 0; else if (yb >= YB) yb = YB - 1;
+      let ybf = ((sy + O.cy) * invSh) * YB;
+      if (dnaBand > 0.004) ybf += (dcb[i] - ybf) * dnaBand;
+      let yb = ybf | 0; if (yb < 0) yb = 0; else if (yb >= YB) yb = YB - 1;
       const c = yb * DB + db;
       const bw = boost * bright * resK;
       const pr = palR[c] * bw, pg = palG[c] * bw, pb = palB[c] * bw, pa = palA[c] * bw;
@@ -1272,27 +1335,18 @@
   }
   addEventListener('scroll', onScroll, { passive: true });
 
-  /* The flock lives below the hero, so the loop must keep running while
-     EITHER section is on screen. Two observers each writing `visible`
-     directly meant the hero's "I have left the viewport" overwrote the
-     next section's "I am visible", and the flock froze at exactly the
-     point you were looking at it. Track them separately. */
-  let heroVis = true, nextVis = false, buildVis = false, mapVis = false, growVis = false;
-  const syncVis = () => { visible = heroVis || nextVis || buildVis || mapVis || growVis; visible ? start() : stop(); };
-  new IntersectionObserver(es => { heroVis = es[0].isIntersecting; syncVis(); },
-    { threshold: 0 }).observe(hero);
-  const nxt = document.querySelector('.next');
-  if (nxt) new IntersectionObserver(es => { nextVis = es[0].isIntersecting; syncVis(); },
-    { threshold: 0 }).observe(nxt);
-  const mpS = document.querySelector('.map');
-  if (mpS) new IntersectionObserver(es => { mapVis = es[0].isIntersecting; syncVis(); },
-    { threshold: 0 }).observe(mpS);
-  const gwS = document.querySelector('.grow');
-  if (gwS) new IntersectionObserver(es => { growVis = es[0].isIntersecting; syncVis(); },
-    { threshold: 0 }).observe(gwS);
-  const bld = document.querySelector('.build');
-  if (bld) new IntersectionObserver(es => { buildVis = es[0].isIntersecting; syncVis(); },
-    { threshold: 0 }).observe(bld);
+  /* Watch the CANVAS, not a list of sections.
+     This used to name every section the cloud passes through, and the list
+     rotted the moment two more were added: the loop stopped the instant the
+     hero left the viewport and did not restart until `.next` arrived, so the
+     whole helix-and-cells stretch was a frozen frame. That is why the helix
+     span rotated while it was still forming and then sat dead still, and why
+     the cells only appeared once you had scrolled well past their heading.
+     The canvas covers exactly the content the cloud can be drawn on, so
+     "is the canvas on screen" is the question we actually meant to ask, and
+     it cannot go stale when a section is added. */
+  new IntersectionObserver(es => { visible = es[0].isIntersecting; visible ? start() : stop(); },
+    { threshold: 0 }).observe(back);
 
   document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
   addEventListener('resize', () => { stop(); resize(); onScroll(); start(); }, { passive: true });
@@ -1314,7 +1368,12 @@
     points: () => n,
     scroll: () => scrollP,
     sil: () => FX_STATE.silK,
-    phases: () => ({ flockA:PH.flockA, flockB:PH.flockB, netA:PH.netA, netB:PH.netB, birdC:PH.birdC }),
+    /* every phase boundary plus the live scroll parameter: enough to drive a
+       test at any beat without it having to guess where the beats are */
+    phases: () => ({ dnaA:PH.dnaA, dnaB:PH.dnaB, micA:PH.micA, micB:PH.micB,
+                     flockA:PH.flockA, flockB:PH.flockB, birdC:PH.birdC,
+                     netA:PH.netA, netB:PH.netB, layA:PH.layA, layB:PH.layB,
+                     growA:PH.growA, growB:PH.growB, endP:PH.endP, p:scrollP }),
   };
 
   const startProj = getComputedStyle(document.documentElement).getPropertyValue('--proj');
