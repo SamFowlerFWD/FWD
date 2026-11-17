@@ -94,8 +94,7 @@ const pageTitle = isHomepage ? title : `${title} | FWD`;
     <link rel="dns-prefetch" href="https://www.google-analytics.com" />
 
     <!-- Schema.org markup for Google -->
-    <script type="application/ld+json">
-      {JSON.stringify({
+    <script type="application/ld+json" set:html={JSON.stringify({
         "@context": "https://schema.org",
         "@type": ["ProfessionalService", "LocalBusiness"],
         "@id": "https://f-w-d.co.uk/#business",
@@ -274,8 +273,7 @@ const pageTitle = isHomepage ? title : `${title} | FWD`;
         "sameAs": [
           "https://g.page/fwd-thinking-solutions"
         ]
-      })}
-    </script>
+      })} />
     <script is:inline>
       (function() {
         const stored = document.cookie.match(/theme=(\w+)/);

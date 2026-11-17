@@ -339,8 +339,7 @@ const faqs = [
   </section>
 
   <!-- FAQPage Schema -->
-  <script type="application/ld+json">
-    {JSON.stringify({
+  <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "FAQPage",
       "mainEntity": faqs.map(faq => ({
@@ -351,12 +350,10 @@ const faqs = [
           "text": faq.answer
         }
       }))
-    })}
-  </script>
+    })} />
 
   <!-- Service Schema -->
-  <script type="application/ld+json">
-    {JSON.stringify({
+  <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "Service",
       "name": "AI Training for Business",
@@ -402,6 +399,5 @@ const faqs = [
           }
         ]
       }
-    })}
-  </script>
+    })} />
 </Layout>

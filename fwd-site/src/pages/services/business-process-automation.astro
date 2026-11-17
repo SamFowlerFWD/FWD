@@ -292,8 +292,7 @@ const faqs = [
   </section>
 
   <!-- Schema Markup -->
-  <script type="application/ld+json">
-    {JSON.stringify({
+  <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "Service",
       "name": "Business Process Automation",
@@ -332,12 +331,10 @@ const faqs = [
           }
         ]
       }
-    })}
-  </script>
+    })} />
 
   <!-- FAQPage Schema -->
-  <script type="application/ld+json">
-    {JSON.stringify({
+  <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "FAQPage",
       "mainEntity": faqs.map(faq => ({
@@ -348,6 +345,5 @@ const faqs = [
           "text": faq.answer
         }
       }))
-    })}
-  </script>
+    })} />
 </Layout>

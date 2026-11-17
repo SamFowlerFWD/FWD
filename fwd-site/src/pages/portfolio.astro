@@ -389,8 +389,7 @@ const stats = [
   </section>
 
   <!-- Schema Markup -->
-  <script type="application/ld+json">
-    {JSON.stringify({
+  <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "CollectionPage",
       "name": "FWD Thinking Solutions Portfolio",
@@ -411,6 +410,5 @@ const stats = [
         "description": p.description,
         "url": p.url
       }))
-    })}
-  </script>
+    })} />
 </Layout>

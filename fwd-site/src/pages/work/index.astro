@@ -256,8 +256,7 @@ const allProjects = [
   </section>
 
   <!-- Schema Markup -->
-  <script type="application/ld+json">
-    {JSON.stringify({
+  <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "CollectionPage",
       "name": "My Work - FWD Thinking Solutions",
@@ -272,6 +271,5 @@ const allProjects = [
           "addressCountry": "GB"
         }
       }
-    })}
-  </script>
+    })} />
 </Layout>
