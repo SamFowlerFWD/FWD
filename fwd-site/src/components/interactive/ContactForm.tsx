@@ -36,7 +36,7 @@ export default function ContactForm() {
 
     // Build WhatsApp message as fallback
     const waMessage = `Hi Sam, I'm ${formData.name} (${formData.email}). ${formData.message || 'I would like to discuss a project.'}`;
-    const waUrl = `https://wa.me/447584417830?text=${encodeURIComponent(waMessage)}`;
+    const waUrl = `https://wa.me/447516330379?text=${encodeURIComponent(waMessage)}`;
 
     // Open WhatsApp with the form data
     window.open(waUrl, '_blank', 'noopener,noreferrer');

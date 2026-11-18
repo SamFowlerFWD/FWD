@@ -201,7 +201,7 @@ export default function PricingCalculator() {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <a
-            href={`https://wa.me/447584417830?text=${encodeURIComponent(waMessage)}`}
+            href={`https://wa.me/447516330379?text=${encodeURIComponent(waMessage)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-900 font-semibold py-3 px-6 rounded-lg transition-colors min-h-[44px]"

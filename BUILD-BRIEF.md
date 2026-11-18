@@ -86,7 +86,7 @@ Add Google Business Profile URL and any social profile URLs to the sameAs array 
 
 ### 6. Add telephone to Schema
 
-Add `"telephone": "+447584417830"` and a contactPoint to the Organization schema.
+Add `"telephone": "+447516330379"` and a contactPoint to the Organization schema.
 
 ### 7. Add FAQ Sections to All Service Pages
 
@@ -117,7 +117,7 @@ Add new page types to the sitemap serializer:
 - Astro component accepting: text, whatsappMessage, secondaryText, secondaryHref
 - Renders primary CTA (WhatsApp with pre-filled message) and secondary CTA
 - Used on every page with context-specific copy
-- WhatsApp link format: `https://wa.me/447584417830?text={encodedMessage}`
+- WhatsApp link format: `https://wa.me/447516330379?text={encodedMessage}`
 
 #### MicroInteractionSystem
 - Refine existing data-animate and card-hover classes

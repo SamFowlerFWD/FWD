@@ -21,7 +21,7 @@ Reference documents in this repo for deeper detail:
 - **Images:** Astro `<Image>` component with Sharp (already configured)
 - **Content:** Astro Content Collections (MDX) for blog and case studies
 - **Fonts:** System font stack only — zero external font loading
-- **Primary CTA:** WhatsApp (`https://wa.me/447584417830?text={encodedMessage}`)
+- **Primary CTA:** WhatsApp (`https://wa.me/447516330379?text={encodedMessage}`)
 - **Deployment:** Static build to Hostinger VPS with Nginx
 - **Performance targets:** Lighthouse 95+ performance, 98+ accessibility, 100 SEO, LCP < 2s, CLS < 0.05
 - **Accessibility:** WCAG 2.1 AA throughout
@@ -323,10 +323,10 @@ const pageTitle = isHomepage ? title : `${title} | FWD`;
 
 **Add to Organization schema:**
 ```json
-"telephone": "+447584417830",
+"telephone": "+447516330379",
 "contactPoint": {
   "@type": "ContactPoint",
-  "telephone": "+447584417830",
+  "telephone": "+447516330379",
   "contactType": "customer service",
   "availableLanguage": "English"
 },
@@ -478,7 +478,7 @@ Build these components first as they're used everywhere:
 
 **Button.astro** — Props: `variant` (primary/secondary/ghost/dark), `size` (sm/md/lg), `href?`, `icon?`. Use `<a>` when `href` present, `<button>` otherwise. Minimum 44x44px touch target.
 
-**SmartCTA.astro** — Props: `heading`, `text`, `primaryLabel`, `primaryWhatsappMessage`, `secondaryLabel?`, `secondaryHref?`. WhatsApp link: `https://wa.me/447584417830?text=${encodeURIComponent(primaryWhatsappMessage)}`. Include micro-copy: "No obligation. I typically reply within 2 hours."
+**SmartCTA.astro** — Props: `heading`, `text`, `primaryLabel`, `primaryWhatsappMessage`, `secondaryLabel?`, `secondaryHref?`. WhatsApp link: `https://wa.me/447516330379?text=${encodeURIComponent(primaryWhatsappMessage)}`. Include micro-copy: "No obligation. I typically reply within 2 hours."
 
 **DarkModeToggle.tsx** — `client:load`. Read cookie > system preference. Toggle `data-theme` on `<html>`. Store in cookie. `aria-label` updates between "Switch to dark mode" / "Switch to light mode". `aria-pressed` state.
 

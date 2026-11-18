@@ -432,7 +432,7 @@ export default function HeroSequence() {
               Websites, apps, and automation for UK businesses. You deal directly with the person who builds it.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <a href="https://wa.me/447584417830?text=Hi%20Sam%2C%20I%20found%20your%20website%20and%20I%27m%20interested%20in%20discussing%20a%20project." target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold shadow-lg shadow-amber-500/20 hover:-translate-y-0.5 transition-all duration-200">
+              <a href="https://wa.me/447516330379?text=Hi%20Sam%2C%20I%20found%20your%20website%20and%20I%27m%20interested%20in%20discussing%20a%20project." target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold shadow-lg shadow-amber-500/20 hover:-translate-y-0.5 transition-all duration-200">
                 <WaIcon /> Message on WhatsApp
               </a>
               <a href="/work" className="inline-flex items-center gap-2 px-8 py-4 rounded-lg border-2 border-white/20 text-white font-bold hover:bg-white hover:text-slate-900 transition-all duration-200">

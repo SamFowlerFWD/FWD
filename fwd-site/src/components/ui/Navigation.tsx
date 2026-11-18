@@ -180,7 +180,7 @@ const Navigation: React.FC = () => {
 
             {/* WhatsApp Button */}
             <a
-              href="https://wa.me/447584417830"
+              href="https://wa.me/447516330379"
               target="_blank"
               rel="noopener noreferrer"
               className="w-10 h-10 flex items-center justify-center rounded-full bg-green-700 hover:bg-green-800 transition-colors"
@@ -276,7 +276,7 @@ const Navigation: React.FC = () => {
           {/* WhatsApp Button - Mobile */}
           <div className="mt-8 pt-6 border-t border-gray-200">
             <a
-              href="https://wa.me/447584417830"
+              href="https://wa.me/447516330379"
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setIsMobileMenuOpen(false)}

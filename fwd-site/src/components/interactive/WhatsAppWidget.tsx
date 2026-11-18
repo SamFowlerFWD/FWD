@@ -28,7 +28,7 @@ export default function WhatsAppWidget({ message = "Hi Sam, I found your website
 
   if (dismissed) return null;
 
-  const whatsappUrl = `https://wa.me/447584417830?text=${encodeURIComponent(message)}`;
+  const whatsappUrl = `https://wa.me/447516330379?text=${encodeURIComponent(message)}`;
 
   const handleDismiss = (e: React.MouseEvent) => {
     e.preventDefault();
