@@ -197,3 +197,20 @@ export const projects: Project[] = [
 
 export const projectsFor = (industry: IndustryKey) =>
   projects.filter(p => p.industries.includes(industry));
+
+// Work in progress. Nothing on the site reads this list, so these stay hidden.
+// To publish one: add its image, set caseStudy once the post is live, and move it into `projects`.
+export const draftProjects: Project[] = [
+  {
+    id: 'tricklenet',
+    name: 'TrickleNet',
+    summary: 'A new Shopify store and an app for TrickleNet, the slow-feed haynet maker.',
+    image: '/portfolio/tricklenet.webp', // TODO: add screenshot
+    alt: 'TrickleNet slow-feed haynet Shopify store',
+    industries: ['equestrian', 'retail-ecommerce'],
+    services: ['websites', 'apps'],
+    work: ['Shopify Store', 'App', 'Ecommerce'],
+    caseStudy: 'building-tricklenet',
+    url: 'https://tricklenet.com',
+  },
+];

@@ -1,0 +1,124 @@
+---
+title: "How Much Does a Product Configurator Cost? (2026 UK Guide)"
+description: "What a product configurator or CPQ tool costs a UK manufacturer, from a priced options form to 3D and enterprise CPQ, with vendor prices checked November 2026."
+pubDate: 2026-11-18
+category: "guides"
+industries: ["engineering"]
+services: ["apps", "websites"]
+tags: ["product configurator", "CPQ", "configurator costs", "quote tools", "manufacturing", "pricing"]
+featured: false
+draft: false
+---
+
+If you make products with options, sooner or later someone suggests a configurator. A buyer picks the model, the size, the finish and the extras, and gets a price without having to ring you.
+
+It's a good idea. In the [2026 State of Marketing to Engineers report](https://advertising.globalspec.com/wp-content/uploads/2026/03/SMTE-Report_GS2602_FINAL.pdf), pricing and stock questions were the most common reason technical buyers first contacted a supplier. TREW Marketing's [write-up of the findings](https://www.trewmarketing.com/blog/your-top-2026-state-of-marketing-to-engineers-webinar-questions-answered) makes the point that buyers want tools such as configurators so they can research on their own before talking to sales.
+
+The problem is the word. "Configurator" covers everything from a web form with a running total to a 3D model of a machine that writes a bill of materials into your ERP. Those are very different jobs with very different price tags. Here's how they break down, with real vendor prices where vendors publish them, and what I charge for the parts I build.
+
+## The Short Answer
+
+| Type | What it does | Typical cost |
+|------|-------------|--------------|
+| Priced options form | Pick options, see a price or a "from" price, request a quote | £1,299 to £2,500 with me |
+| Configurator with rules | Options that depend on each other, compatibility checks, price rules, PDF quotes | £2,500 to £5,000 or more with me |
+| 3D or visual configurator | The product changes on screen as the buyer configures it | Off-the-shelf from $59 a month for online shops. Bespoke platforms are quote only |
+| Enterprise CPQ | Configure, price and quote inside your CRM and ERP, with approvals and discount control | Salesforce publishes £120 to £160 per user per month. Most others are quote only. Setup on top |
+
+The first two I build, on a fixed quote. The last two are a different league and a different budget, and I'll be straight about why.
+
+## What Drives the Price
+
+**How many products and options.** Five products with three choices each is a small job. Fifty product families with hundreds of options that affect each other is not.
+
+**The rules.** "If you pick the 2 metre width, you can't have the light-duty frame." "This attachment only fits these machines." Compatibility and exclusion rules are where most of the thinking goes.
+
+**The pricing logic.** Simple add-ups are easy. Quantity breaks, trade and dealer pricing, delivery zones, minimum charges and margins that vary by product all add work.
+
+**What comes out the other end.** An on-screen price is the simplest. A branded PDF quote, a saved configuration, a drawing or a bill of materials for the workshop each add more.
+
+**Who uses it.** Your own staff, the public, or dealers with their own logins and their own prices. Logins mean a [customer or dealer portal](/engineering/customer-portals), which is a bigger build.
+
+**Integrations.** Sending a quote into your CRM or accounts package is usually manageable. Driving your ERP is a different matter, which I'll come to.
+
+**Visuals.** Swapping a photo when someone picks a colour is ordinary web work. Real-time 3D is not.
+
+And there's one cost nobody puts on the invoice: your time. Someone in your business has to define the rules and keep the prices current. A configurator running on last year's prices is worse than no configurator.
+
+## Band 1: A Priced Options Form (£1,299 to £2,500)
+
+This is a form on your website built around the options you sell. The customer picks the product, chooses from dropdowns and tick boxes, and sees a running total or a "from" price. When they're happy, they press a button and you get a quote request with every choice already filled in.
+
+The rules are simple. Prices add up, and maybe a few combinations are blocked. It suits standard products with a handful of options, like a gate in set widths with a choice of finish and an optional automation kit.
+
+There are form builders with calculation fields that can do a basic version for a monthly fee, and for some firms that's enough. The limit comes when your rules get fiddly, or when you want the result to look like your quote rather than a form receipt.
+
+If you want a feel for this kind of tool, the [Instant Quote Builder](/playground) on my site is a simple example: pick your trade, click the jobs, get a quote in seconds.
+
+## Band 2: A Configurator With Rules and Compatibility (£2,500 to £5,000 or More)
+
+This is where most small and mid-sized manufacturers land if they need a proper configurator.
+
+Options depend on each other. Pick the machine and only the compatible products show. Enter a dimension and the tool knows the limits. Prices follow your rules: quantity breaks, trade or dealer pricing, delivery by postcode. The result is a branded PDF quote, saved so you can follow it up and turn it into an order. Behind it sits an admin panel where you change prices and options yourself, without ringing a developer.
+
+This is the kind of logic I'm comfortable with. [Horsebox Hire Software](/blog/building-horsebox-hire-software), my own SaaS product, has a pricing rules engine for weekday, weekend and weekly rates and paid extras, two-stage card payments, document checks, and an admin dashboard with an audit log. Each business gets its own branded site, with its data kept separate at the database level. The products are different, but the problem is the same: rules that have to be right every time, and people who need to change them without breaking anything.
+
+It goes past £5,000 when there are several product families with their own rules, dealer logins with their own price lists, or connections to your accounts package. Every project gets a fixed quote before work starts, so you'll know which side of that line you're on before you commit.
+
+If you're not ready to put prices in front of customers yet, a lot of firms start with an internal quote tool and open it up later. I've covered that route in [replacing spreadsheet quoting](/blog/replacing-spreadsheet-quoting).
+
+## Band 3: 3D and Visual Configurators
+
+This is a different league, with a different budget.
+
+A 3D configurator has two costs. There's the software that lets someone spin the product round and watch it change. And there are the 3D models themselves: every option has to be modelled, textured and kept in step with your engineering drawings. For a product with lots of combinations, the modelling can easily be the bigger job, and it's never quite finished, because every design change means updating the models too.
+
+Here's what the vendors publish (checked November 2026):
+
+| Vendor | Published pricing |
+|--------|------------------|
+| [Zakeke](https://admin.zakeke.com/en-US/pricing) | Starter $59, Grow $110 and Scale $255 a month, billed annually, plus a fee of 1.9%, 1.7% or 1.5% on each custom product sold. Enterprise is quote only |
+| [Threekit](https://www.threekit.com/pricing) | Quote only. They say pricing depends on your use case |
+| [Expivi](https://www.expivi.com/pricing) | Quote only, starting with a demo |
+
+Zakeke takes a fee on every custom product sold, so it's built for businesses selling direct through an online shop. That's a different model from a manufacturer quoting through dealers or to trade accounts. The bespoke platforms are aimed at bigger catalogues and bigger budgets.
+
+So when is 3D worth it? When your product is bought partly on looks, when buyers struggle to picture what they're ordering, or when getting a configuration wrong is expensive. For most small firms quoting fabricated or machined parts, it isn't, and a good photo of each option does the job. Swapping photos or 2D renders as options change is well within a normal web build.
+
+## Band 4: Enterprise CPQ
+
+CPQ stands for configure, price, quote. At enterprise level it lives inside your CRM, controls discounts and approvals, manages contracts, and often connects to your ERP so a configured product turns into a bill of materials and a works order.
+
+Here's what the vendors publish (checked November 2026):
+
+| Vendor | Published pricing |
+|--------|------------------|
+| [Salesforce Revenue Cloud](https://www.salesforce.com/sales/revenue-lifecycle-management/pricing/) | Growth £120 and Advanced £160 per user per month, billed annually. A paid add-on to a Sales Cloud subscription, which is priced separately |
+| [PandaDoc](https://www.pandadoc.com/pricing/) | CPQ is only offered on the Enterprise plan, as a paid add-on. Quote only |
+| [DealHub](https://dealhub.io/pricing/) | Quote only |
+| [Tacton](https://www.tacton.com/products/tacton-cpq/pricing/) | Quote only. Aimed squarely at manufacturers |
+
+To put Salesforce's published prices in context: ten users on Revenue Cloud Growth comes to £14,400 a year in Revenue Cloud licences alone, before the Sales Cloud licences underneath. On Advanced, it's £19,200.
+
+And the licence is rarely the whole bill. Someone has to model your products and rules inside the system and connect it to everything else, and that work is quoted separately. If your configurator needs to write bills of materials and routings into your ERP, you're in this territory whichever product you choose. That isn't a £5,000 job, and I'd be wary of anyone who tells you it is.
+
+Enterprise CPQ makes sense for firms with a sales team, an established CRM, complex products and an ERP that runs the factory floor. For a small manufacturer with two or three people doing the quoting, it's usually far more than you need.
+
+## Which One Do You Actually Need?
+
+- **Standard products, a few options, buyers who want a ballpark:** a priced options form.
+- **Options that depend on each other, compatibility questions, trade or dealer pricing:** a configurator with rules.
+- **A product sold partly on looks, sold direct online:** have a look at a visual or 3D platform.
+- **A sales team working in a CRM, complex products, an ERP that needs feeding:** enterprise CPQ, with a partner to set it up.
+
+If you're not sure, start smaller than you think. A configurator that handles your three best-selling products properly is worth more than one that covers everything badly.
+
+## Running Costs and Ownership
+
+Off-the-shelf tools charge every month, usually per user or per sale, for as long as you use them. Your rules and configurations live in their system, so ask how you'd get them out if you ever left.
+
+With a custom build from me, you pay a fixed price for the build and hosting from £20 a month, and you own the code, the data and the accounts. No lock-in. Payment plans are available on projects over £2,000. There's more on how custom tools are priced in [how much an app costs in the UK](/blog/how-much-does-an-app-cost-uk).
+
+---
+
+If you're weighing up a configurator, [tell me about your products and how you quote them now](/contact). I'll tell you honestly which band you're in, even when the answer is an off-the-shelf tool rather than me. You can also see the [quote and configurator tools I build](/engineering/quote-tools), or the rest of my [engineering and manufacturing work](/engineering).

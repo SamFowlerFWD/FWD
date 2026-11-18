@@ -4,7 +4,9 @@
 // post tagged with this industry shows up here without editing the page.
 import Layout from '../../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
+import ProjectCard from './ProjectCard.astro';
 import { projectsFor } from '../../data/projects';
+import { pagesFor, hubPagePath } from '../../data/hubPages';
 import { INDUSTRIES, type IndustryKey, type ServiceKey } from '../../data/taxonomy';
 import { BUSINESS_ID, SAM_ID, SITE } from '../../lib/schema';
 
@@ -19,7 +21,8 @@ export interface Props {
   whatsappMessage: string;
   operator: { title: string; text: string }[];
   capabilitiesIntro: string;
-  capabilities: { title: string; text: string; links?: Link[] }[];
+  /** `page` is a child page slug under this hub; it becomes the card's main link. */
+  capabilities: { title: string; text: string; page?: string; links?: Link[] }[];
   faqs: { question: string; answer: string }[];
   serviceName: string;
   audience: string;
@@ -36,6 +39,7 @@ const {
 const label = INDUSTRIES[industry].label;
 const pageUrl = `${SITE}${INDUSTRIES[industry].href}`;
 const projects = projectsFor(industry);
+const childPages = pagesFor(industry);
 const waLink = `https://wa.me/447516330379?text=${encodeURIComponent(whatsappMessage)}`;
 
 // Guides: posts tagged with this industry first, then useful guides for the hub's services.
@@ -100,6 +104,11 @@ const guides = [...tagged, ...fill].slice(0, 6);
             <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col">
               <h3 class="text-lg font-bold text-slate-900 mb-2">{item.title}</h3>
               <p class="text-gray-600 text-sm mb-4 flex-1">{item.text}</p>
+              {item.page && (
+                <a href={hubPagePath(industry, item.page)} class="inline-block bg-slate-900 hover:bg-ai-purple text-white text-sm font-semibold py-2 px-4 rounded-lg transition-colors mb-3 self-start">
+                  Find out more
+                </a>
+              )}
               {item.links && (
                 <div class="flex flex-wrap gap-x-4 gap-y-1">
                   {item.links.map(link => (
@@ -123,33 +132,7 @@ const guides = [...tagged, ...fill].slice(0, 6);
           <p class="text-xl text-gray-600">Real businesses, real systems, all built by me.</p>
         </div>
         <div class={projects.length < 3 ? 'grid md:grid-cols-2 gap-6 max-w-3xl mx-auto' : 'grid md:grid-cols-2 lg:grid-cols-3 gap-6'}>
-          {projects.map(project => {
-            const href = project.caseStudy ? `/blog/${project.caseStudy}` : project.url;
-            const external = !project.caseStudy;
-            return (
-              <a href={href} {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})} class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow group flex flex-col">
-                <div class="relative">
-                  <img src={project.image} alt={project.alt} class="w-full aspect-[16/10] object-cover object-top" loading="lazy" decoding="async" width="400" height="250" />
-                  {project.relationship && (
-                    <span class="absolute top-3 left-3 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow">
-                      {project.relationship === 'own-product' ? 'My own product' : "I'm a director"}
-                    </span>
-                  )}
-                </div>
-                <div class="p-6 flex flex-col flex-1">
-                  {project.location && <p class="text-sm font-semibold text-amber-600 mb-1">{project.location}</p>}
-                  <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-ai-purple transition-colors">{project.name}</h3>
-                  <p class="text-gray-600 text-sm mb-4 flex-1">{project.summary}</p>
-                  <div class="flex flex-wrap gap-1 mb-4">
-                    {project.work.map(w => <span class="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">{w}</span>)}
-                  </div>
-                  <span class="text-ai-purple font-semibold text-sm">
-                    {project.caseStudy ? 'Read the case study' : 'Visit the site'} &rarr;
-                  </span>
-                </div>
-              </a>
-            );
-          })}
+          {projects.map(project => <ProjectCard project={project} />)}
         </div>
       </div>
     </div>
@@ -247,6 +230,12 @@ const guides = [...tagged, ...fill].slice(0, 6);
         "about": { "@type": "Thing", "name": audience },
         "author": { "@id": SAM_ID },
         "publisher": { "@id": BUSINESS_ID },
+        "hasPart": childPages.map(p => ({
+          "@type": "WebPage",
+          "@id": `${SITE}${hubPagePath(industry, p.slug)}#page`,
+          "url": `${SITE}${hubPagePath(industry, p.slug)}`,
+          "name": p.h1,
+        })),
         "mainEntity": {
           "@type": "ItemList",
           "name": `${label} projects`,

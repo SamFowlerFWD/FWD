@@ -1,0 +1,122 @@
+---
+title: "Replacing Spreadsheet Quoting: A Guide for Small Manufacturers"
+description: "Quoting from spreadsheets, emails and memory? The real problems, five fixes in order of effort, what each costs, and how a small manufacturer can start small."
+pubDate: 2026-11-18
+category: "guides"
+industries: ["engineering"]
+services: ["apps", "automation"]
+tags: ["quoting", "quote tools", "spreadsheets", "manufacturing", "fabrication", "automation"]
+featured: false
+draft: false
+---
+
+Almost every small manufacturer and fabricator I speak to quotes the same way. An enquiry comes in by phone, email or a photo on WhatsApp. Someone opens the quoting spreadsheet, looks up a material price, adds some labour, adds a margin, types the total into a Word template and emails a PDF. Then they get on with the day.
+
+It works, mostly. That's why it's still there. The trouble is everything around it.
+
+I run a production business myself, so I know quotes, lead times and job sheets from the inside, not from a brief. I also build the software that replaces this kind of process for [engineering and manufacturing firms](/engineering). Here's the honest version of what goes wrong, and what you can do about it without spending a fortune.
+
+## The Real Problems With Spreadsheet Quoting
+
+**One person knows the formula.** There's usually one person who built the spreadsheet, or who knows which cells to override and why. When they're on holiday, quotes wait. When they retire, the knowledge goes with them.
+
+**The prices are old.** Material and consumable prices move. The spreadsheet has whatever rate somebody typed in the last time they remembered. Every quote sent on an old rate is either margin you've given away or a job you've lost by being too dear.
+
+**Nobody knows which version is the real one.** Quoting v4, Quoting v4 FINAL, Quoting v4 FINAL Dave. Copies on desktops, copies emailed home. Two people quoting the same customer can come up with two different prices.
+
+**It's slow.** If quoting depends on one person finding a free hour, a simple quote can take days. Meanwhile the buyer has asked two other suppliers, and the first decent reply often wins.
+
+**Quotes are never followed up.** Once the PDF has gone, there's no list of what's out, no reminder to chase, and no idea which quotes turned into work. Plenty of jobs go to the supplier who simply rang back.
+
+**There's no memory.** What did we quote this customer last time? How many of this kind of job do we win? Are we losing on price or on lead time? The spreadsheet can't tell you, because each quote overwrote the last one.
+
+**Mistakes slip through.** A formula gets typed over, a row gets missed, a length goes in as millimetres when it should be metres. Nobody checks, because nobody has time.
+
+None of this means you need a big system. It means you need to fix the right problem first.
+
+## Five Options, in Order of Effort
+
+### 1. Tidy the Spreadsheet and Lock It
+
+Before you pay anyone, do this. It's free, and it forces you to write down how you actually price work, which you'll need for every other option anyway.
+
+- Keep one master copy in a shared drive, and archive the rest.
+- Put all your rates (materials, labour, machine time, margins, minimum charges) on one tab, with a "last updated" date at the top.
+- Lock the formula cells so nobody can type over them by accident. Excel and Google Sheets both let you protect sheets and ranges.
+- Add a quote number and a simple log tab: date, customer, value, status and a follow-up date.
+
+**Cost:** your time, probably a day. **Fixes:** version chaos, accidental mistakes and some of the old-price problem. **Doesn't fix:** the one-person bottleneck, or follow-up.
+
+### 2. A Structured Enquiry Form
+
+A lot of quoting time goes on chasing information. What material? What quantity? Have you got a drawing? A good enquiry form on your website gets that right first time: product or part, quantity, material and finish, drawings, the date they need it and a delivery postcode.
+
+Behind the form, a bit of automation does the boring part. The enquiry lands in your inbox in the same layout every time, gets added to your quote log automatically, and the customer gets an instant reply telling them when to expect a price.
+
+**Cost with me:** often part of a website build, or from £799 as a standalone piece of [business automation](/services/business-process-automation). **Fixes:** the back-and-forth, lost enquiries, and gives you a list of every request. **Doesn't fix:** the pricing itself.
+
+### 3. A Simple Internal Quote Tool With Your Price Rules
+
+This is the step that changes things. Your pricing rules move out of the spreadsheet and into a small browser-based tool that anyone in the office can use.
+
+Somebody picks the product or process, enters the dimensions, material and quantity, and the tool works out the price from your rates, your margins, your quantity breaks and your minimum charges. It produces a branded PDF quote, saves it to a list with a status (sent, chased, won, lost) and reminds you when it's time to follow up. When material prices go up, you change the rate in one place and every new quote uses it. You decide who's allowed to change rates, and you can see who changed what.
+
+I've built this kind of price logic before. [Horsebox Hire Software](/blog/building-horsebox-hire-software), my own SaaS product, has a pricing rules engine that handles weekday, weekend and weekly rates plus paid extras, with an admin dashboard and an audit log of every change. Different industry, same problem: rules that live in one person's head need to live somewhere everyone can use them.
+
+**Cost with me:** from £1,299 for one product line with straightforward rules. Most land between £2,500 and £5,000. **Fixes:** the one-person problem, old prices, inconsistent quotes and follow-up, and gives you a history. **Doesn't fix:** customers still have to ask you for a price.
+
+### 4. A Customer-Facing Calculator
+
+Once your rules live in a tool, you can put some of them on your website. The customer picks their options and gets either a firm price for standard items, or a "from" price with a button to request a formal quote.
+
+This works well for standard and semi-standard products: a gate in set widths, a bracket in three sizes, a product with a short list of options. It works less well for true one-offs made from a customer's drawing. For those, keep the structured form.
+
+There's a simple version you can try on my site. The [Instant Quote Builder](/playground) lets you pick your trade, click the jobs and get a quote in seconds. It's set up for trades like plumbers and electricians rather than fabricators, but the idea is the same: your price list turned into something anyone can use without touching a formula.
+
+**Cost with me:** if it reuses the rules from an internal tool, a good deal less than starting from scratch. On its own, typically £2,500 to £5,000. If your products have lots of options and compatibility rules, I've written a separate guide on [what a product configurator costs](/blog/how-much-does-a-product-configurator-cost).
+
+### 5. Connect It to Your Accounts Package
+
+The last step stops the retyping at the other end. When a quote is accepted, it becomes a sales order or an invoice in your accounts package without anyone copying it across, and customer details stay in step.
+
+Cloud accounting packages generally make this straightforward. [Xero's API](https://developer.xero.com/documentation/api/accounting/quotes), for example, handles quotes as well as invoices. Older desktop installs can be harder, which is one of the things I check before quoting, not after.
+
+**Cost with me:** from £799 for a simple connection, typically £1,500 to £3,000. **Fixes:** double entry, and typos between the quote and the invoice. It also gives you real numbers on what you quoted against what you billed.
+
+## Side by Side
+
+| Option | Rough cost | Best when |
+|--------|-----------|-----------|
+| Tidy and lock the spreadsheet | Your time | You haven't done it yet. Everyone should start here |
+| Structured enquiry form | Part of a website, or from £799 | You lose time chasing details |
+| Internal quote tool | From £1,299, usually £2,500 to £5,000 | Quoting depends on one person, or prices go stale |
+| Customer-facing calculator | Usually £2,500 to £5,000 on its own | Your products are standard enough to price online |
+| Accounts connection | From £799, usually £1,500 to £3,000 | You retype accepted quotes into your accounts |
+
+Every project gets a fixed quote before work starts, and payment plans are available on projects over £2,000. Hosting for a tool like this starts from £20 a month.
+
+## How to Start Small
+
+You don't need all five. Most small firms get the biggest return from the first three.
+
+**Write your rules down first.** Take your last ten quotes and explain every line to someone else. Wherever you hear yourself say "well, it depends", that's a rule nobody has written down yet. It's the most valuable hour you'll spend on the whole project, and it makes any quote you get from a developer far more accurate.
+
+**Start with the job you quote most.** Not the hardest one. If most of your quotes are for one type of work, build for that first. Everything else can carry on in the spreadsheet for now.
+
+**Build the internal tool before the public one.** Your team will find the gaps in the rules long before a customer does, and it's a lot less embarrassing when they do.
+
+**Run it alongside the spreadsheet for a few weeks.** Quote the same jobs both ways. When the numbers agree and people stop opening the spreadsheet, you're done.
+
+**Keep a person in the loop for anything unusual.** A quote tool should handle the routine jobs quickly and hand anything odd to someone who knows the trade. It's there to take the donkey work away, not the judgement.
+
+**Make sure you own it.** Your pricing rules are some of the most valuable knowledge in the business. With me, you own the code, the data and the accounts, with no lock-in. If you go for off-the-shelf quoting software instead, ask how you'd get your rules and your quote history out if you ever left.
+
+## Is This Worth It for a Small Firm?
+
+Often the biggest win is small. A proper enquiry form and a quote tool for your most common job can save hours a week, and make you the supplier who replies first. I'd rather build you one thing that gets used every day than a big system nobody opens.
+
+If quoting is only one of several jobs eating your week, [this list of business tasks worth automating](/blog/business-tasks-you-should-automate) is a good place to look next.
+
+---
+
+If your quoting lives in one spreadsheet and one person's head, [tell me how it works now](/contact). I'll suggest the smallest change that would make a real difference, and give you a fixed price for it. You can also see more about the [quote tools I build for manufacturers](/engineering/quote-tools).

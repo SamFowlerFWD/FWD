@@ -25,10 +25,13 @@ const {
   hideBreadcrumbs = false
 } = Astro.props;
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+// With build.format 'file', pages build as /about.html, which Cloudflare
+// redirects to /about. Use the clean URL everywhere so canonicals match.
+const cleanPath = Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '/') || '/';
+const canonicalURL = new URL(cleanPath, Astro.site);
 const ogImageURL = new URL(ogImage, Astro.site).href;
 const isDefaultOgImage = ogImage === DEFAULT_OG_IMAGE;
-const isHomepage = Astro.url.pathname === '/' || Astro.url.pathname === '';
+const isHomepage = cleanPath === '/';
 const pageTitle = isHomepage ? title : `${title} | FWD`;
 ---
 
@@ -288,7 +291,7 @@ const pageTitle = isHomepage ? title : `${title} | FWD`;
     <a href="#main-content" class="skip-link">Skip to main content</a>
     <Nav />
     <main id="main-content" tabindex="-1">
-      {!isHomepage && !hideBreadcrumbs && <Breadcrumbs path={Astro.url.pathname} />}
+      {!isHomepage && !hideBreadcrumbs && <Breadcrumbs path={cleanPath} />}
       <slot />
     </main>
     <Footer />

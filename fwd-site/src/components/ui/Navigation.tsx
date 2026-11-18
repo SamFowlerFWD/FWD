@@ -128,7 +128,7 @@ const Navigation: React.FC = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-6 xl:gap-8">
+          <div className="hidden lg:flex items-center gap-5 xl:gap-8">
             {navLinks.map(link => (
               <div
                 key={link.href}
@@ -139,7 +139,7 @@ const Navigation: React.FC = () => {
                 {link.dropdown ? (
                   <button
                     type="button"
-                    className="relative text-gray-800 hover:text-ai-purple transition-colors font-medium cursor-pointer flex items-center gap-1 bg-transparent border-0 p-0"
+                    className="relative whitespace-nowrap text-gray-800 hover:text-ai-purple transition-colors font-medium cursor-pointer flex items-center gap-1 bg-transparent border-0 p-0"
                     aria-label={link.label}
                     aria-haspopup="true"
                     aria-expanded={activeDropdown === link.label ? "true" : "false"}
@@ -157,7 +157,7 @@ const Navigation: React.FC = () => {
                 ) : (
                   <a
                     href={link.href}
-                    className="relative text-gray-800 hover:text-ai-purple transition-colors font-medium cursor-pointer flex items-center gap-1"
+                    className="relative whitespace-nowrap text-gray-800 hover:text-ai-purple transition-colors font-medium cursor-pointer flex items-center gap-1"
                     aria-label={link.label}
                   >
                     {link.label}

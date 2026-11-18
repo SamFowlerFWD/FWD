@@ -1,0 +1,121 @@
+---
+title: "Horsebox Hire Deposits and Agreements: Doing Them Online"
+description: "Why a card hold beats charging and refunding a deposit, when to take it, and why the hire agreement belongs inside the booking, not a separate email."
+pubDate: 2026-11-18
+category: "guides"
+industries: ["equestrian"]
+services: ["apps", "automation"]
+tags: ["horsebox hire", "security deposits", "hire agreements", "Stripe", "booking systems"]
+featured: false
+draft: false
+---
+
+The calendar is the easy bit of a horsebox hire booking system. The two parts that decide whether you sleep at night are the security deposit and the hire agreement.
+
+I built [Horsebox Hire Software](https://horseboxhiresoftware.co.uk) for hire companies, starting with Wee Horsebox Hire in East Lothian, so I've had to think hard about both. This is how I'd handle them online, and why.
+
+One thing up front. I'm a developer, not a solicitor, and nothing here is legal advice. Your agreement wording should be checked by a solicitor or your insurer.
+
+## Charging a deposit then refunding it costs you twice
+
+The obvious way to take a deposit online is to charge it with the rental and refund it when the box comes back. It works. It's also the worst option.
+
+**You pay fees on money you're giving back.** When you refund a card payment through Stripe, the processing fee on the original payment isn't returned. [Stripe says so in its own refund docs](https://docs.stripe.com/refunds). Take a few hundred pounds of deposit every weekend, refund it every Monday, and you're paying card fees on money that was never yours.
+
+**The customer's money really has gone.** It's left their account. When you send it back, Stripe says the refund shows as a credit around 5 to 10 business days later, depending on their bank. That's the week you get the "where's my deposit?" messages.
+
+**It's busywork.** Money in, money out, and every refund is one more thing to do by hand or one more thing to go wrong.
+
+## A card hold does the same job without taking the money
+
+A pre-authorisation, or hold, asks the customer's bank to reserve an amount on their card without taking it. Nothing moves. Later you either release it, which costs nothing, or capture some or all of it.
+
+Stripe calls this [placing a hold on a payment method](https://docs.stripe.com/payments/place-a-hold-on-a-payment-method). Its refund docs go as far as recommending holds to businesses that refund a lot, because cancelling a payment before it's captured is free.
+
+One thing to warn customers about. A hold still ties up that money on their card while it's in place, and Stripe notes that some banks' statements don't clearly separate a hold from a real payment. So say it plainly, at booking and again when the hold goes on: "We'll hold the deposit on your card. We won't take it unless there's damage, and it's released after you bring the box back."
+
+## Holds don't last, so timing matters
+
+This is the bit people miss. A card hold expires. If you haven't captured it by then, it's released automatically and you've got nothing to claim against.
+
+According to Stripe's own table of [authorisation windows](https://docs.stripe.com/payments/place-a-hold-on-a-payment-method#authorization-validity-windows), a hold on an online card payment usually lasts 7 days. For Visa payments that the business starts rather than the customer, like charging a card they saved earlier, it's a little under 5.
+
+That's why Horsebox Hire Software doesn't take the deposit at booking. If someone books in March for a show in June, a hold taken in March is long gone by June. So it works in two stages:
+
+1. The full rental is paid when they book.
+2. The security deposit is held on their card 12 hours before collection.
+
+Taking it the day before has a second benefit. If the card won't take the hold, you find out before the keys are in anyone's hand, not after. Whatever system you use, have a simple rule for that moment: no deposit, no box.
+
+If you do longer hires, a week or more, ask exactly what your system does when the hire outlasts the hold. Card networks do allow longer "extended" holds for some kinds of business, vehicle rental included, but Stripe lists [conditions on card brand and account](https://docs.stripe.com/payments/extended-authorization). Don't assume you'll get one.
+
+## Capturing for damage
+
+When the box comes back, someone walks round it. If it's clean and undamaged, the hold is released. In Horsebox Hire Software that happens automatically after the return.
+
+If there's damage, you capture part or all of the hold. Two things worth knowing.
+
+**You usually only get one go.** With Stripe, capturing part of a hold automatically releases the rest, and for most card payments you can't come back later and capture the difference. So work out a figure you can stand behind before you capture. That also has to happen inside the hold window, which is another reason to inspect the box properly on the day it comes back, not on Wednesday.
+
+**Evidence beats memory.** Take photos at collection and again at return, and keep them with the booking. Keep the signed agreement that says what the deposit can be used for. If a customer questions a charge, or disputes it with their bank, that's what you'll be relying on. It's also why every admin action in Horsebox Hire Software is audit-logged: there's a record of who did what, and when.
+
+Tell the customer before you capture: what you're taking, why, and the photos. A clear message before the money moves goes a long way.
+
+Damage that costs more than the deposit is a different conversation, usually involving your insurer and the excess. That's one for your agreement and your policy, not your booking system.
+
+## What belongs in a hire agreement
+
+Here's what I'd expect a horsebox hire agreement to cover. Treat it as a starting point for the conversation with your solicitor or insurer, not a replacement for it.
+
+- **The people.** The hirer, every named driver, and their licence and address details.
+- **The vehicle.** Which box, its registration, and its condition at collection, ideally with photos.
+- **The dates.** Collection and return times, and what happens if it comes back late.
+- **The money.** The rental, the deposit amount, when the hold goes on, when it's released, and what it can be used for.
+- **Insurance.** What's covered, what the excess is, and what isn't covered, such as an unnamed driver behind the wheel.
+- **Loading and weight.** Who's responsible for keeping horses, kit and passengers within the vehicle's plated weight. On a 3.5 tonne box there isn't much to play with.
+- **Use.** Who can drive it, where it can go, and what it can't be used for.
+- **Breakdowns and accidents.** Who to ring and what to do, at the side of the road with horses on board.
+- **Cleaning.** What "returned clean" means, and the charge if it isn't.
+- **Cancellations.** What happens to the rental if they cancel, and how much notice they need to give.
+- **The signature.** Name, date, and which version of your terms they agreed to.
+
+## Sign it inside the booking, not in a separate app
+
+Before Horsebox Hire Software, Wee Horsebox Hire took bookings through a generic booking plugin, then sent a separate email with a link to a signature app. That setup has predictable problems:
+
+- The email lands in spam, or gets ignored until the night before.
+- A booking is confirmed and paid for, but the agreement isn't signed.
+- Someone has to match each signed PDF to the right booking by hand.
+- Collection morning turns into a signing session on a phone in the yard.
+
+Putting the agreement inside the booking fixes all of it. In Horsebox Hire Software, signing is a step in the checkout itself, so a booking can't complete without a signed agreement. Once the payment goes through, the signed agreement is generated as a PDF automatically. Nobody chases anybody.
+
+If you're building or buying this, a few things make in-booking signatures work properly:
+
+- **Show the key terms on the page**, not behind a link: the deposit amount, when it's held, and what it covers.
+- **Keep the exact wording they agreed to.** If you update your terms next season, last season's customers agreed to last season's version.
+- **Send them their copy straight away**, so it's in their inbox on collection day.
+
+## Documents, briefly
+
+An agreement is only as good as knowing who signed it. Every hire business needs a driving licence and proof of address, and needs to check the licence every time, not just the first time. A licence that was fine last month might not be today.
+
+In Horsebox Hire Software, customers upload their licence and a utility bill as part of the booking. AI checks the documents for signs of tampering, licences are checked with the DVLA for vehicles over 3.5 tonnes, and the licence check runs fresh on every booking. Documents are kept for six months, so a returning customer doesn't have to upload everything again.
+
+There's a lot more to say about licences, but that's a post of its own.
+
+## How it fits together
+
+Here's the whole sequence, start to finish:
+
+1. **Booking.** The customer picks a box and dates, uploads their documents, signs the agreement and pays the full rental.
+2. **12 hours before collection.** The deposit is held on their card.
+3. **Collection.** You check the person in front of you matches the documents, and photograph the box.
+4. **Return.** You walk round it and photograph it again.
+5. **Afterwards.** The hold is released, or you capture what the damage costs, once, with the evidence to back it up.
+
+None of this is complicated. It just needs doing the same way every time, which is exactly what software is good at and people at seven in the morning on a show day aren't.
+
+---
+
+If you run a hire business and you're still doing deposits and agreements by hand, have a look at [Horsebox Hire Software](https://horseboxhiresoftware.co.uk), read [how it was built](/blog/building-horsebox-hire-software), or see what else I do for [horsebox businesses](/equestrian/horsebox-businesses) and the rest of the [equestrian world](/equestrian). If you're stuck with a booking plugin and a separate signature app and just want them joined up, that's the kind of [automation job](/services/business-process-automation) I do too. Either way, [drop me a message](/contact).

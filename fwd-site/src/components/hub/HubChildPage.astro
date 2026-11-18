@@ -1,0 +1,234 @@
+---
+// Template for a child page under a flagship hub, e.g. /equestrian/booking-systems.
+// Content comes from src/data/hubPages.ts.
+import Layout from '../../layouts/Layout.astro';
+import ProjectCard from './ProjectCard.astro';
+import { getCollection } from 'astro:content';
+import { projects as allProjects } from '../../data/projects';
+import { pagesFor, hubPagePath, type HubPage } from '../../data/hubPages';
+import { INDUSTRIES } from '../../data/taxonomy';
+import { BUSINESS_ID, SAM_ID, SITE } from '../../lib/schema';
+
+interface Props { page: HubPage }
+const { page } = Astro.props;
+
+const hub = INDUSTRIES[page.hub];
+const path = hubPagePath(page.hub, page.slug);
+const pageUrl = `${SITE}${path}`;
+const hubUrl = `${SITE}${hub.href}`;
+const waLink = `https://wa.me/447516330379?text=${encodeURIComponent(page.whatsappMessage)}`;
+
+const projects = page.projects
+  .map(id => allProjects.find(p => p.id === id))
+  .filter((p): p is NonNullable<typeof p> => Boolean(p));
+
+const siblings = pagesFor(page.hub).filter(p => p.slug !== page.slug);
+
+// Related reading: posts in this hub, ranked by how many services they share with the page.
+const now = new Date();
+const posts = (await getCollection('blog', ({ data }) => !data.draft && data.pubDate <= now))
+  .filter(p => p.data.industries.includes(page.hub))
+  .map(p => ({ post: p, score: p.data.services.filter(s => page.services.includes(s)).length }))
+  .sort((a, b) => b.score - a.score || b.post.data.pubDate.valueOf() - a.post.data.pubDate.valueOf())
+  .slice(0, 3)
+  .map(x => x.post);
+
+const prose = 'space-y-5 text-lg text-gray-700 leading-relaxed [&_a]:text-ai-purple [&_a]:font-semibold [&_a:hover]:underline';
+---
+
+<Layout title={page.title} description={page.description}>
+  <!-- Hero -->
+  <section class="relative py-20 bg-slate-900">
+    <div class="absolute inset-0 bg-ai-mesh opacity-20"></div>
+    <div class="container relative z-10 mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto text-center text-white">
+        <a href={hub.href} class="inline-block text-amber-400 hover:text-amber-300 font-semibold uppercase tracking-wider text-sm mb-4">{hub.label}</a>
+        <h1 class="text-4xl lg:text-5xl font-bold mb-6">{page.h1}</h1>
+        <p class="text-xl text-gray-100 mb-8">{page.intro}</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href={waLink} target="_blank" rel="noopener noreferrer" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-lg transition-colors shadow-lg inline-block">
+            Talk to Sam
+          </a>
+          <a href="#proof" class="bg-white/10 backdrop-blur-sm border-2 border-white text-white font-bold py-4 px-8 rounded-lg hover:bg-white hover:text-slate-900 transition-all inline-block">
+            See the Work
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- The problem -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 mb-8">{page.problemHeading}</h2>
+        <div class={prose}>
+          {page.problem.map(p => <p set:html={p} />)}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What I build -->
+  <section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-5xl mx-auto">
+        <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 mb-12 text-center">What I Build</h2>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {page.build.map(item => (
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+              <h3 class="text-lg font-bold text-slate-900 mb-2">{item.title}</h3>
+              <p class="text-gray-600 text-sm leading-relaxed">{item.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Proof -->
+  <section id="proof" class="py-20 bg-white scroll-mt-32">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-5xl mx-auto">
+        <div class="max-w-3xl mx-auto mb-12">
+          <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 mb-8">{page.proofHeading}</h2>
+          <div class={prose}>
+            {page.proof.map(p => <p set:html={p} />)}
+          </div>
+        </div>
+        <div class={projects.length < 3 ? 'grid md:grid-cols-2 gap-6 max-w-3xl mx-auto' : 'grid md:grid-cols-2 lg:grid-cols-3 gap-6'}>
+          {projects.map(project => <ProjectCard project={project} />)}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cost -->
+  <section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-5xl mx-auto">
+        <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 mb-12 text-center">What It Costs</h2>
+        <div class={page.cost.length < 3 ? 'grid md:grid-cols-2 gap-6 max-w-3xl mx-auto' : 'grid md:grid-cols-3 gap-6'}>
+          {page.cost.map(item => (
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+              <p class="text-sm font-semibold text-amber-700 mb-1">{item.label}</p>
+              <p class="text-2xl font-bold text-slate-900 mb-3">{item.price}</p>
+              <p class="text-gray-600 text-sm leading-relaxed">{item.text}</p>
+            </div>
+          ))}
+        </div>
+        <p class="text-center text-gray-600 mt-8 max-w-2xl mx-auto [&_a]:text-ai-purple [&_a]:font-semibold [&_a:hover]:underline" set:html={page.costNote} />
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 mb-12 text-center">Frequently Asked Questions</h2>
+        <div class="space-y-4">
+          {page.faqs.map(item => (
+            <details class="bg-gray-50 rounded-lg border border-gray-100 group shadow-sm">
+              <summary class="p-6 cursor-pointer list-none flex items-center justify-between hover:bg-gray-100 rounded-lg">
+                <span class="font-semibold text-slate-900 pr-4">{item.question}</span>
+                <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </summary>
+              <div class="px-6 pb-6"><p class="text-gray-600">{item.answer}</p></div>
+            </details>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related reading and sibling pages -->
+  <section class="py-16 bg-gray-50 border-t border-gray-100">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-5xl mx-auto">
+        {posts.length > 0 && (
+          <div class="mb-14">
+            <h2 class="text-2xl font-bold text-slate-900 mb-6">Related Reading</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+              {posts.map(post => (
+                <a href={`/blog/${post.id}`} class="block bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow p-6 group">
+                  <p class="text-xs font-semibold uppercase tracking-wider text-amber-600 mb-2">
+                    {post.data.category === 'case-studies' ? 'Case study' : 'Guide'}
+                  </p>
+                  <h3 class="font-bold text-slate-900 mb-2 group-hover:text-ai-purple transition-colors">{post.data.title}</h3>
+                  <p class="text-sm text-gray-600">{post.data.description}</p>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+        <h2 class="text-2xl font-bold text-slate-900 mb-6">More for {hub.label} Businesses</h2>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {siblings.map(s => (
+            <a href={hubPagePath(s.hub, s.slug)} class="bg-white rounded-lg p-5 hover:shadow-md transition-shadow group border border-gray-100">
+              <h3 class="font-semibold text-slate-900 group-hover:text-ai-purple transition-colors">{s.nav}</h3>
+              <span class="text-ai-purple font-semibold text-sm mt-2 inline-block">Find out more &rarr;</span>
+            </a>
+          ))}
+          <a href={hub.href} class="bg-slate-900 rounded-lg p-5 hover:bg-slate-800 transition-colors group">
+            <h3 class="font-semibold text-white">Everything I do for {hub.label.toLowerCase()} businesses</h3>
+            <span class="text-amber-400 font-semibold text-sm mt-2 inline-block">Back to {hub.label} &rarr;</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-20 bg-slate-900 text-white">
+    <div class="container mx-auto px-6 lg:px-8 text-center">
+      <div class="max-w-2xl mx-auto">
+        <h2 class="text-4xl font-bold mb-6 text-white">Tell Me What's Slowing You Down</h2>
+        <p class="text-xl text-gray-100 mb-8">
+          Message me with the job you'd most like to stop doing by hand. I'll tell you honestly what would help and what it would cost.
+        </p>
+        <a href={waLink} target="_blank" rel="noopener noreferrer" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-lg transition-colors shadow-lg inline-block">
+          Message Sam on WhatsApp
+        </a>
+        <p class="text-sm text-gray-300 mt-6">Based in Norwich, Norfolk. Working with businesses across the UK.</p>
+      </div>
+    </div>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": `${pageUrl}#page`,
+        "url": pageUrl,
+        "name": page.title,
+        "description": page.description,
+        "isPartOf": { "@id": `${hubUrl}#page` },
+        "about": { "@id": `${pageUrl}#service` },
+        "author": { "@id": SAM_ID },
+        "publisher": { "@id": BUSINESS_ID },
+      },
+      {
+        "@type": "Service",
+        "@id": `${pageUrl}#service`,
+        "name": page.serviceName,
+        "provider": { "@id": BUSINESS_ID },
+        "areaServed": { "@type": "Country", "name": "United Kingdom" },
+        "audience": { "@type": "BusinessAudience", "audienceType": page.audience },
+        "url": pageUrl,
+      },
+      {
+        "@type": "FAQPage",
+        "@id": `${pageUrl}#faq`,
+        "mainEntity": page.faqs.map(faq => ({
+          "@type": "Question",
+          "name": faq.question,
+          "acceptedAnswer": { "@type": "Answer", "text": faq.answer },
+        })),
+      },
+    ],
+  })} />
+</Layout>

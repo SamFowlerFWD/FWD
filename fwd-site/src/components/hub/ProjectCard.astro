@@ -1,0 +1,32 @@
+---
+// One project card, used on the industry hubs and their child pages.
+import type { Project } from '../../data/projects';
+
+interface Props { project: Project }
+const { project } = Astro.props;
+
+const href = project.caseStudy ? `/blog/${project.caseStudy}` : project.url;
+const external = !project.caseStudy;
+---
+
+<a href={href} {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})} class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow group flex flex-col">
+  <div class="relative">
+    <img src={project.image} alt={project.alt} class="w-full aspect-[16/10] object-cover object-top" loading="lazy" decoding="async" width="400" height="250" />
+    {project.relationship && (
+      <span class="absolute top-3 left-3 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow">
+        {project.relationship === 'own-product' ? 'My own product' : "I'm a director"}
+      </span>
+    )}
+  </div>
+  <div class="p-6 flex flex-col flex-1">
+    {project.location && <p class="text-sm font-semibold text-amber-600 mb-1">{project.location}</p>}
+    <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-ai-purple transition-colors">{project.name}</h3>
+    <p class="text-gray-600 text-sm mb-4 flex-1">{project.summary}</p>
+    <div class="flex flex-wrap gap-1 mb-4">
+      {project.work.map(w => <span class="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">{w}</span>)}
+    </div>
+    <span class="text-ai-purple font-semibold text-sm">
+      {project.caseStudy ? 'Read the case study' : 'Visit the site'} &rarr;
+    </span>
+  </div>
+</a>

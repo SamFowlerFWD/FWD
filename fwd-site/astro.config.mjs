@@ -15,6 +15,7 @@ function sourceFor(pathname) {
   const [first, ...rest] = clean.split('/');
   if (first === 'blog' && rest.length) return `src/content/blog/${rest.join('/')}.mdx`;
   if (first === 'industries' && rest.length) return `src/content/industries/${rest.join('/')}.mdx`;
+  if ((first === 'equestrian' || first === 'engineering') && rest.length) return 'src/data/hubPages.ts';
   for (const candidate of [`src/pages/${clean}.astro`, `src/pages/${clean}/index.astro`]) {
     if (existsSync(candidate)) return candidate;
   }
@@ -87,6 +88,7 @@ export default defineConfig({
         if (lastmod) item.lastmod = lastmod;
         if (item.url === 'https://f-w-d.co.uk/') item.priority = 1.0;
         else if (/\/(equestrian|engineering)$/.test(item.url)) item.priority = 0.9;
+        else if (/\/(equestrian|engineering)\/[^/]+$/.test(item.url)) item.priority = 0.8;
         else if (item.url === 'https://f-w-d.co.uk/pricing') item.priority = 0.9;
         else if (item.url.includes('/services') && !item.url.includes('/services/')) item.priority = 0.9;
         else if (item.url.includes('/services/')) item.priority = 0.8;

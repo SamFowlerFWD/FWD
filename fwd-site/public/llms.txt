@@ -12,8 +12,18 @@ FWD Thinking Solutions was previously Fowler Web Design, which Sam started in 20
 
 Sam works with all kinds of businesses, but knows two industries from the inside:
 
-- **Equestrian**: booking platforms, training and CPD apps, webshops and websites for farriers, saddlers, trainers and horsebox businesses. Sam runs his own equestrian software business, Horsebox Hire Software (https://horseboxhiresoftware.co.uk), and is one of the three directors of Hoofflix, the professional platform for farriers. Hub: https://f-w-d.co.uk/equestrian
+- **Equestrian**: booking platforms, training and CPD apps, webshops and websites for farriers, saddlers, trainers and horsebox businesses. Sam is a farrier as well as a developer, runs his own equestrian software business, Horsebox Hire Software (https://horseboxhiresoftware.co.uk), and is one of the three directors of Hoofflix, the professional platform for farriers. Hub: https://f-w-d.co.uk/equestrian
+  - Horsebox hire companies, builders and dealers: https://f-w-d.co.uk/equestrian/horsebox-businesses
+  - Farriers and equine professionals: https://f-w-d.co.uk/equestrian/farriers-and-equine-professionals
+  - Online course and membership platforms for equestrian trainers: https://f-w-d.co.uk/equestrian/online-courses
+  - Booking systems for riding schools, arenas and livery yards: https://f-w-d.co.uk/equestrian/booking-systems
+  - Equestrian website design: https://f-w-d.co.uk/equestrian/website-design
 - **Engineering and manufacturing**: websites, product catalogues with spec sheets, quote tools, customer portals and job tracking. Sam runs a production business himself. Hub: https://f-w-d.co.uk/engineering
+  - Websites for manufacturers and engineering firms: https://f-w-d.co.uk/engineering/manufacturer-websites
+  - Online product catalogues and spec sheets: https://f-w-d.co.uk/engineering/product-catalogues
+  - Quote tools and product configurators: https://f-w-d.co.uk/engineering/quote-tools
+  - Job and production tracking: https://f-w-d.co.uk/engineering/job-tracking
+  - Customer and dealer portals: https://f-w-d.co.uk/engineering/customer-portals
 
 ## Services
 
@@ -39,6 +49,17 @@ Pricing guides:
 - How much does a website cost in the UK: https://f-w-d.co.uk/blog/how-much-does-a-website-cost-uk
 - How much does an app cost in the UK: https://f-w-d.co.uk/blog/how-much-does-an-app-cost-uk
 - How much does AI cost for a small business: https://f-w-d.co.uk/blog/how-much-does-ai-cost-small-business-uk
+
+Equestrian guides:
+- Understanding the equestrian industry, its needs and its people: https://f-w-d.co.uk/blog/understanding-the-equestrian-industry
+- Horsebox hire deposits and hire agreements: https://f-w-d.co.uk/blog/horsebox-hire-deposits-and-agreements
+- Selling online courses as an equine professional: https://f-w-d.co.uk/blog/selling-online-courses-equine-professionals
+- Livery yard software compared: https://f-w-d.co.uk/blog/livery-yard-software-compared
+
+Engineering and manufacturing guides:
+- What buyers check on a manufacturer's website: https://f-w-d.co.uk/blog/what-buyers-check-manufacturer-website
+- Replacing spreadsheet quoting: https://f-w-d.co.uk/blog/replacing-spreadsheet-quoting
+- How much does a product configurator cost: https://f-w-d.co.uk/blog/how-much-does-a-product-configurator-cost
 
 ## Contact
 

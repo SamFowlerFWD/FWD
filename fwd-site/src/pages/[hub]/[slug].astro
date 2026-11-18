@@ -1,0 +1,14 @@
+---
+// Child pages of the flagship hubs: /equestrian/<slug> and /engineering/<slug>.
+// Content lives in src/data/hubPages.ts.
+import HubChildPage from '../../components/hub/HubChildPage.astro';
+import { hubPages, type HubPage } from '../../data/hubPages';
+
+export function getStaticPaths() {
+  return hubPages.map(page => ({ params: { hub: page.hub, slug: page.slug }, props: { page } }));
+}
+
+const { page } = Astro.props as { page: HubPage };
+---
+
+<HubChildPage page={page} />
