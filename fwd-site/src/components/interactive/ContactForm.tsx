@@ -13,7 +13,7 @@ interface FormErrors {
 
 // window.gtag is declared globally in CookieConsent.tsx.
 const WHATSAPP = 'https://wa.me/447516330379';
-const EMAIL = 'sam@f-w-d.co.uk';
+const EMAIL = 'thinking@f-w-d.co.uk';
 
 export default function ContactForm() {
   const [formData, setFormData] = useState<FormData>({ name: '', email: '', message: '' });

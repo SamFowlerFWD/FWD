@@ -3,7 +3,7 @@
 //
 // Settings (Cloudflare Pages > fwd-site > Settings > Variables and Secrets):
 //   RESEND_API_KEY  (secret, required)  a Resend API key with sending access
-//   CONTACT_TO      (optional)          defaults to sam@f-w-d.co.uk
+//   CONTACT_TO      (optional)          defaults to thinking@f-w-d.co.uk
 //   CONTACT_FROM    (optional)          defaults to "FWD website <website@f-w-d.co.uk>";
 //                                       the domain must be verified in Resend
 
@@ -69,7 +69,7 @@ export const onRequestPost = async ({ request, env }: Context) => {
     },
     body: JSON.stringify({
       from: env.CONTACT_FROM || 'FWD website <website@f-w-d.co.uk>',
-      to: [env.CONTACT_TO || 'sam@f-w-d.co.uk'],
+      to: [env.CONTACT_TO || 'thinking@f-w-d.co.uk'],
       reply_to: email,
       subject: `New enquiry from ${name}`,
       text,
