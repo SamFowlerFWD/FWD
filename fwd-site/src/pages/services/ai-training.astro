@@ -1,6 +1,5 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
 import SmartCTA from '../../components/interactive/SmartCTA.astro';
 import FreshnessBadge from '../../components/content/FreshnessBadge.astro';
 
@@ -8,6 +7,10 @@ const faqs = [
   {
     question: "Do I need any technical knowledge?",
     answer: "None at all. I tailor the training to your level. If you can use email, you can learn to use AI tools effectively."
+  },
+  {
+    question: "Do you run training in person?",
+    answer: "Yes. I'm based in Norwich and come to you anywhere in Norfolk, so your team learns at their own desks with their own work. For businesses further away I run the same sessions over video, and they work just as well."
   },
   {
     question: "Which AI tools do you cover?",
@@ -33,10 +36,9 @@ const faqs = [
 ---
 
 <Layout
-  title="AI Training for Business | ChatGPT & Claude Workshops | FWD"
-  description="Hands-on AI training for UK businesses. Learn to use ChatGPT, Claude, and AI tools properly. Tailored to your workflows, not generic tips. From £299."
+  title="AI & ChatGPT Training in Norwich & Norfolk"
+  description="Hands-on AI training for businesses in Norwich and Norfolk. Learn to use ChatGPT, Claude and other AI tools on your own work, not generic tips. From £299."
 >
-  <Breadcrumbs path="/services/ai-training" />
 
   <!-- Hero Section -->
   <section class="relative py-20 bg-slate-900">
@@ -44,10 +46,10 @@ const faqs = [
     <div class="container relative z-10 mx-auto px-6 lg:px-8">
       <div class="max-w-3xl mx-auto text-center text-white">
         <h1 class="text-5xl lg:text-6xl font-bold mb-6">
-          AI Training for <span class="text-amber-400">Your Business</span>
+          AI Training in <span class="text-amber-400">Norwich &amp; Norfolk</span>
         </h1>
         <p class="text-xl text-gray-100 mb-8">
-          Practical, hands-on training that teaches you and your team how to actually use AI tools. No jargon, no hype. Just honest guidance tailored to your specific workflows.
+          Practical, hands-on training that shows you and your team how to actually use AI tools on your own work. No jargon, no hype. I'm Sam Fowler, a Norwich developer who uses these tools every day, and I'll train you at your place anywhere in Norfolk or over video.
         </p>
         <p class="text-lg text-amber-400 font-semibold mb-8">From £299</p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
@@ -224,6 +226,10 @@ const faqs = [
             </a>
           </div>
         </div>
+
+        <p class="mt-10 text-center text-gray-600">
+          Weighing up the options? Read <a href="/blog/how-much-does-ai-cost-small-business-uk" class="text-ai-purple font-semibold hover:underline">how much AI costs a small business</a>, from free tools to custom builds.
+        </p>
       </div>
     </div>
   </section>
@@ -263,9 +269,21 @@ const faqs = [
         <p class="text-gray-600 leading-relaxed mb-4">
           That means I can show you what actually works in practice, not just theory. I know which tools are good at what, where they fall over, and how to get the best results without wasting time on trial and error.
         </p>
-        <p class="text-gray-600 leading-relaxed">
+        <p class="text-gray-600 leading-relaxed mb-4">
           I also keep it honest. I won't tell you AI can do things it can't, and I won't oversell it. You'll leave with a clear, practical understanding of how AI fits into your work.
         </p>
+        <p class="text-gray-600 leading-relaxed">
+          And if the training turns up a job that needs more than a chat window, like an AI step inside your booking system or your invoicing, I can <a href="/services/business-process-automation" class="text-ai-purple font-semibold hover:underline">build that for you</a> too.
+        </p>
+
+        <a href="/blog/building-hoofflix" class="mt-8 block bg-white rounded-xl p-6 shadow-sm border-l-4 border-amber-500 hover:shadow-md transition-shadow group">
+          <p class="text-sm font-semibold text-amber-600 mb-1">Case study: Hoofflix</p>
+          <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-ai-purple transition-colors">A self-confessed technophobe, now running AI workflows every day</h3>
+          <p class="text-gray-600 mb-3">
+            Mark is nearly 70 and had no interest in learning a content system. So I connected his AI assistant to the platform. He talks through an article, or hands it a book chapter and asks for a course, and it lands as a draft for review. Nothing goes live without a person pressing Publish, so he can't break anything, and once he knew that the fear went.
+          </p>
+          <span class="text-ai-purple font-semibold text-sm">Read the Hoofflix story &rarr;</span>
+        </a>
       </div>
     </div>
   </section>
@@ -356,22 +374,17 @@ const faqs = [
   <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "Service",
-      "name": "AI Training for Business",
-      "description": "Hands-on AI training for UK businesses. Learn to use ChatGPT, Claude, and AI tools properly. Tailored to your workflows.",
-      "provider": {
-        "@type": "Organization",
-        "name": "FWD Thinking Solutions",
-        "address": {
-          "@type": "PostalAddress",
-          "addressLocality": "Norwich",
-          "addressRegion": "Norfolk",
-          "addressCountry": "GB"
-        }
-      },
-      "areaServed": {
-        "@type": "Place",
-        "name": "United Kingdom"
-      },
+      "@id": "https://f-w-d.co.uk/services/ai-training#service",
+      "name": "AI Training in Norwich & Norfolk",
+      "serviceType": "AI training",
+      "description": "Hands-on AI training for businesses in Norwich, Norfolk and across the UK. Learn to use ChatGPT, Claude and other AI tools on your own work, in person or over video.",
+      "url": "https://f-w-d.co.uk/services/ai-training",
+      "provider": { "@id": "https://f-w-d.co.uk/#business" },
+      "areaServed": [
+        { "@type": "City", "name": "Norwich" },
+        { "@type": "State", "name": "Norfolk" },
+        { "@type": "Country", "name": "United Kingdom" }
+      ],
       "hasOfferCatalog": {
         "@type": "OfferCatalog",
         "name": "AI Training",

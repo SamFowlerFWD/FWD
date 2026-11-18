@@ -12,8 +12,9 @@ FWD Thinking Solutions was previously Fowler Web Design, which Sam started in 20
 
 - **Professional Websites**: Fast, mobile-friendly websites from £299
 - **Business Process Automation**: Automate invoicing, emails, data entry from £799
-- **Custom App Development**: Booking systems, dashboards, mobile apps from £1,299
-- **Hosting & Maintenance**: Backups, security updates, support from £99/month
+- **Custom App Development**: Booking systems, customer portals, iOS and Android apps from £1,299
+- **AI Training**: Hands-on ChatGPT and Claude training for businesses in Norwich and Norfolk, in person or over video, from £299
+- **Hosting & Maintenance**: Backups, security updates, support from £20/month
 
 ## Location
 
@@ -26,6 +27,11 @@ Norwich, Norfolk, United Kingdom. Working with businesses across the UK.
 ## Blog
 
 Case studies, tips, and insights from building software for UK businesses. Read at: https://f-w-d.co.uk/blog
+
+Pricing guides:
+- How much does a website cost in the UK: https://f-w-d.co.uk/blog/how-much-does-a-website-cost-uk
+- How much does an app cost in the UK: https://f-w-d.co.uk/blog/how-much-does-an-app-cost-uk
+- How much does AI cost for a small business: https://f-w-d.co.uk/blog/how-much-does-ai-cost-small-business-uk
 
 ## Contact
 

@@ -42,7 +42,7 @@ Automate the repetitive tasks that eat into your day.
 
 ### Custom App Development (from £1,299)
 
-Bespoke web and mobile applications built to solve specific business problems.
+Web and mobile apps built by Sam in Norwich for businesses in Norfolk and across the UK, from focused tools to platforms on the App Store and Google Play. Examples: Ask Stephen, a coaching platform shipped to iOS and Android from one codebase (https://f-w-d.co.uk/blog/building-ask-stephen); Horsebox Hire, a booking platform several hire companies can run on, with AI document checks and DVLA licence checks (https://f-w-d.co.uk/blog/building-horsebox-hire-software); Fakenham Dog Field (https://f-w-d.co.uk/blog/building-fakenham-dog-field). Cost guide: https://f-w-d.co.uk/blog/how-much-does-an-app-cost-uk
 
 **Types of apps:**
 - Booking systems with online payments
@@ -58,16 +58,27 @@ Bespoke web and mobile applications built to solve specific business problems.
 
 **Every project includes:** Source code ownership, documentation, team training, post-launch support, no vendor lock-in, fixed pricing.
 
-### Hosting & Maintenance (from £99/month)
+### AI Training (from £299)
+
+Hands-on training in ChatGPT, Claude and other AI tools for businesses in Norwich and Norfolk, in person or over video, built around the client's real work rather than generic prompts. Page: https://f-w-d.co.uk/services/ai-training
+
+**Pricing:**
+- 1-to-1 training: £299 (2-hour session, 30 days email support)
+- Team workshop: £499 (half day, up to 8 people, team prompt library)
+- Ongoing support: £99/month (monthly check-in, cancel anytime)
+
+Example: on Hoofflix, Sam set up the founder's AI assistant so he can draft articles and courses by talking them through; everything lands as a draft and nothing goes live without a person pressing Publish (https://f-w-d.co.uk/blog/building-hoofflix). Cost guide: https://f-w-d.co.uk/blog/how-much-does-ai-cost-small-business-uk
+
+### Hosting & Maintenance (from £20/month)
 
 Reliable hosting with ongoing support.
 
 **Plans:**
-- **Essential (£99/month)**: Up to 10GB storage, daily backups, SSL, security updates, email support
-- **Professional (£199/month)**: Up to 50GB storage, daily backups, premium SSL, priority support, performance optimisation
-- **Enterprise (£399/month)**: Unlimited storage, continuous backups, advanced security, dedicated resources
+- **Standard (£20/month)**: For small websites. Daily backups, SSL, security updates, performance monitoring, email support, monthly reports
+- **Premium (£149/month)**: For business websites. Everything in Standard plus priority support, performance optimisation, 2 content updates a month, uptime monitoring, weekly reports
+- **Enterprise (custom pricing)**: For high-traffic sites, with dedicated resources
 
-**All plans include:** Daily backups, security updates, performance monitoring, SSL certificate, email support. No contracts, cancel anytime. Free migration from other hosts.
+No contracts, cancel anytime. Free migration from other hosts.
 
 ## Portfolio
 
@@ -91,6 +102,11 @@ Reliable hosting with ongoing support.
 ## Blog
 
 Case studies, tips, and insights from building software for UK businesses. Topics include project walkthroughs, development best practices, and business automation guides. Read at: https://f-w-d.co.uk/blog
+
+Pricing guides:
+- How much does a website cost in the UK: https://f-w-d.co.uk/blog/how-much-does-a-website-cost-uk
+- How much does an app cost in the UK: https://f-w-d.co.uk/blog/how-much-does-an-app-cost-uk
+- How much does AI cost for a small business: https://f-w-d.co.uk/blog/how-much-does-ai-cost-small-business-uk
 
 RSS feed available at: https://f-w-d.co.uk/rss.xml
 
