@@ -4,20 +4,6 @@ import SmartCTA from '../../components/interactive/SmartCTA.astro';
 
 const industries = [
   {
-    name: "Equestrian",
-    slug: "equestrian",
-    icon: "\u{1F40E}",
-    description: "Websites, booking systems, and video platforms for equestrian businesses across the UK.",
-    examples: "Horsebox manufacturers, saddlers, farriers, riding schools, equine video platforms"
-  },
-  {
-    name: "Manufacturing",
-    slug: "manufacturing",
-    icon: "\u{1F3ED}",
-    description: "Professional websites and business systems for manufacturers and engineering firms.",
-    examples: "Product catalogues, quote request systems, supplier portals"
-  },
-  {
     name: "Pet Services",
     slug: "pet-services",
     icon: "\u{1F43E}",
@@ -64,7 +50,7 @@ const industries = [
 
 <Layout
   title="Industries We Work With"
-  description="Web development and automation tailored for equestrian, manufacturing, pet services, trades, fitness, and other UK industries."
+  description="Software and websites for equestrian and engineering businesses, plus pet services, trades, fitness, retail and professional services across the UK."
   keywords="industry web development, equestrian websites, manufacturing websites, trades websites norfolk, small business web design uk"
 >
 
@@ -83,15 +69,35 @@ const industries = [
     </div>
   </section>
 
-  <!-- Industry Grid -->
+  <!-- Flagship hubs -->
   <section class="py-20 bg-white">
     <div class="container mx-auto px-6 lg:px-8">
       <div class="max-w-5xl mx-auto">
-        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="text-center mb-10">
+          <h2 class="text-3xl font-bold text-slate-900 mb-3">Where I Know the Most</h2>
+          <p class="text-gray-600">Two industries I don't just build for. I work in them.</p>
+        </div>
+        <div class="grid md:grid-cols-2 gap-6 mb-20">
+          <a href="/equestrian" class="block bg-slate-900 text-white rounded-2xl p-8 hover:shadow-xl transition-shadow group">
+            <div class="text-4xl mb-4">&#x1F40E;</div>
+            <h3 class="text-2xl font-bold mb-2 group-hover:text-amber-400 transition-colors">Equestrian</h3>
+            <p class="text-gray-300 mb-4">Booking platforms, training apps, webshops and websites for farriers, saddlers, trainers and horsebox businesses. I run my own horsebox hire software business.</p>
+            <span class="text-amber-400 font-semibold">See equestrian work &rarr;</span>
+          </a>
+          <a href="/engineering" class="block bg-slate-900 text-white rounded-2xl p-8 hover:shadow-xl transition-shadow group">
+            <div class="text-4xl mb-4">&#x2699;&#xFE0F;</div>
+            <h3 class="text-2xl font-bold mb-2 group-hover:text-amber-400 transition-colors">Engineering &amp; Manufacturing</h3>
+            <p class="text-gray-300 mb-4">Websites, product catalogues, quote tools and job tracking for manufacturers and engineering firms. I run a production business myself.</p>
+            <span class="text-amber-400 font-semibold">See engineering work &rarr;</span>
+          </a>
+        </div>
+
+        <h2 class="text-2xl font-bold text-slate-900 mb-6">Other Industries</h2>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {industries.map(industry => (
             <a href={`/industries/${industry.slug}`} class="bg-gray-50 rounded-xl p-6 hover:bg-gray-100 transition-colors group border border-gray-100 hover:border-amber-200 hover:shadow-md">
               <div class="text-4xl mb-4">{industry.icon}</div>
-              <h2 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-amber-600 transition-colors">{industry.name}</h2>
+              <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-amber-600 transition-colors">{industry.name}</h3>
               <p class="text-gray-600 text-sm mb-3">{industry.description}</p>
               <p class="text-xs text-gray-500">{industry.examples}</p>
             </a>

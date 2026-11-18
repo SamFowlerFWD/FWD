@@ -1,20 +1,45 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { getCollection, render } from 'astro:content';
+import { INDUSTRIES, SERVICES } from '../../data/taxonomy';
+import { SAM_ID, BUSINESS_ID } from '../../lib/schema';
 
 export async function getStaticPaths() {
   const now = new Date();
   const posts = await getCollection('blog', ({ data }) => !data.draft && data.pubDate <= now);
   return posts.map(post => ({
     params: { slug: post.id },
-    props: { post },
+    props: { post, allPosts: posts },
   }));
 }
 
-const { post } = Astro.props;
+const { post, allPosts } = Astro.props;
 const { Content } = await render(post);
 
-const { title, description, pubDate, updatedDate, heroImage, heroImageAlt, category, tags } = post.data;
+const { title, description, pubDate, lastUpdated: updatedDate, heroImage, heroImageAlt, category, tags, industries, services } = post.data;
+
+// Related reading: same industry counts most, then shared services, then newest.
+const related = allPosts
+  .filter(p => p.id !== post.id)
+  .map(p => ({
+    post: p,
+    score:
+      p.data.industries.filter(i => industries.includes(i)).length * 3 +
+      p.data.services.filter(sv => services.includes(sv)).length,
+  }))
+  .filter(r => r.score > 0)
+  .sort((a, b) => b.score - a.score || b.post.data.pubDate.valueOf() - a.post.data.pubDate.valueOf())
+  .slice(0, 3)
+  .map(r => r.post);
+
+const hubIndustry = industries.find(i => INDUSTRIES[i].hub);
+const relatedHeading = hubIndustry
+  ? `More for ${INDUSTRIES[hubIndustry].label.toLowerCase()} businesses`
+  : 'Related reading';
+const filedUnder = [
+  ...industries.map(i => INDUSTRIES[i]),
+  ...services.map(sv => SERVICES[sv]),
+];
 
 const categoryStyles: Record<string, { bg: string; text: string; label: string }> = {
   'case-studies': { bg: 'bg-amber-500/10', text: 'text-amber-700', label: 'Case Study' },
@@ -92,7 +117,7 @@ const siteUrl = 'https://f-w-d.co.uk';
           SF
         </div>
         <div>
-          <div class="font-medium text-deep-space text-sm">Sam Fowler</div>
+          <a href="/about" class="font-medium text-deep-space text-sm hover:text-ai-purple">Sam Fowler</a>
           <div class="text-xs text-gray-500">FWD Thinking Solutions</div>
         </div>
       </div>
@@ -114,12 +139,38 @@ const siteUrl = 'https://f-w-d.co.uk';
       </div>
     )}
 
+    {filedUnder.length > 0 && (
+      <p class="text-sm text-gray-500 mb-12">
+        Filed under:{' '}
+        {filedUnder.map((item, i) => (
+          <>
+            <a href={item.href} class="text-ai-purple font-semibold hover:underline">{item.label}</a>
+            {i < filedUnder.length - 1 && <span> &middot; </span>}
+          </>
+        ))}
+      </p>
+    )}
+
+    {related.length > 0 && (
+      <section class="mb-16" aria-labelledby="related-heading">
+        <h2 id="related-heading" class="text-2xl font-bold text-deep-space mb-6">{relatedHeading}</h2>
+        <div class="grid md:grid-cols-3 gap-6">
+          {related.map(r => (
+            <a href={`/blog/${r.id}`} class="block bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow p-5 group">
+              <h3 class="font-bold text-deep-space mb-2 group-hover:text-ai-purple transition-colors">{r.data.title}</h3>
+              <p class="text-sm text-gray-600 line-clamp-3">{r.data.description}</p>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
     <!-- CTA Card -->
     <div class="bg-slate-900 rounded-2xl p-8 text-center mb-20">
       <h2 class="text-2xl font-bold text-white mb-3">Interested in something similar?</h2>
       <p class="text-gray-300 mb-6">Let's talk about how we can help your business.</p>
-      <a href="/services" class="inline-block bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-8 rounded-lg transition-colors shadow-lg hover:shadow-xl">
-        View Our Services
+      <a href={hubIndustry ? INDUSTRIES[hubIndustry].href : '/services'} class="inline-block bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-8 rounded-lg transition-colors shadow-lg hover:shadow-xl">
+        {hubIndustry ? `See my ${INDUSTRIES[hubIndustry].label.toLowerCase()} work` : 'View Our Services'}
       </a>
     </div>
   </article>
@@ -130,22 +181,14 @@ const siteUrl = 'https://f-w-d.co.uk';
     "@type": "BlogPosting",
     "headline": title,
     "description": description,
-    "image": heroImage ? (heroImage.startsWith('http') ? heroImage : `${siteUrl}${heroImage}`) : `${siteUrl}/og-default.png`,
+    "image": heroImage ? (heroImage.startsWith('http') ? heroImage : `${siteUrl}${heroImage}`) : `${siteUrl}/og-image.png`,
     "datePublished": pubDate.toISOString(),
     "dateModified": (updatedDate || pubDate).toISOString(),
-    "author": {
-      "@type": "Person",
-      "name": "Sam Fowler",
-      "url": siteUrl
-    },
-    "publisher": {
-      "@type": "Organization",
-      "name": "FWD Thinking Solutions",
-      "logo": {
-        "@type": "ImageObject",
-        "url": `${siteUrl}/fwd-logo.webp`
-      }
-    },
+    "author": { "@type": "Person", "@id": SAM_ID, "name": "Sam Fowler", "url": `${siteUrl}/about` },
+    "publisher": { "@id": BUSINESS_ID },
+    ...(industries.length || services.length ? {
+      "about": [...industries.map(i => INDUSTRIES[i].label), ...services.map(sv => SERVICES[sv].label)].map(name => ({ "@type": "Thing", name }))
+    } : {}),
     "mainEntityOfPage": {
       "@type": "WebPage",
       "@id": `${siteUrl}/blog/${post.id}`

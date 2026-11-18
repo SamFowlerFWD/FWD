@@ -32,12 +32,6 @@ const stories: Story[] = [
     link: '/blog/building-horsebox-hire-software',
   },
   {
-    before: 'A confidence coach was running his business through WhatsApp groups.',
-    after: 'Now he has a native iOS app with video lessons, habit tracking, and analytics.',
-    client: 'Ask Stephen',
-    link: '/blog/building-ask-stephen',
-  },
-  {
     before: 'An eBay seller was copy-pasting listings into Shopify one at a time.',
     after: 'A Python script now processes the entire catalogue in seconds.',
     client: 'Retail automation',

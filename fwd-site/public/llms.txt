@@ -8,6 +8,13 @@ FWD Thinking Solutions is a web development and business automation agency run b
 
 FWD Thinking Solutions was previously Fowler Web Design, which Sam started in 2019 to build websites for Norfolk businesses. As clients asked for booking systems, automation and apps as well as websites, the business grew and took the name FWD Thinking Solutions. It is the same business run by the same person. Websites credited to "Fowler Web Design" were built by Sam.
 
+## Specialisms
+
+Sam works with all kinds of businesses, but knows two industries from the inside:
+
+- **Equestrian**: booking platforms, training and CPD apps, webshops and websites for farriers, saddlers, trainers and horsebox businesses. Sam runs his own equestrian software business, Horsebox Hire Software (https://horseboxhiresoftware.co.uk), and is one of the three directors of Hoofflix, the professional platform for farriers. Hub: https://f-w-d.co.uk/equestrian
+- **Engineering and manufacturing**: websites, product catalogues with spec sheets, quote tools, customer portals and job tracking. Sam runs a production business himself. Hub: https://f-w-d.co.uk/engineering
+
 ## Services
 
 - **Professional Websites**: Fast, mobile-friendly websites from £299

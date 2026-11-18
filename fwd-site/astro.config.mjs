@@ -4,6 +4,37 @@ import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 import react from '@astrojs/react';
 import mdx from '@astrojs/mdx';
+import { execSync } from 'node:child_process';
+import { existsSync, readFileSync } from 'node:fs';
+
+// Real last-modified dates for the sitemap: blog posts use their frontmatter
+// dates, other pages use the last git commit that touched their source file.
+function sourceFor(pathname) {
+  const clean = pathname.replace(/^\/|\/$/g, '');
+  if (!clean) return 'src/pages/index.astro';
+  const [first, ...rest] = clean.split('/');
+  if (first === 'blog' && rest.length) return `src/content/blog/${rest.join('/')}.mdx`;
+  if (first === 'industries' && rest.length) return `src/content/industries/${rest.join('/')}.mdx`;
+  for (const candidate of [`src/pages/${clean}.astro`, `src/pages/${clean}/index.astro`]) {
+    if (existsSync(candidate)) return candidate;
+  }
+  return null;
+}
+function lastModified(pathname) {
+  const file = sourceFor(pathname);
+  if (!file || !existsSync(file)) return undefined;
+  if (file.startsWith('src/content/blog/')) {
+    const fm = readFileSync(file, 'utf8').split('\n---')[0];
+    const date = fm.match(/^lastUpdated:\s*(\S+)/m)?.[1] ?? fm.match(/^pubDate:\s*(\S+)/m)?.[1];
+    if (date) return new Date(date).toISOString();
+  }
+  try {
+    const out = execSync(`git log -1 --format=%cI -- "${file}"`, { encoding: 'utf8' }).trim();
+    return out || new Date().toISOString();
+  } catch {
+    return undefined;
+  }
+}
 
 // https://astro.build/config
 export default defineConfig({
@@ -11,6 +42,9 @@ export default defineConfig({
   redirects: {
     '/portfolio': '/work',
     '/services/reliable-hosting-maintenance': '/services/hosting-maintenance',
+    '/industries/equestrian': '/equestrian',
+    '/industries/manufacturing': '/engineering',
+    '/blog/building-ask-stephen': '/services/custom-app-development',
   },
   server: {
     headers: {
@@ -48,9 +82,11 @@ export default defineConfig({
     mdx(),
     sitemap({
       changefreq: 'weekly',
-      lastmod: new Date(),
       serialize(item) {
+        const lastmod = lastModified(new URL(item.url).pathname);
+        if (lastmod) item.lastmod = lastmod;
         if (item.url === 'https://f-w-d.co.uk/') item.priority = 1.0;
+        else if (/\/(equestrian|engineering)$/.test(item.url)) item.priority = 0.9;
         else if (item.url === 'https://f-w-d.co.uk/pricing') item.priority = 0.9;
         else if (item.url.includes('/services') && !item.url.includes('/services/')) item.priority = 0.9;
         else if (item.url.includes('/services/')) item.priority = 0.8;

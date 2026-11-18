@@ -56,6 +56,7 @@ export function generateArticleSchema(article: {
     dateModified: article.dateModified || article.datePublished,
     author: {
       '@type': 'Person',
+      '@id': 'https://f-w-d.co.uk/about#sam-fowler',
       name: 'Sam Fowler',
       url: 'https://f-w-d.co.uk/about',
     },
@@ -71,21 +72,55 @@ export function generateArticleSchema(article: {
   };
 }
 
+export const SITE = 'https://f-w-d.co.uk';
+export const BUSINESS_ID = `${SITE}/#business`;
+export const SAM_ID = `${SITE}/about#sam-fowler`;
+export const HORSEBOX_HIRE_ID = `${SITE}/#horsebox-hire-software`;
+
+/** Horsebox Hire Software: Sam's own product. */
+export function horseboxHireSoftwareSchema() {
+  return {
+    '@type': 'SoftwareApplication',
+    '@id': HORSEBOX_HIRE_ID,
+    name: 'Horsebox Hire Software',
+    url: 'https://horseboxhiresoftware.co.uk',
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Web',
+    description: 'Booking platform for horsebox hire businesses, with licence checks, held deposits, digital hire agreements and AI document checks.',
+    creator: { '@id': SAM_ID },
+  };
+}
+
 export function generatePersonSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'Person',
+    '@id': SAM_ID,
     name: 'Sam Fowler',
-    jobTitle: 'Web Designer and Developer',
-    url: 'https://f-w-d.co.uk/about',
+    jobTitle: 'Software Developer and Founder',
+    url: `${SITE}/about`,
     sameAs: ['https://uk.linkedin.com/in/sam-fowler-226a5524'],
     worksFor: {
       '@type': 'Organization',
-      '@id': 'https://f-w-d.co.uk/#business',
+      '@id': BUSINESS_ID,
       name: 'FWD Thinking Solutions',
       alternateName: 'Fowler Web Design',
-      url: 'https://f-w-d.co.uk',
+      url: SITE,
     },
+    affiliation: [
+      { '@type': 'Organization', name: 'Hoofflix', url: 'https://hoofflix.com' },
+    ],
+    owns: horseboxHireSoftwareSchema(),
+    knowsAbout: [
+      'Web development',
+      'App development',
+      'Business automation',
+      'AI tools for small businesses',
+      'Software for equestrian businesses',
+      'Horsebox hire',
+      'Farriery education and CPD',
+      'Software for engineering and manufacturing businesses',
+    ],
     address: {
       '@type': 'PostalAddress',
       addressLocality: 'Norwich',

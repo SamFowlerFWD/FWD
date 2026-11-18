@@ -1,0 +1,282 @@
+---
+// Shared template for the flagship industry hubs (/equestrian, /engineering).
+// Projects and guides are pulled from the shared tags, so a new project or
+// post tagged with this industry shows up here without editing the page.
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import { projectsFor } from '../../data/projects';
+import { INDUSTRIES, type IndustryKey, type ServiceKey } from '../../data/taxonomy';
+import { BUSINESS_ID, SAM_ID, SITE } from '../../lib/schema';
+
+interface Link { label: string; href: string }
+export interface Props {
+  industry: IndustryKey;
+  title: string;
+  description: string;
+  h1Lead: string;
+  h1Accent: string;
+  intro: string;
+  whatsappMessage: string;
+  operator: { title: string; text: string }[];
+  capabilitiesIntro: string;
+  capabilities: { title: string; text: string; links?: Link[] }[];
+  faqs: { question: string; answer: string }[];
+  serviceName: string;
+  audience: string;
+  guideServices: ServiceKey[];
+  crossLink: { heading: string; text: string; href: string; label: string };
+  extraSchema?: Record<string, unknown>[];
+}
+
+const {
+  industry, title, description, h1Lead, h1Accent, intro, whatsappMessage, operator,
+  capabilitiesIntro, capabilities, faqs, serviceName, audience, guideServices, crossLink, extraSchema = [],
+} = Astro.props;
+
+const label = INDUSTRIES[industry].label;
+const pageUrl = `${SITE}${INDUSTRIES[industry].href}`;
+const projects = projectsFor(industry);
+const waLink = `https://wa.me/447516330379?text=${encodeURIComponent(whatsappMessage)}`;
+
+// Guides: posts tagged with this industry first, then useful guides for the hub's services.
+const now = new Date();
+const posts = (await getCollection('blog', ({ data }) => !data.draft && data.pubDate <= now))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const tagged = posts.filter(p => p.data.industries.includes(industry));
+const fill = posts.filter(p =>
+  !tagged.includes(p) &&
+  p.data.category === 'guides' &&
+  p.data.services.some(s => guideServices.includes(s)));
+const guides = [...tagged, ...fill].slice(0, 6);
+---
+
+<Layout title={title} description={description}>
+  <!-- Hero -->
+  <section class="relative py-20 bg-slate-900">
+    <div class="absolute inset-0 bg-ai-mesh opacity-20"></div>
+    <div class="container relative z-10 mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto text-center text-white">
+        <p class="text-amber-400 font-semibold uppercase tracking-wider text-sm mb-4">{label}</p>
+        <h1 class="text-5xl lg:text-6xl font-bold mb-6">
+          {h1Lead} <span class="text-amber-400">{h1Accent}</span>
+        </h1>
+        <p class="text-xl text-gray-100 mb-8">{intro}</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href={waLink} target="_blank" rel="noopener noreferrer" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-lg transition-colors shadow-lg inline-block">
+            Talk to Sam
+          </a>
+          <a href="#work" class="bg-white/10 backdrop-blur-sm border-2 border-white text-white font-bold py-4 px-8 rounded-lg hover:bg-white hover:text-slate-900 transition-all inline-block">
+            See the Work
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why me -->
+  <section class="py-16 bg-white border-b border-gray-100">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-5xl mx-auto grid md:grid-cols-3 gap-8">
+        {operator.map(item => (
+          <div>
+            <h2 class="text-lg font-bold text-slate-900 mb-2">{item.title}</h2>
+            <p class="text-gray-600 text-sm leading-relaxed">{item.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- What I build -->
+  <section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-4xl font-bold text-slate-900 mb-4">What I Build</h2>
+          <p class="text-xl text-gray-600">{capabilitiesIntro}</p>
+        </div>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {capabilities.map(item => (
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col">
+              <h3 class="text-lg font-bold text-slate-900 mb-2">{item.title}</h3>
+              <p class="text-gray-600 text-sm mb-4 flex-1">{item.text}</p>
+              {item.links && (
+                <div class="flex flex-wrap gap-x-4 gap-y-1">
+                  {item.links.map(link => (
+                    <a href={link.href} class="text-ai-purple font-semibold text-sm hover:underline">{link.label} &rarr;</a>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section id="work" class="py-20 bg-white scroll-mt-32">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-4xl font-bold text-slate-900 mb-4">{label} Projects</h2>
+          <p class="text-xl text-gray-600">Real businesses, real systems, all built by me.</p>
+        </div>
+        <div class={projects.length < 3 ? 'grid md:grid-cols-2 gap-6 max-w-3xl mx-auto' : 'grid md:grid-cols-2 lg:grid-cols-3 gap-6'}>
+          {projects.map(project => {
+            const href = project.caseStudy ? `/blog/${project.caseStudy}` : project.url;
+            const external = !project.caseStudy;
+            return (
+              <a href={href} {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})} class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow group flex flex-col">
+                <div class="relative">
+                  <img src={project.image} alt={project.alt} class="w-full aspect-[16/10] object-cover object-top" loading="lazy" decoding="async" width="400" height="250" />
+                  {project.relationship && (
+                    <span class="absolute top-3 left-3 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow">
+                      {project.relationship === 'own-product' ? 'My own product' : "I'm a director"}
+                    </span>
+                  )}
+                </div>
+                <div class="p-6 flex flex-col flex-1">
+                  {project.location && <p class="text-sm font-semibold text-amber-600 mb-1">{project.location}</p>}
+                  <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-ai-purple transition-colors">{project.name}</h3>
+                  <p class="text-gray-600 text-sm mb-4 flex-1">{project.summary}</p>
+                  <div class="flex flex-wrap gap-1 mb-4">
+                    {project.work.map(w => <span class="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">{w}</span>)}
+                  </div>
+                  <span class="text-ai-purple font-semibold text-sm">
+                    {project.caseStudy ? 'Read the case study' : 'Visit the site'} &rarr;
+                  </span>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Guides -->
+  {guides.length > 0 && (
+    <section class="py-20 bg-gray-50">
+      <div class="container mx-auto px-6 lg:px-8">
+        <div class="max-w-5xl mx-auto">
+          <h2 class="text-3xl font-bold text-slate-900 mb-8">Case Studies and Guides</h2>
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {guides.map(post => (
+              <a href={`/blog/${post.id}`} class="block bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow p-6 group">
+                <p class="text-xs font-semibold uppercase tracking-wider text-amber-600 mb-2">
+                  {post.data.category === 'case-studies' ? 'Case study' : 'Guide'}
+                </p>
+                <h3 class="font-bold text-slate-900 mb-2 group-hover:text-ai-purple transition-colors">{post.data.title}</h3>
+                <p class="text-sm text-gray-600">{post.data.description}</p>
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <slot />
+
+  <!-- FAQ -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-4xl font-bold text-slate-900 mb-12 text-center">Frequently Asked Questions</h2>
+        <div class="space-y-4">
+          {faqs.map(item => (
+            <details class="bg-gray-50 rounded-lg border border-gray-100 group shadow-sm">
+              <summary class="p-6 cursor-pointer list-none flex items-center justify-between hover:bg-gray-100 rounded-lg">
+                <span class="font-semibold text-slate-900 pr-4">{item.question}</span>
+                <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </summary>
+              <div class="px-6 pb-6"><p class="text-gray-600">{item.answer}</p></div>
+            </details>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cross-link -->
+  <section class="py-12 bg-gray-50 border-t border-gray-100">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto grid sm:grid-cols-2 gap-4">
+        <a href={crossLink.href} class="bg-white rounded-lg p-5 hover:shadow-md transition-shadow group border border-gray-100">
+          <h2 class="font-semibold text-slate-900 group-hover:text-ai-purple transition-colors">{crossLink.heading}</h2>
+          <p class="text-sm text-gray-600 mt-1">{crossLink.text}</p>
+          <span class="text-ai-purple font-semibold text-sm mt-2 inline-block">{crossLink.label} &rarr;</span>
+        </a>
+        <a href="/industries" class="bg-white rounded-lg p-5 hover:shadow-md transition-shadow group border border-gray-100">
+          <h2 class="font-semibold text-slate-900 group-hover:text-ai-purple transition-colors">Not in {label.toLowerCase()}?</h2>
+          <p class="text-sm text-gray-600 mt-1">I build for all sorts of businesses, from salons and dog fields to builders and consultancies.</p>
+          <span class="text-ai-purple font-semibold text-sm mt-2 inline-block">All industries &rarr;</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-20 bg-slate-900 text-white">
+    <div class="container mx-auto px-6 lg:px-8 text-center">
+      <div class="max-w-2xl mx-auto">
+        <h2 class="text-4xl font-bold mb-6 text-white">Tell Me What's Slowing You Down</h2>
+        <p class="text-xl text-gray-100 mb-8">
+          Message me with the job you'd most like to stop doing by hand. I'll tell you honestly what would help and what it would cost.
+        </p>
+        <a href={waLink} target="_blank" rel="noopener noreferrer" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-lg transition-colors shadow-lg inline-block">
+          Message Sam on WhatsApp
+        </a>
+        <p class="text-sm text-gray-300 mt-6">Based in Norwich, Norfolk. Working with {label.toLowerCase()} businesses across the UK.</p>
+      </div>
+    </div>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        "@id": `${pageUrl}#page`,
+        "url": pageUrl,
+        "name": title,
+        "description": description,
+        "about": { "@type": "Thing", "name": audience },
+        "author": { "@id": SAM_ID },
+        "publisher": { "@id": BUSINESS_ID },
+        "mainEntity": {
+          "@type": "ItemList",
+          "name": `${label} projects`,
+          "itemListElement": projects.map((p, i) => ({
+            "@type": "ListItem",
+            "position": i + 1,
+            "name": p.name,
+            "url": p.caseStudy ? `${SITE}/blog/${p.caseStudy}` : p.url,
+          })),
+        },
+      },
+      {
+        "@type": "Service",
+        "@id": `${pageUrl}#service`,
+        "name": serviceName,
+        "provider": { "@id": BUSINESS_ID },
+        "areaServed": { "@type": "Country", "name": "United Kingdom" },
+        "audience": { "@type": "BusinessAudience", "audienceType": audience },
+        "url": pageUrl,
+      },
+      {
+        "@type": "FAQPage",
+        "@id": `${pageUrl}#faq`,
+        "mainEntity": faqs.map(faq => ({
+          "@type": "Question",
+          "name": faq.question,
+          "acceptedAnswer": { "@type": "Answer", "text": faq.answer },
+        })),
+      },
+      ...extraSchema,
+    ],
+  })} />
+</Layout>

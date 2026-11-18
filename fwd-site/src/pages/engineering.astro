@@ -1,0 +1,97 @@
+---
+import IndustryHub from '../components/hub/IndustryHub.astro';
+
+const operator = [
+  {
+    title: 'I run a production business',
+    text: 'I know what quotes, lead times and job sheets look like from the inside, not from a brief. That shapes everything I build for manufacturers.',
+  },
+  {
+    title: 'Software, not just websites',
+    text: 'Most manufacturing web agencies sell you a brochure site. I build that, and the quote tools, catalogues and portals behind it.',
+  },
+  {
+    title: 'Fixed quotes, and you own it',
+    text: 'Every project gets a fixed price before work starts. The code, the data and the accounts are yours, with no lock-in.',
+  },
+];
+
+const capabilities = [
+  {
+    title: 'Manufacturer websites',
+    text: 'Sites that show buyers what you make, what you can do and how to get a quote, in the first thirty seconds.',
+    links: [{ label: 'Web design', href: '/services/professional-websites' }],
+  },
+  {
+    title: 'Product catalogues and spec sheets',
+    text: 'Searchable products with dimensions, compatibility and downloadable data sheets, instead of PDFs nobody can find.',
+    links: [{ label: 'Harford Attachments', href: 'https://www.harfordattachments.co.uk' }],
+  },
+  {
+    title: 'Quote and configurator tools',
+    text: 'Customers pick their options and get a price or send a structured request, so you stop retyping quotes from phone calls.',
+    links: [{ label: 'Try a quoting demo', href: '/playground' }],
+  },
+  {
+    title: 'Job and production tracking',
+    text: "Replace the whiteboard and the spreadsheet with a simple system showing what's in, what's on the bench and what's due out.",
+    links: [{ label: 'App development', href: '/services/custom-app-development' }],
+  },
+  {
+    title: 'Customer and dealer portals',
+    text: 'Repeat buyers and dealers log in to check orders, invoices, lead times and stock, without ringing your office.',
+    links: [{ label: 'App costs', href: '/blog/how-much-does-an-app-cost-uk' }],
+  },
+  {
+    title: 'Automation between systems',
+    text: 'Orders, invoices and stock updates moving between your website, accounts and spreadsheets without anyone copying them across.',
+    links: [{ label: 'Business automation', href: '/services/business-process-automation' }],
+  },
+];
+
+const faqs = [
+  {
+    question: 'Do you understand technical products?',
+    answer: "Yes. I run a production business myself, and I've built sites for an excavator attachments manufacturer and a horsebox builder. I'll ask a lot of questions about how your products are specified and sold, then build around that.",
+  },
+  {
+    question: 'How much does a website for a manufacturer cost?',
+    answer: 'A solid capability website starts from £799. Product catalogues with spec sheets, quote tools or customer portals usually land between £2,500 and £5,000 or more. Every project gets a fixed quote before any work starts.',
+  },
+  {
+    question: 'Can it connect to the systems we already use?',
+    answer: "Usually, yes. Most accounting packages and CRMs can be connected, and even a well-kept spreadsheet can feed a website or a portal. I'll check what's possible before I quote, not after.",
+  },
+  {
+    question: "We're a small firm. Is this overkill?",
+    answer: 'Often the biggest win is small. A proper quote form or one automated job sheet can save hours a week. I would rather build you one thing that gets used every day than a big system nobody opens.',
+  },
+  {
+    question: 'Do you work with manufacturers outside Norfolk?',
+    answer: "Yes, across the UK. I'm based in Norwich and happy to visit workshops around Norfolk. Further afield, most of the work happens over video calls.",
+  },
+];
+---
+
+<IndustryHub
+  industry="engineering"
+  title="Software & Websites for Engineering & Manufacturing"
+  description="Websites, product catalogues, quote tools and job tracking for engineering and manufacturing firms, from a Norwich developer who runs a production business himself."
+  h1Lead="Software for"
+  h1Accent="Engineering & Manufacturing"
+  intro="Most manufacturing web agencies sell you a brochure. I build that, and the tools behind it: catalogues with real spec sheets, quote calculators, customer portals and job tracking that replaces the whiteboard. I'm Sam Fowler, and I run a production business of my own, so I know what a busy workshop needs from its software."
+  whatsappMessage="Hi Sam, I run an engineering or manufacturing business and I'd like to talk about a project."
+  operator={operator}
+  capabilitiesIntro="The website buyers see, and the tools that save your team hours behind it."
+  capabilities={capabilities}
+  faqs={faqs}
+  serviceName="Software and websites for engineering and manufacturing businesses"
+  audience="Engineering and manufacturing businesses"
+  guideServices={['automation', 'apps', 'websites']}
+  crossLink={{
+    heading: 'Equestrian business?',
+    text: 'Horseboxes, farriery and training platforms are the other half of what I know best.',
+    href: '/equestrian',
+    label: 'Equestrian work',
+  }}
+/>

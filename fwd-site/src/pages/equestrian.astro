@@ -1,0 +1,108 @@
+---
+import IndustryHub from '../components/hub/IndustryHub.astro';
+import { projectsFor } from '../data/projects';
+import { horseboxHireSoftwareSchema } from '../lib/schema';
+
+const count = projectsFor('equestrian').length;
+
+const operator = [
+  {
+    title: 'I run an equestrian business too',
+    text: 'Horsebox Hire Software is my own product. Hire companies use it to take bookings, check licences, hold deposits and sign hire agreements online.',
+  },
+  {
+    title: "I'm a director of Hoofflix",
+    text: "I rebuilt Hoofflix, the professional platform for farriers, and I'm now one of its three directors. I'm on the inside of how this industry learns and works.",
+  },
+  {
+    title: `${count} equestrian projects`,
+    text: 'Websites, webshops and platforms for farriers, saddlers, trainers, horsebox builders and hire companies. Software as well as websites.',
+  },
+];
+
+const capabilities = [
+  {
+    title: 'Horsebox Hire Software',
+    text: 'Online booking with licence checks, held deposits, digital hire agreements and AI document checks. Ready to use, with your own branded booking site.',
+    links: [
+      { label: 'Case study', href: '/blog/building-horsebox-hire-software' },
+      { label: 'Product site', href: 'https://horseboxhiresoftware.co.uk' },
+    ],
+  },
+  {
+    title: 'Training and CPD platforms',
+    text: 'Video courses, CPD records, assessments and apps for equine professionals, trainers and the people who teach them.',
+    links: [
+      { label: 'Hoofflix', href: '/blog/building-hoofflix' },
+      { label: 'The Balanced Horse', href: '/blog/building-the-balanced-horse' },
+    ],
+  },
+  {
+    title: 'Booking systems',
+    text: 'Lessons, clinics, arena hire, fittings and yard appointments, booked and paid for online, with reminders sent automatically.',
+    links: [{ label: 'App development', href: '/services/custom-app-development' }],
+  },
+  {
+    title: 'Websites and webshops',
+    text: 'Fast sites for farriers, saddlers and equine suppliers that turn up in local searches, plus webshops with proper product catalogues.',
+    links: [{ label: 'Web design', href: '/services/professional-websites' }],
+  },
+  {
+    title: 'Horsebox builders and dealers',
+    text: 'Stock listings, spec comparisons and enquiry tools for horsebox manufacturers, built by someone who knows the vehicles.',
+    links: [{ label: 'Engineering work', href: '/engineering' }],
+  },
+  {
+    title: 'AI for equine professionals',
+    text: 'Turning expertise into articles, courses and client handouts with AI, set up so nothing can go live without a person checking it first.',
+    links: [{ label: 'AI training', href: '/services/ai-training' }],
+  },
+];
+
+const faqs = [
+  {
+    question: 'Do you only build websites for equestrian businesses?',
+    answer: "No. I build the software behind them too: booking platforms, training apps, webshops and automation. Most equestrian web designers stop at the website. I'm a developer who runs an equestrian software business myself.",
+  },
+  {
+    question: 'Can I use Horsebox Hire Software for my hire business?',
+    answer: 'Yes. It is a ready-made platform. You get your own branded booking site with licence checks, deposits and digital hire agreements built in. Have a look at horseboxhiresoftware.co.uk or message me.',
+  },
+  {
+    question: 'How much does a website for an equestrian business cost?',
+    answer: 'Websites start from £299, and most equestrian business sites land between £799 and £2,500. Booking systems and platforms cost more, from £1,299, and every project gets a fixed quote before any work starts.',
+  },
+  {
+    question: 'Can you build a booking system for lessons, clinics or livery?',
+    answer: 'Yes. I build booking systems that handle availability, payments, reminders and cancellations, shaped around how your yard or business actually runs rather than a generic template.',
+  },
+  {
+    question: 'Do you work with equestrian businesses outside Norfolk?',
+    answer: "Yes, all over the UK. I'm based in Norwich, and Wee Horsebox Hire, the first hire company on my platform, is in East Lothian. Most of the work happens over video calls and WhatsApp.",
+  },
+];
+---
+
+<IndustryHub
+  industry="equestrian"
+  title="Software & Websites for Equestrian Businesses"
+  description="Booking platforms, training apps, webshops and websites for equestrian businesses across the UK, built by a Norfolk developer who runs his own equestrian software business."
+  h1Lead="Software for"
+  h1Accent="Equestrian Businesses"
+  intro="Most equestrian web designers build nice-looking websites. I build those, and the systems behind them: booking platforms, training apps and webshops for farriers, saddlers, trainers and horsebox businesses. I'm Sam Fowler, and I run my own equestrian software business, so I know how this world works."
+  whatsappMessage="Hi Sam, I run an equestrian business and I'd like to talk about a project."
+  operator={operator}
+  capabilitiesIntro="Websites, yes. But mostly the systems that take the admin off your hands."
+  capabilities={capabilities}
+  faqs={faqs}
+  serviceName="Software and websites for equestrian businesses"
+  audience="Equestrian businesses"
+  guideServices={['apps', 'websites']}
+  crossLink={{
+    heading: 'Build or sell horseboxes?',
+    text: 'Manufacturing is the other half of what I know best.',
+    href: '/engineering',
+    label: 'Engineering & manufacturing',
+  }}
+  extraSchema={[horseboxHireSoftwareSchema()]}
+/>

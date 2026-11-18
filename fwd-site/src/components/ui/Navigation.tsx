@@ -29,9 +29,9 @@ const Navigation: React.FC = () => {
           badge: 'Popular'
         },
         {
-          label: 'Professional Websites',
+          label: 'Web Design',
           href: '/services/professional-websites',
-          description: 'Modern websites built efficiently'
+          description: 'Fast websites for Norfolk and UK businesses'
         },
         {
           label: 'Custom App Development',
@@ -48,6 +48,27 @@ const Navigation: React.FC = () => {
           label: 'AI Training',
           href: '/services/ai-training',
           description: 'Learn to use AI tools properly'
+        }
+      ]
+    },
+    {
+      label: 'Industries',
+      href: '/industries',
+      dropdown: [
+        {
+          label: 'Equestrian',
+          href: '/equestrian',
+          description: 'Booking platforms, training apps, websites'
+        },
+        {
+          label: 'Engineering & Manufacturing',
+          href: '/engineering',
+          description: 'Catalogues, quote tools, job tracking'
+        },
+        {
+          label: 'All Industries',
+          href: '/industries',
+          description: 'Pet services, trades, retail and more'
         }
       ]
     },
@@ -107,7 +128,7 @@ const Navigation: React.FC = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-6 xl:gap-8">
             {navLinks.map(link => (
               <div
                 key={link.href}
