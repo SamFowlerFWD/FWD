@@ -76,11 +76,14 @@ export function generatePersonSchema() {
     '@context': 'https://schema.org',
     '@type': 'Person',
     name: 'Sam Fowler',
-    jobTitle: 'Web Developer',
+    jobTitle: 'Web Designer and Developer',
     url: 'https://f-w-d.co.uk/about',
+    sameAs: ['https://uk.linkedin.com/in/sam-fowler-226a5524'],
     worksFor: {
       '@type': 'Organization',
+      '@id': 'https://f-w-d.co.uk/#business',
       name: 'FWD Thinking Solutions',
+      alternateName: 'Fowler Web Design',
       url: 'https://f-w-d.co.uk',
     },
     address: {

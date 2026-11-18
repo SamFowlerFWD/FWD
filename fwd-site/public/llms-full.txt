@@ -8,11 +8,17 @@ FWD Thinking Solutions is a web development and business automation agency run b
 
 Our approach is straightforward: understand the problem, build the solution, support it afterwards. No middlemen, no overselling, fixed pricing where possible.
 
+### Formerly Fowler Web Design
+
+FWD Thinking Solutions was previously Fowler Web Design, which Sam Fowler started in 2019 to build websites for local businesses around Norfolk. As clients started asking for booking systems, business automation and apps as well as websites, the business grew beyond web design and took the name FWD Thinking Solutions. It is the same business run by the same person. Websites with a "Fowler Web Design" footer credit were built by Sam. FWD Thinking Solutions Limited was incorporated in England and Wales in November 2026 (company number 17584500).
+
 ## Services
 
-### Professional Websites (from £299)
+### Web Design in Norwich and Norfolk (from £299)
 
-Clean, fast, mobile-friendly websites built with modern tools.
+Clean, fast, mobile-friendly websites for Norfolk and UK businesses, designed and built by Sam Fowler. Page: https://f-w-d.co.uk/services/professional-websites
+
+Norfolk examples: Salon 64, a hair salon in Dereham (https://f-w-d.co.uk/blog/building-salon-64-dereham), and Fakenham Dog Field, a booking system with Stripe payments and automatic gate access codes at Fakenham Racecourse (https://f-w-d.co.uk/blog/building-fakenham-dog-field).
 
 **Packages:**
 - **Starter (£299)**: Up to 5 pages, mobile responsive, basic SEO, contact form, 2 week delivery

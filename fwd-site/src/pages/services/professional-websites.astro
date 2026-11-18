@@ -26,8 +26,8 @@ const faqs = [
 ---
 
 <Layout
-  title="Professional Websites for Small Business | From £299 | FWD"
-  description="Fast, mobile-friendly websites for UK businesses. Fixed pricing from £299, built in 2 to 3 weeks. No templates, no subscriptions, you own everything."
+  title="Web Design in Norwich & Norfolk | Sam Fowler"
+  description="Web design for Norwich and Norfolk businesses by Sam Fowler, formerly Fowler Web Design. Fixed prices from £299, built in 2 to 3 weeks, and you own everything."
 >
   <!-- Hero Section -->
   <section class="relative py-20 bg-slate-900">
@@ -35,10 +35,10 @@ const faqs = [
     <div class="container relative z-10 mx-auto px-6 lg:px-8">
       <div class="max-w-3xl mx-auto text-center text-white">
         <h1 class="text-5xl lg:text-6xl font-bold mb-6">
-          Professional <span class="text-amber-400">Websites</span>
+          Web Design in <span class="text-amber-400">Norwich &amp; Norfolk</span>
         </h1>
         <p class="text-xl text-gray-100 mb-8">
-          Clean, fast, mobile-friendly websites that represent your business well. No bloat, no unnecessary complexity. Just a site that works and looks professional.
+          I'm Sam Fowler, the independent web designer behind FWD Thinking Solutions (formerly Fowler Web Design). I build websites for Norfolk businesses, from straightforward sites that bring in enquiries to custom builds that take bookings and payments and handle the admin.
         </p>
         <p class="text-lg text-amber-400 font-semibold mb-8">From £299</p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
@@ -167,6 +167,55 @@ const faqs = [
         <p class="text-gray-600 leading-relaxed">
           I've built websites for manufacturers, equestrian businesses, fitness companies, safety consultants, builders, and more across Norwich, Norfolk, and the wider UK. Every project gets the same level of care regardless of budget.
         </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Norfolk Projects (continues the white "Who Is This For?" band) -->
+  <section class="pb-20 bg-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-4xl font-bold text-slate-900 mb-4">
+            Recent Norfolk Projects
+          </h2>
+          <p class="text-xl text-gray-600">
+            One simple site, one that does a lot more behind the scenes.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8">
+          {[
+            {
+              name: "Salon 64",
+              place: "Dereham",
+              image: "/portfolio/salon-64.webp",
+              alt: "Styling stations inside Salon 64 in Dereham",
+              position: "object-center",
+              description: "A busy hair salon in Dereham town centre with no real online presence. I built them a fast site that shows off their work and helps them turn up when people search for a hairdresser in Dereham.",
+              href: "/blog/building-salon-64-dereham",
+            },
+            {
+              name: "Fakenham Dog Field",
+              place: "Fakenham",
+              image: "/portfolio/fakenham-dog-field.webp",
+              alt: "Fakenham Dog Field booking website home page",
+              position: "object-top",
+              description: "A private dog field at Fakenham Racecourse. Customers book and pay online, and the system sends them a gate code automatically, so nobody has to be there to let them in.",
+              href: "/blog/building-fakenham-dog-field",
+            },
+          ].map(project => (
+            <a href={project.href} class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow group block">
+              <img src={project.image} alt={project.alt} class={`w-full aspect-[16/10] object-cover ${project.position}`} loading="lazy" />
+              <div class="p-6">
+                <p class="text-sm font-semibold text-amber-600 mb-1">{project.place}, Norfolk</p>
+                <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-ai-purple transition-colors">{project.name}</h3>
+                <p class="text-gray-600 text-sm mb-4">{project.description}</p>
+                <span class="text-ai-purple font-semibold text-sm">Read the case study &rarr;</span>
+              </div>
+            </a>
+          ))}
+        </div>
       </div>
     </div>
   </section>
@@ -369,6 +418,27 @@ const faqs = [
       </div>
     </div>
   </section>
+
+  <!-- Service Schema -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "@id": "https://f-w-d.co.uk/services/professional-websites#service",
+      "name": "Web Design in Norwich and Norfolk",
+      "serviceType": "Web design",
+      "url": "https://f-w-d.co.uk/services/professional-websites",
+      "provider": { "@id": "https://f-w-d.co.uk/#business" },
+      "areaServed": [
+        { "@type": "City", "name": "Norwich" },
+        { "@type": "State", "name": "Norfolk" },
+        { "@type": "Country", "name": "United Kingdom" }
+      ],
+      "offers": {
+        "@type": "Offer",
+        "price": "299",
+        "priceCurrency": "GBP"
+      }
+    })} />
 
   <!-- FAQPage Schema -->
   <script type="application/ld+json" set:html={JSON.stringify({
