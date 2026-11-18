@@ -16,6 +16,8 @@ export interface Project {
   location?: string;
   /** Sam's own business or one he is a director of, not just a client. */
   relationship?: 'own-product' | 'director';
+  /** One real, checkable outcome. Shown in the homepage Recent Work strip. */
+  result?: string;
 }
 
 export const projects: Project[] = [
@@ -29,6 +31,7 @@ export const projects: Project[] = [
     services: ['apps', 'automation', 'ai'],
     work: ['SaaS Platform', 'Payments & Deposits', 'AI Document Checks'],
     caseStudy: 'building-horsebox-hire-software',
+    result: 'My own booking platform. Bookings, held deposits and signed hire agreements, all in one checkout.',
     url: 'https://horseboxhiresoftware.co.uk',
     relationship: 'own-product',
   },
@@ -42,6 +45,7 @@ export const projects: Project[] = [
     services: ['apps', 'ai', 'automation'],
     work: ['Platform Rebuild', 'iOS & Android', 'AI Workflows'],
     caseStudy: 'building-hoofflix',
+    result: 'Two websites and three separate tools became one platform for farriers, with apps on both stores.',
     url: 'https://hoofflix.com',
     relationship: 'director',
   },
@@ -66,6 +70,7 @@ export const projects: Project[] = [
     services: ['apps', 'automation'],
     work: ['Booking System', 'Stripe Payments', 'Gate Access Codes'],
     caseStudy: 'building-fakenham-dog-field',
+    result: 'Customers book, pay and get a gate code automatically. The field runs with nobody on site.',
     url: 'https://fakenham-dog-field.pages.dev',
     location: 'Fakenham, Norfolk',
   },
@@ -170,6 +175,7 @@ export const projects: Project[] = [
     services: ['websites'],
     work: ['Website Build', 'SEO'],
     url: 'https://www.millersfitness.net',
+    result: 'On the first page of Google UK for "used gym equipment".',
   },
   {
     id: 'serene-safety',

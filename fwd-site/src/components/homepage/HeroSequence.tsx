@@ -235,11 +235,12 @@ export default function HeroSequence() {
     { from: 'sam', text: "Easy. I'll have a demo for you in a week." },
   ];
 
+  // Real outcomes from real projects. Only add one here if it's true.
   const results = [
-    { metric: 'Online bookings', before: '0', after: '40+/week', icon: '📅' },
-    { metric: 'Google ranking', before: 'Page 5', after: 'Page 1', icon: '🔍' },
-    { metric: 'Admin time', before: '15 hrs/wk', after: '2 hrs/wk', icon: '⏱️' },
-    { metric: 'No-shows', before: '30%', after: '5%', icon: '✅' },
+    { project: 'Fakenham Dog Field', outcome: 'Runs with nobody on site', icon: '🔑' },
+    { project: 'Millers Fitness', outcome: 'Page 1 for "used gym equipment"', icon: '🔍' },
+    { project: 'Horsebox Hire Software', outcome: 'Deposits and agreements done at checkout', icon: '🐴' },
+    { project: 'Hoofflix', outcome: 'Five separate systems became one platform', icon: '📚' },
   ];
 
   const buildPhase = Math.floor(buildProgress * 4); // 0-3
@@ -253,25 +254,58 @@ export default function HeroSequence() {
       {/* Sticky viewport */}
       <div className="sticky top-0 h-screen overflow-hidden flex items-center justify-center">
 
-        {/* Terminal layer */}
+        {/* Intro layer: what I do and how to reach me on the first screen, with the terminal alongside.
+            Top padding clears the fixed header. */}
         <div
-          className="absolute inset-0 flex flex-col items-center justify-center px-6 z-10"
+          className="absolute inset-0 flex items-center justify-center px-6 pt-32 pb-2 sm:pb-4 z-10"
           style={{
             opacity: terminalOpacity,
             transform: `scale(${terminalScale}) translateY(${terminalY}px)`,
+            visibility: terminalOpacity <= 0.01 ? 'hidden' : 'visible',
           }}
         >
-          <Terminal onDone={() => setTerminalDone(true)} />
-          {/* Scroll prompt appears after terminal finishes */}
-          <div
-            className={`mt-8 transition-opacity duration-700 ${terminalDone ? 'opacity-100' : 'opacity-0'}`}
-          >
-            <div className="flex flex-col items-center gap-3">
-              <span className="text-white text-sm font-medium tracking-wide">scroll down to see the process</span>
-              <div className="animate-bounce">
-                <svg className="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                </svg>
+          <div className="w-full max-w-6xl mx-auto grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-12 items-center">
+            <div className="text-center lg:text-left">
+              <div className="hidden sm:inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-gray-300 text-sm font-medium mb-6">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                Based in Norfolk, working across the UK
+              </div>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-3 sm:mb-4 tracking-tight">
+                One Developer.<br />
+                <span className="bg-gradient-to-r from-amber-400 to-amber-300 bg-clip-text text-transparent">No Middlemen.</span>
+              </h1>
+              <p className="text-base sm:text-lg text-gray-300 max-w-xl mx-auto lg:mx-0 mb-4 sm:mb-7">
+                Websites, apps and automation for UK businesses. You deal directly with the person who builds it.
+              </p>
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-2.5 sm:gap-3">
+                <a href="https://wa.me/447516330379?text=Hi%20Sam%2C%20I%20found%20your%20website%20and%20I%27m%20interested%20in%20discussing%20a%20project." target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 py-3 sm:px-8 sm:py-4 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold shadow-lg shadow-amber-500/20 hover:-translate-y-0.5 transition-all duration-200">
+                  <WaIcon /> Message on WhatsApp
+                </a>
+                <a href="/work" className="inline-flex items-center gap-2 px-6 py-3 sm:px-8 sm:py-4 rounded-lg border-2 border-white/20 text-white font-bold hover:bg-white hover:text-slate-900 transition-all duration-200">
+                  See My Work
+                </a>
+              </div>
+              <p className="mt-3 sm:mt-6 text-xs sm:text-sm text-gray-400 leading-relaxed">
+                Building for UK businesses since 2019. Maker of{' '}
+                <a href="/equestrian/horsebox-businesses" className="text-gray-200 underline decoration-white/30 hover:decoration-white">Horsebox Hire Software</a>.
+                {' '}Director of{' '}
+                <a href="/blog/building-hoofflix" className="text-gray-200 underline decoration-white/30 hover:decoration-white">Hoofflix</a>.
+              </p>
+            </div>
+            <div className="flex flex-col items-center">
+              <Terminal onDone={() => setTerminalDone(true)} />
+              {/* Scroll prompt appears after terminal finishes */}
+              <div
+                className={`mt-4 sm:mt-8 transition-opacity duration-700 ${terminalDone ? 'opacity-100' : 'opacity-0'}`}
+              >
+                <div className="flex flex-col items-center gap-2 sm:gap-3">
+                  <span className="text-white text-sm font-medium tracking-wide">scroll down to see the process</span>
+                  <div className="animate-bounce">
+                    <svg className="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                    </svg>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -279,7 +313,7 @@ export default function HeroSequence() {
 
         {/* "We Talk" layer */}
         <div
-          className="absolute inset-0 flex items-center justify-center px-6 z-20"
+          className="absolute inset-0 flex items-center justify-center px-6 z-20 pointer-events-none"
           style={{ transform: `translateY(${talkY}px)` }}
         >
           <div className="w-full max-w-4xl mx-auto grid md:grid-cols-2 gap-8 md:gap-16 items-center">
@@ -321,7 +355,7 @@ export default function HeroSequence() {
 
         {/* "I Build" layer */}
         <div
-          className="absolute inset-0 flex items-center justify-center px-6 z-30"
+          className="absolute inset-0 flex items-center justify-center px-6 z-30 pointer-events-none"
           style={{ transform: `translateY(${buildY}px)` }}
         >
           <div className="w-full max-w-4xl mx-auto grid md:grid-cols-2 gap-8 md:gap-16 items-center">
@@ -374,7 +408,7 @@ export default function HeroSequence() {
 
         {/* "You Grow" layer */}
         <div
-          className="absolute inset-0 flex items-center justify-center px-6 z-40"
+          className="absolute inset-0 flex items-center justify-center px-6 z-40 pointer-events-none"
           style={{ transform: `translateY(${growY}px)` }}
         >
           <div className="w-full max-w-4xl mx-auto grid md:grid-cols-2 gap-8 md:gap-16 items-center">
@@ -397,13 +431,9 @@ export default function HeroSequence() {
                       transform: `translateY(${lerp(30, 0, cardProgress)}px)`,
                     }}
                   >
-                    <span className="text-xl block mb-1.5">{r.icon}</span>
-                    <p className="text-white/40 text-[11px] mb-1">{r.metric}</p>
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-white/30 text-xs line-through">{r.before}</span>
-                      <svg className="w-2.5 h-2.5 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
-                      <span className="text-emerald-400 font-bold text-xs">{r.after}</span>
-                    </div>
+                    <span className="text-xl block mb-1.5" aria-hidden="true">{r.icon}</span>
+                    <p className="text-white/50 text-[11px] mb-1">{r.project}</p>
+                    <p className="text-emerald-400 font-semibold text-xs leading-snug">{r.outcome}</p>
                   </div>
                 );
               })}
@@ -417,19 +447,16 @@ export default function HeroSequence() {
           style={{
             opacity: ctaOpacity,
             transform: `translateY(${ctaY}px)`,
+            visibility: ctaOpacity <= 0.01 ? 'hidden' : 'visible',
           }}
         >
           <div className="text-center max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-gray-300 text-sm font-medium mb-6">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              Based in Norfolk, working across the UK
-            </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-white mb-4 tracking-tight">
-              One Developer.<br />
-              <span className="bg-gradient-to-r from-amber-400 to-amber-300 bg-clip-text text-transparent">No Middlemen.</span>
-            </h1>
+            <h2 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-white mb-4 tracking-tight">
+              Ready When<br />
+              <span className="bg-gradient-to-r from-amber-400 to-amber-300 bg-clip-text text-transparent">You Are.</span>
+            </h2>
             <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto mb-8">
-              Websites, apps, and automation for UK businesses. You deal directly with the person who builds it.
+              Tell me what's slowing your business down. I'll tell you honestly what would help and what it would cost.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <a href="https://wa.me/447516330379?text=Hi%20Sam%2C%20I%20found%20your%20website%20and%20I%27m%20interested%20in%20discussing%20a%20project." target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold shadow-lg shadow-amber-500/20 hover:-translate-y-0.5 transition-all duration-200">

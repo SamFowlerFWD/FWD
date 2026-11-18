@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 interface FormData {
   name: string;
@@ -11,10 +11,16 @@ interface FormErrors {
   email?: string;
 }
 
+// window.gtag is declared globally in CookieConsent.tsx.
+const WHATSAPP = 'https://wa.me/447516330379';
+const EMAIL = 'sam@f-w-d.co.uk';
+
 export default function ContactForm() {
   const [formData, setFormData] = useState<FormData>({ name: '', email: '', message: '' });
+  const [honeypot, setHoneypot] = useState('');
   const [errors, setErrors] = useState<FormErrors>({});
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const mountedAt = useRef(typeof performance !== 'undefined' ? performance.now() : 0);
 
   const validate = (): boolean => {
     const newErrors: FormErrors = {};
@@ -22,7 +28,7 @@ export default function ContactForm() {
     if (!formData.email.trim()) {
       newErrors.email = 'Please enter your email';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = 'Please enter a valid email address, like name@example.com';
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -33,14 +39,26 @@ export default function ContactForm() {
     if (!validate()) return;
 
     setStatus('submitting');
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...formData,
+          company_website: honeypot,
+          elapsedMs: Math.round(performance.now() - mountedAt.current),
+          page: window.location.pathname,
+        }),
+      });
+      const result = await res.json().catch(() => ({ ok: false }));
+      if (!res.ok || !result.ok) throw new Error(result.error || `HTTP ${res.status}`);
 
-    // Build WhatsApp message as fallback
-    const waMessage = `Hi Sam, I'm ${formData.name} (${formData.email}). ${formData.message || 'I would like to discuss a project.'}`;
-    const waUrl = `https://wa.me/447516330379?text=${encodeURIComponent(waMessage)}`;
-
-    // Open WhatsApp with the form data
-    window.open(waUrl, '_blank', 'noopener,noreferrer');
-    setStatus('success');
+      window.gtag?.('event', 'generate_lead', { method: 'contact_form' });
+      setStatus('success');
+    } catch {
+      // Keep what they typed, and give them another way to reach Sam.
+      setStatus('error');
+    }
   };
 
   if (status === 'success') {
@@ -52,10 +70,16 @@ export default function ContactForm() {
           </svg>
         </div>
         <h3 className="text-xl font-bold text-slate-900 mb-2">Message sent</h3>
-        <p className="text-slate-600">Thanks for getting in touch. I'll get back to you shortly.</p>
+        <p className="text-slate-600">
+          Thanks, {formData.name.split(' ')[0]}. I'll reply to {formData.email}, usually within a few hours on working days.
+        </p>
       </div>
     );
   }
+
+  const waText = encodeURIComponent(
+    `Hi Sam, I'm ${formData.name || 'getting in touch'}. ${formData.message || 'I would like to discuss a project.'}`
+  );
 
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-6">
@@ -66,6 +90,8 @@ export default function ContactForm() {
         <input
           type="text"
           id="contact-name"
+          name="name"
+          autoComplete="name"
           required
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -86,6 +112,9 @@ export default function ContactForm() {
         <input
           type="email"
           id="contact-email"
+          name="email"
+          autoComplete="email"
+          inputMode="email"
           required
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -105,13 +134,40 @@ export default function ContactForm() {
         </label>
         <textarea
           id="contact-message"
+          name="message"
           rows={4}
           value={formData.message}
           onChange={(e) => setFormData({ ...formData, message: e.target.value })}
           className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors resize-y"
-          placeholder="Tell me about your project..."
+          placeholder="Tell me briefly what you need"
         />
       </div>
+
+      {/* Spam trap: hidden from people, often filled in by bots. */}
+      <div className="absolute w-px h-px overflow-hidden -left-[9999px]" aria-hidden="true">
+        <label htmlFor="contact-company-website">Leave this empty</label>
+        <input
+          type="text"
+          id="contact-company-website"
+          name="company_website"
+          tabIndex={-1}
+          autoComplete="off"
+          value={honeypot}
+          onChange={(e) => setHoneypot(e.target.value)}
+        />
+      </div>
+
+      {status === 'error' && (
+        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800" role="alert">
+          <p className="font-semibold mb-1">Sorry, that didn't send.</p>
+          <p>
+            Your message is still here. Please try again, or reach me directly on{' '}
+            <a href={`${WHATSAPP}?text=${waText}`} target="_blank" rel="noopener noreferrer" className="font-semibold underline">WhatsApp</a>
+            {' '}or at{' '}
+            <a href={`mailto:${EMAIL}`} className="font-semibold underline">{EMAIL}</a>.
+          </p>
+        </div>
+      )}
 
       <button
         type="submit"

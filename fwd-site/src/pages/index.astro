@@ -5,6 +5,12 @@ import WhatsAppWidget from '../components/interactive/WhatsAppWidget.tsx';
 import HeroSequence from '../components/homepage/HeroSequence.tsx';
 import TestimonialCarousel from '../components/homepage/TestimonialCarousel.tsx';
 import { getCollection } from 'astro:content';
+import { projects } from '../data/projects';
+
+// Proof straight after the hero: real projects with one real result each.
+const featuredWork = ['horsebox-hire-software', 'hoofflix', 'fakenham-dog-field', 'millers-fitness']
+  .map(id => projects.find(p => p.id === id))
+  .filter((p): p is NonNullable<typeof p> => Boolean(p?.result));
 
 const now = new Date();
 const posts = (await getCollection('blog', ({ data }) => !data.draft && data.pubDate <= now))
@@ -82,6 +88,37 @@ const playgroundDemos = [
 >
   <!-- Hero: Terminal → CTA → Build Sequence -->
   <HeroSequence client:load />
+
+  <!-- ═══════════════════════════════════════════
+       0. RECENT WORK: proof straight after the hero
+       ═══════════════════════════════════════════ -->
+  <section class="relative py-20 md:py-24 bg-[#0f172a]">
+    <div class="relative max-w-7xl mx-auto px-6 md:px-8">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10" data-animate>
+        <div>
+          <h2 class="text-4xl lg:text-5xl font-bold text-white mb-3">Recent Work</h2>
+          <p class="text-lg text-gray-400">Real projects for real businesses, running right now.</p>
+        </div>
+        <a href="/work" class="text-amber-400 hover:text-amber-300 font-semibold whitespace-nowrap">See all my work &rarr;</a>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {featuredWork.map(project => {
+          const href = project.caseStudy ? `/blog/${project.caseStudy}` : project.url;
+          const external = !project.caseStudy;
+          return (
+            <a href={href} {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})} class="group rounded-2xl overflow-hidden bg-white/5 border border-white/10 hover:border-amber-400/40 transition-colors flex flex-col" data-animate>
+              <img src={project.image} alt={project.alt} width="400" height="250" loading="lazy" decoding="async" class="w-full aspect-[16/10] object-cover object-top" />
+              <div class="p-5 flex flex-col flex-1">
+                <h3 class="text-lg font-bold text-white mb-2 group-hover:text-amber-400 transition-colors">{project.name}</h3>
+                <p class="text-sm text-gray-300 leading-relaxed flex-1">{project.result}</p>
+                <span class="mt-4 text-sm font-semibold text-amber-400">{project.caseStudy ? 'Read the case study' : 'Visit the site'} &rarr;</span>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    </div>
+  </section>
 
   <!-- ═══════════════════════════════════════════
        1. SERVICES SHOWCASE
