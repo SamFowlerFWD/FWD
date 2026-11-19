@@ -1,0 +1,71 @@
+---
+// Cloudflare Pages serves dist/404.html, with a real 404 status, for any
+// address that doesn't exist. Without it, wrong addresses showed the homepage.
+import Layout from '../layouts/Layout.astro';
+
+const links = [
+  { href: '/', label: 'Home', note: 'What I do and who I do it for' },
+  { href: '/work', label: 'My work', note: 'Real projects for real businesses' },
+  { href: '/services', label: 'Services', note: 'Websites, apps, automation and hosting' },
+  { href: '/blog', label: 'Blog', note: 'Guides, costs and case studies' },
+];
+---
+
+<Layout
+  title="Page Not Found"
+  description="That page doesn't exist or has moved."
+  noindex
+  hideBreadcrumbs
+>
+  <section class="relative py-20 bg-slate-900">
+    <div class="container relative z-10 mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto text-center text-white">
+        <p class="text-amber-400 font-semibold mb-4">404</p>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
+          Page not <span class="text-amber-400">found</span>
+        </h1>
+        <p class="text-xl text-gray-100">
+          That page doesn't exist, or it's moved. One of these should get you where you need to be.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto grid sm:grid-cols-2 gap-4">
+        {links.map(link => (
+          <a
+            href={link.href}
+            class="block rounded-2xl border border-gray-200 p-6 hover:border-amber-400 hover:shadow-lg transition-all group"
+          >
+            <span class="block text-lg font-bold text-slate-900 group-hover:text-amber-600">
+              {link.label} <span class="arrow-slide" aria-hidden="true">&rarr;</span>
+            </span>
+            <span class="block text-gray-600 mt-1">{link.note}</span>
+          </a>
+        ))}
+      </div>
+
+      <div class="max-w-3xl mx-auto mt-12 text-center">
+        <p class="text-gray-600 mb-4">Looking for something in particular? Just ask me.</p>
+        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+          <a
+            href="https://wa.me/447516330379?text=Hi%20Sam%2C%20I%20was%20looking%20for%20something%20on%20your%20website."
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-500 transition-colors min-h-[44px]"
+          >
+            Message me on WhatsApp
+          </a>
+          <a
+            href="/contact"
+            class="inline-flex items-center justify-center px-6 py-3 border border-slate-300 text-slate-900 font-semibold rounded-lg hover:border-slate-900 transition-colors min-h-[44px]"
+          >
+            Contact page
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
