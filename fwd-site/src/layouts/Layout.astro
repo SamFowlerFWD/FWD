@@ -55,6 +55,20 @@ const pageTitle = isHomepage ? title : `${title} | FWD`;
         'analytics_storage': 'denied'
       });
       gtag('config', 'G-THCJXTGRCM');
+
+      // Count taps on WhatsApp, phone and email links anywhere on the site, so
+      // enquiries that skip the contact form still show up in Analytics.
+      document.addEventListener('click', function (e) {
+        var link = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+        if (!link) return;
+        var href = link.getAttribute('href') || '';
+        var name = /^https:\/\/(wa\.me|api\.whatsapp\.com)\//.test(href) ? 'whatsapp_click'
+          : href.indexOf('tel:') === 0 ? 'phone_click'
+          : href.indexOf('mailto:') === 0 ? 'email_click'
+          : null;
+        var label = link.getAttribute('aria-label') || link.textContent || '';
+        if (name) gtag('event', name, { link_text: label.replace(/\s+/g, ' ').trim().slice(0, 100) });
+      }, true);
     </script>
 
     <!-- Primary Meta Tags -->

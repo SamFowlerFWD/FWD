@@ -188,17 +188,6 @@ export const projects: Project[] = [
     work: ['Website Build', 'Maintenance', 'SEO'],
     url: 'https://serenesafety.co.uk',
   },
-  {
-    id: 'jdb-carpentry',
-    name: 'JDB Carpentry & Building',
-    summary: 'A local builder specialising in heritage and listed properties. Website build, hosting and SEO.',
-    image: '/portfolio/jdb-carpentry.webp',
-    alt: 'JDB Carpentry and Building website',
-    industries: ['trades-construction'],
-    services: ['websites', 'hosting'],
-    work: ['Website Build', 'Hosting', 'SEO'],
-    url: 'https://jdbcarpentryandbuilding.co.uk',
-  },
 ];
 
 export const projectsFor = (industry: IndustryKey) =>
