@@ -2,7 +2,7 @@
 import Nav from '../components/ui/Nav.astro';
 import Footer from '../components/ui/Footer.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
-import CookieConsent from '../components/CookieConsent.tsx';
+import CookieConsent from '../components/CookieConsent.astro';
 import { serviceList } from '../data/services';
 import '../styles/tokens.css';
 import '../styles/animations.css';
@@ -53,8 +53,25 @@ const pageTitle = isHomepage ? title : `${title} | FWD`;
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('consent', 'default', {
-        'analytics_storage': 'denied'
+        'analytics_storage': 'denied',
+        'ad_storage': 'denied',
+        'ad_user_data': 'denied',
+        'ad_personalization': 'denied'
       });
+      // Apply the visitor's saved cookie choice (see CookieConsent.astro)
+      // before the page view is sent, not after.
+      try {
+        var saved = JSON.parse(localStorage.getItem('cookieConsent') || 'null');
+        if (saved) {
+          var ads = saved.marketing ? 'granted' : 'denied';
+          gtag('consent', 'update', {
+            'analytics_storage': saved.analytics ? 'granted' : 'denied',
+            'ad_storage': ads,
+            'ad_user_data': ads,
+            'ad_personalization': ads
+          });
+        }
+      } catch (e) {}
       gtag('config', 'G-THCJXTGRCM');
 
       // Count taps on WhatsApp, phone and email links anywhere on the site, so
@@ -257,7 +274,7 @@ const pageTitle = isHomepage ? title : `${title} | FWD`;
       <slot />
     </main>
     <Footer />
-    <CookieConsent client:load />
+    <CookieConsent />
 
     <!-- Scroll-reveal animation observer -->
     <script>

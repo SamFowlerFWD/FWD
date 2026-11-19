@@ -1,5 +1,309 @@
 ---
-import Navigation from './Navigation.tsx';
+// Site menu. Plain HTML plus a small script, so pages don't load React just
+// for the menu. Service links come from src/data/services.ts.
+import { serviceList, fromPrice } from '../../data/services';
+
+interface DropdownItem {
+  label: string;
+  href: string;
+  description?: string;
+  badge?: string;
+}
+
+interface NavLink {
+  label: string;
+  href: string;
+  dropdown?: DropdownItem[];
+}
+
+const navLinks: NavLink[] = [
+  {
+    label: 'Services',
+    href: '/services',
+    dropdown: serviceList(['automation', 'websites', 'apps', 'hosting', 'ai']).map(service => ({
+      label: service.name,
+      href: service.href,
+      description: service.menuText,
+      badge: service.key === 'automation' ? 'Popular'
+        : service.key === 'hosting' ? fromPrice(service, true)
+        : undefined,
+    })),
+  },
+  {
+    label: 'Industries',
+    href: '/industries',
+    dropdown: [
+      { label: 'Equestrian', href: '/equestrian', description: 'Booking platforms, training apps, websites' },
+      { label: 'Engineering & Manufacturing', href: '/engineering', description: 'Catalogues, quote tools, job tracking' },
+      { label: 'All Industries', href: '/industries', description: 'Pet services, trades, retail and more' },
+    ],
+  },
+  { label: 'Playground', href: '/playground' },
+  { label: 'My Work', href: '/work' },
+  { label: 'Pricing', href: '/pricing' },
+  { label: 'Blog', href: '/blog' },
+  { label: 'About', href: '/about' },
+  { label: 'Contact', href: '/contact' },
+];
+
+const menuId = (label: string) => `nav-menu-${label.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+
+const whatsappIcon = 'M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z';
 ---
 
-<Navigation client:load />
+<nav id="site-nav" class="fixed top-0 left-0 right-0 z-50" aria-label="Main navigation">
+  <!-- The bar's background sits on its own layer. If the blur were on <nav> itself,
+       it would trap the fixed mobile menu inside the bar once the page scrolls. -->
+  <div id="nav-bg" class="absolute inset-0 -z-10 transition-all duration-300 bg-white shadow-sm border-b border-gray-100" aria-hidden="true"></div>
+  <div class="container mx-auto px-6 lg:px-8">
+    <div class="flex items-center justify-between h-32 py-4">
+      <!-- Logo -->
+      <div class="flex items-center">
+        <a href="/" class="flex items-center gap-3" aria-label="FWD Thinking Solutions home page">
+          <img
+            src="/fwd-logo.webp"
+            alt="FWD Thinking Solutions"
+            class="h-[120px] w-auto"
+            loading="eager"
+            decoding="async"
+            width="120"
+            height="120"
+          />
+          <span class="hidden sm:inline text-sm text-gray-800 font-medium">Thinking Solutions</span>
+        </a>
+      </div>
+
+      <!-- Desktop menu -->
+      <div class="hidden lg:flex items-center gap-5 xl:gap-8">
+        {navLinks.map(link => link.dropdown ? (
+          <div class="relative" data-nav-dropdown>
+            <button
+              type="button"
+              class="relative whitespace-nowrap text-gray-800 hover:text-ai-purple transition-colors font-medium cursor-pointer flex items-center gap-1 bg-transparent border-0 p-0"
+              aria-expanded="false"
+              aria-controls={menuId(link.label)}
+            >
+              {link.label}
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <!-- pt-2 instead of a margin, so the pointer can cross the gap without the menu closing -->
+            <div id={menuId(link.label)} class="absolute top-full left-0 pt-2 w-72 z-50" hidden>
+              <ul class="bg-white rounded-xl shadow-xl border border-gray-100 py-2">
+                {link.dropdown.map(item => (
+                  <li>
+                    <a href={item.href} class="block px-4 py-3 hover:bg-gray-50 focus:bg-gray-50 transition-colors">
+                      <div class="flex items-start justify-between">
+                        <div>
+                          <div class="font-medium text-deep-space">{item.label}</div>
+                          {item.description && <div class="text-sm text-gray-800 mt-1">{item.description}</div>}
+                        </div>
+                        {item.badge && (
+                          <span class="bg-amber-700 text-white text-xs font-semibold px-2 py-0.5 rounded-full whitespace-nowrap">{item.badge}</span>
+                        )}
+                      </div>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        ) : (
+          <a
+            href={link.href}
+            class="relative whitespace-nowrap text-gray-800 hover:text-ai-purple transition-colors font-medium cursor-pointer flex items-center gap-1"
+          >
+            {link.label}
+          </a>
+        ))}
+
+        <a
+          href="https://wa.me/447516330379"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="w-10 h-10 flex items-center justify-center rounded-full bg-green-700 hover:bg-green-800 transition-colors"
+          aria-label="Message on WhatsApp"
+        >
+          <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path d={whatsappIcon} />
+          </svg>
+        </a>
+      </div>
+
+      <!-- Mobile menu button -->
+      <button
+        id="nav-toggle"
+        type="button"
+        class="lg:hidden relative w-10 h-10 flex flex-col items-center justify-center"
+        aria-label="Open mobile menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <span data-bar="top" class="block w-6 h-0.5 bg-deep-space transition-all duration-200"></span>
+        <span data-bar="middle" class="block w-6 h-0.5 bg-deep-space my-1 transition-all duration-200"></span>
+        <span data-bar="bottom" class="block w-6 h-0.5 bg-deep-space transition-all duration-200"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile menu. `inert` while closed so its links can't be tabbed to off screen. -->
+  <div
+    id="mobile-menu"
+    class="lg:hidden fixed inset-0 top-32 bg-white/95 backdrop-blur-md transition-transform duration-300 overflow-y-auto translate-x-full"
+    aria-hidden="true"
+    inert
+  >
+    <div class="container mx-auto px-6 py-8">
+      <div class="space-y-4">
+        {navLinks.map(link => (
+          <div>
+            {link.dropdown ? (
+              <details class="group">
+                <summary class="flex items-center justify-between text-xl font-medium text-gray-800 hover:text-ai-purple transition-colors py-2 cursor-pointer list-none">
+                  {link.label}
+                  <svg class="w-5 h-5 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </summary>
+                <div class="ml-4 mt-2 space-y-2">
+                  {link.dropdown.map(item => (
+                    <a href={item.href} class="block py-2">
+                      <div class="font-medium text-deep-space flex items-center gap-2">
+                        {item.label}
+                        {item.badge && (
+                          <span class="bg-amber-700 text-white text-xs font-semibold px-2 py-0.5 rounded-full">{item.badge}</span>
+                        )}
+                      </div>
+                      {item.description && <div class="text-sm text-gray-800 mt-1">{item.description}</div>}
+                    </a>
+                  ))}
+                </div>
+              </details>
+            ) : (
+              <a href={link.href} class="block text-xl font-medium text-gray-800 hover:text-ai-purple transition-colors py-2">
+                {link.label}
+              </a>
+            )}
+          </div>
+        ))}
+      </div>
+
+      <div class="mt-8 pt-6 border-t border-gray-200">
+        <a
+          href="https://wa.me/447516330379"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex items-center gap-3 bg-green-700 hover:bg-green-800 text-white font-semibold py-3 px-6 rounded-lg transition-colors w-full justify-center"
+        >
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path d={whatsappIcon} />
+          </svg>
+          Message on WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  const nav = document.getElementById('nav-bg');
+
+  // Solid bar at the top of the page, frosted glass once scrolled.
+  const SCROLLED = ['bg-white/95', 'backdrop-blur-md', 'shadow-lg'];
+  const AT_TOP = ['bg-white', 'shadow-sm', 'border-b', 'border-gray-100'];
+  const onScroll = () => {
+    const scrolled = window.scrollY > 20;
+    nav?.classList.remove(...(scrolled ? AT_TOP : SCROLLED));
+    nav?.classList.add(...(scrolled ? SCROLLED : AT_TOP));
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // Desktop dropdowns: open on hover with a mouse, or toggle with a click or Enter.
+  // Escape, clicking elsewhere or tabbing away closes them.
+  const dropdowns = [...document.querySelectorAll<HTMLElement>('[data-nav-dropdown]')];
+
+  const setOpen = (dropdown: HTMLElement, open: boolean) => {
+    const button = dropdown.querySelector('button');
+    const panel = dropdown.querySelector<HTMLElement>('[id^="nav-menu-"]');
+    if (!button || !panel) return;
+    button.setAttribute('aria-expanded', String(open));
+    panel.hidden = !open;
+  };
+  const closeAll = (except?: HTMLElement) => dropdowns.forEach(d => d !== except && setOpen(d, false));
+
+  dropdowns.forEach(dropdown => {
+    const button = dropdown.querySelector('button');
+    let closeTimer: number | undefined;
+
+    dropdown.addEventListener('pointerenter', e => {
+      if (e.pointerType !== 'mouse') return;
+      window.clearTimeout(closeTimer);
+      closeAll(dropdown);
+      setOpen(dropdown, true);
+    });
+    dropdown.addEventListener('pointerleave', e => {
+      if (e.pointerType !== 'mouse') return;
+      closeTimer = window.setTimeout(() => setOpen(dropdown, false), 150);
+    });
+    button?.addEventListener('click', () => {
+      const open = button.getAttribute('aria-expanded') !== 'true';
+      closeAll(dropdown);
+      setOpen(dropdown, open);
+    });
+    dropdown.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && button?.getAttribute('aria-expanded') === 'true') {
+        setOpen(dropdown, false);
+        button.focus();
+      }
+    });
+    dropdown.addEventListener('focusout', e => {
+      if (!dropdown.contains(e.relatedTarget as Node | null)) setOpen(dropdown, false);
+    });
+  });
+
+  document.addEventListener('click', e => {
+    if (!dropdowns.some(d => d.contains(e.target as Node))) closeAll();
+  });
+
+  // Mobile menu: slide-in panel, page scroll locked while it's open.
+  const toggle = document.getElementById('nav-toggle');
+  const panel = document.getElementById('mobile-menu');
+  const bars = {
+    top: toggle?.querySelector('[data-bar="top"]'),
+    middle: toggle?.querySelector('[data-bar="middle"]'),
+    bottom: toggle?.querySelector('[data-bar="bottom"]'),
+  };
+
+  const setMobileOpen = (open: boolean) => {
+    if (!toggle || !panel) return;
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? 'Close mobile menu' : 'Open mobile menu');
+    panel.classList.toggle('translate-x-0', open);
+    panel.classList.toggle('translate-x-full', !open);
+    panel.inert = !open;
+    panel.setAttribute('aria-hidden', String(!open));
+    bars.top?.classList.toggle('rotate-45', open);
+    bars.top?.classList.toggle('translate-y-1', open);
+    bars.middle?.classList.toggle('opacity-0', open);
+    bars.bottom?.classList.toggle('-rotate-45', open);
+    bars.bottom?.classList.toggle('-translate-y-2', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  };
+
+  toggle?.addEventListener('click', () => setMobileOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+  panel?.addEventListener('click', e => {
+    if ((e.target as Element).closest('a')) setMobileOpen(false);
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && toggle?.getAttribute('aria-expanded') === 'true') {
+      setMobileOpen(false);
+      toggle.focus();
+    }
+  });
+  // Close it if the window grows to desktop width, so the page doesn't stay locked.
+  window.matchMedia('(min-width: 1024px)').addEventListener('change', e => {
+    if (e.matches) setMobileOpen(false);
+  });
+</script>

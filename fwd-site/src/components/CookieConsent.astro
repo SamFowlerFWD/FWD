@@ -1,0 +1,148 @@
+---
+// Cookie banner. Plain HTML plus a small script, so pages don't load React for it.
+// It stays hidden unless the visitor hasn't chosen yet. A saved choice is applied
+// to Google Analytics in Layout.astro's <head>, before the first page view is sent.
+const buttonGrey = 'px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400';
+const buttonMain = 'px-4 py-2 text-sm font-medium text-white bg-ai-purple rounded-lg hover:bg-deep-space focus:outline-none focus:ring-2 focus:ring-ai-purple';
+---
+
+<div id="cookie-consent" hidden>
+  <div class="fixed inset-0 bg-black/50 z-[9998]" aria-hidden="true" data-cookie-overlay></div>
+
+  <div
+    class="fixed bottom-0 left-0 right-0 z-[9999] bg-white border-t-4 border-ai-purple shadow-2xl"
+    role="dialog"
+    aria-label="Cookie consent"
+    aria-describedby="cookie-description"
+  >
+    <div class="container mx-auto px-6 py-6 lg:px-8">
+      <div class="lg:flex lg:items-start lg:justify-between">
+        <div class="flex-1">
+          <h2 class="text-xl font-bold text-deep-space mb-2">Cookie Preferences</h2>
+          <p id="cookie-description" class="text-gray-600 text-sm mb-4">
+            We use cookies to enhance your experience, analyse site traffic, and for marketing purposes.
+            By clicking "Accept All", you consent to our use of cookies.
+            <a href="/privacy-policy" class="text-ai-purple hover:text-deep-space underline ml-1" target="_blank" rel="noopener">
+              Read our Privacy Policy
+            </a>
+          </p>
+
+          <div class="space-y-4 mb-4 bg-gray-50 p-4 rounded-lg" data-cookie-details hidden>
+            <div>
+              <label class="flex items-start">
+                <input type="checkbox" checked disabled class="mt-1 mr-3 h-4 w-4 text-gray-200" aria-label="Necessary cookies (required)" />
+                <div>
+                  <span class="font-medium text-gray-900">Necessary Cookies</span>
+                  <span class="text-xs text-gray-500 ml-2">(Always enabled)</span>
+                  <p class="text-sm text-gray-600 mt-1">Essential for the website to function properly. These cannot be disabled.</p>
+                </div>
+              </label>
+            </div>
+            <div>
+              <label class="flex items-start">
+                <input type="checkbox" name="analytics" class="mt-1 mr-3 h-4 w-4 text-ai-purple focus:ring-ai-purple" aria-label="Analytics cookies" />
+                <div>
+                  <span class="font-medium text-gray-900">Analytics Cookies</span>
+                  <p class="text-sm text-gray-600 mt-1">Help us understand how visitors interact with our website by collecting anonymous information.</p>
+                </div>
+              </label>
+            </div>
+            <div>
+              <label class="flex items-start">
+                <input type="checkbox" name="marketing" class="mt-1 mr-3 h-4 w-4 text-ai-purple focus:ring-ai-purple" aria-label="Marketing cookies" />
+                <div>
+                  <span class="font-medium text-gray-900">Marketing Cookies</span>
+                  <p class="text-sm text-gray-600 mt-1">Used to track visitors across websites to display relevant advertisements.</p>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3 mt-4 lg:mt-0 lg:ml-8" data-cookie-summary-buttons>
+          <button type="button" class={buttonGrey} data-cookie-action="manage">Manage Preferences</button>
+          <button type="button" class={buttonGrey} data-cookie-action="reject">Reject All</button>
+          <button type="button" class={buttonMain} data-cookie-action="accept">Accept All</button>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-3 mt-4 lg:mt-0 lg:ml-8" data-cookie-detail-buttons hidden>
+          <button type="button" class={buttonGrey} data-cookie-action="cancel">Cancel</button>
+          <button type="button" class={buttonMain} data-cookie-action="save">Save Preferences</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  interface Preferences {
+    necessary: boolean;
+    analytics: boolean;
+    marketing: boolean;
+  }
+
+  const root = document.getElementById('cookie-consent');
+  const details = root?.querySelector<HTMLElement>('[data-cookie-details]');
+  const summaryButtons = root?.querySelector<HTMLElement>('[data-cookie-summary-buttons]');
+  const detailButtons = root?.querySelector<HTMLElement>('[data-cookie-detail-buttons]');
+  const box = (name: string) => root?.querySelector<HTMLInputElement>(`input[name="${name}"]`);
+
+  let saved: Preferences | null = null;
+  try {
+    const raw = localStorage.getItem('cookieConsent');
+    if (raw) saved = JSON.parse(raw);
+  } catch {
+    saved = null;
+  }
+  let preferences: Preferences = saved ?? { necessary: true, analytics: false, marketing: false };
+
+  const applyConsent = (prefs: Preferences) => {
+    const gtag = (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag;
+    if (!gtag) return;
+    gtag('consent', 'update', { analytics_storage: prefs.analytics ? 'granted' : 'denied' });
+    const ads = prefs.marketing ? 'granted' : 'denied';
+    gtag('consent', 'update', { ad_storage: ads, ad_user_data: ads, ad_personalization: ads });
+  };
+
+  const showDetails = (show: boolean) => {
+    if (!details || !summaryButtons || !detailButtons) return;
+    if (show) {
+      const analytics = box('analytics');
+      const marketing = box('marketing');
+      if (analytics) analytics.checked = preferences.analytics;
+      if (marketing) marketing.checked = preferences.marketing;
+    }
+    details.hidden = !show;
+    summaryButtons.hidden = show;
+    detailButtons.hidden = !show;
+  };
+
+  const choose = (prefs: Preferences) => {
+    preferences = prefs;
+    try {
+      localStorage.setItem('cookieConsent', JSON.stringify(prefs));
+      localStorage.setItem('cookieConsentDate', new Date().toISOString());
+    } catch {
+      // Storage blocked: the choice still applies to this page.
+    }
+    applyConsent(prefs);
+    if (root) root.hidden = true;
+  };
+
+  root?.addEventListener('click', e => {
+    const target = e.target as Element;
+    if (target.closest('[data-cookie-overlay]')) return showDetails(false);
+    switch (target.closest<HTMLElement>('[data-cookie-action]')?.dataset.cookieAction) {
+      case 'manage': return showDetails(true);
+      case 'cancel': return showDetails(false);
+      case 'accept': return choose({ necessary: true, analytics: true, marketing: true });
+      case 'reject': return choose({ necessary: true, analytics: false, marketing: false });
+      case 'save': return choose({
+        necessary: true,
+        analytics: Boolean(box('analytics')?.checked),
+        marketing: Boolean(box('marketing')?.checked),
+      });
+    }
+  });
+
+  if (!saved && root) root.hidden = false;
+</script>
