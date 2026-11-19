@@ -11,6 +11,7 @@ export const PRICES = {
   apps: { smaller: 1299, typicalFrom: 2000, larger: 5000 },
   hosting: { standard: 20, premium: 149 },
   ai: { oneToOne: 299, workshop: 499, support: 99 },
+  monthly: { from: 99 },
 } as const;
 
 /** Payment plans are offered on projects over this amount. */
@@ -56,7 +57,7 @@ export const SERVICES: Record<ServiceKey, Service> = {
     from: PRICES.websites.starter,
     menuText: 'Fast websites for Norfolk and UK businesses',
     homeText: 'Fast, mobile-friendly websites for Norwich and Norfolk businesses, built in 2 to 3 weeks. SEO-ready from day one.',
-    summary: 'Fast, mobile-friendly websites that represent your business well. Built in 2 to 3 weeks, SEO-ready from day one. You own everything, no subscriptions, no lock-in.',
+    summary: 'Fast, mobile-friendly websites that represent your business well. Built in 2 to 3 weeks, SEO-ready from day one. Pay once and own it outright, or pay monthly with nothing upfront.',
     highlights: ['Mobile responsive', 'SEO optimised', 'Fast loading', 'Easy to update'],
     pricingText: 'Clean, fast, mobile-friendly sites that represent your business well.',
     schemaDescription: 'Fast, mobile-friendly, SEO-optimised websites for businesses in Norwich, Norfolk and the UK',
@@ -132,3 +133,21 @@ export const serviceList = (order: ServiceKey[] = SERVICE_ORDER) => order.map(ke
 /** "From £299", "From £20/month" (or "From £20/mo" when short). */
 export const fromPrice = (service: Service, short = false) =>
   `From ${gbp(service.from)}${service.monthly ? (short ? '/mo' : '/month') : ''}`;
+
+/**
+ * Pay monthly: nothing upfront, from PRICES.monthly.from, and as involved in the
+ * client's business as they want. Deliberately no fixed tiers or top price;
+ * what's included and the fee are agreed with each client.
+ */
+export const PAY_MONTHLY = {
+  heading: 'Or Pay Monthly',
+  intro: "Nothing to pay upfront. Start with a website for a small monthly fee, and bring me in as far as you want me to go in your business.",
+  steps: [
+    { title: 'Your website', text: 'Your website, hosting, updates and small changes each month.' },
+    { title: 'Your marketing', text: 'Your Google profile, reviews and fresh content to bring in more enquiries.' },
+    { title: 'Your growth partner', text: "Properly involved in growing your business, and invested in how it does." },
+  ],
+  whatsapp: "Hi Sam, I'm interested in paying monthly.",
+  terms: "We agree what's included, the monthly fee and how long it runs before we start. Your domain and content are always yours.",
+  schemaDescription: 'A website with nothing to pay upfront, hosting and changes each month, with marketing and growth support as needed',
+};

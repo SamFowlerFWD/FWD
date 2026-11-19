@@ -1,0 +1,42 @@
+---
+// The pay-monthly offer, shown on the pricing page and the Web Design page.
+// Wording and the starting price live in src/data/services.ts.
+import { PAY_MONTHLY, PRICES, gbp } from '../../data/services';
+
+const whatsapp = `https://wa.me/447516330379?text=${encodeURIComponent(PAY_MONTHLY.whatsapp)}`;
+---
+
+<div id="monthly" class="mt-16 scroll-mt-28">
+  <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl border-2 border-amber-500 p-6 sm:p-10">
+    <div class="text-center mb-10">
+      <h3 class="text-3xl font-bold text-slate-900 mb-3">{PAY_MONTHLY.heading}</h3>
+      <p class="text-lg text-gray-600 max-w-2xl mx-auto">{PAY_MONTHLY.intro}</p>
+    </div>
+
+    <div class="flex justify-between items-end gap-6 mb-3">
+      <p class="font-bold text-slate-900">
+        <span class="block text-sm font-semibold text-amber-700">From</span>
+        <span class="text-3xl">{gbp(PRICES.monthly.from)}</span>
+        <span class="block sm:inline text-sm sm:text-base text-gray-500 font-normal"> a month</span>
+      </p>
+      <p class="text-right font-bold text-slate-900 sm:text-lg">As invested as you want me to be</p>
+    </div>
+    <div class="h-2 rounded-full bg-gradient-to-r from-amber-200 to-amber-500 mb-8" aria-hidden="true"></div>
+
+    <ol class="grid md:grid-cols-3 gap-6 mb-10">
+      {PAY_MONTHLY.steps.map(step => (
+        <li class="bg-gray-50 rounded-xl p-5">
+          <h4 class="font-bold text-slate-900 mb-1">{step.title}</h4>
+          <p class="text-sm text-gray-600">{step.text}</p>
+        </li>
+      ))}
+    </ol>
+
+    <div class="text-center">
+      <a href={whatsapp} target="_blank" rel="noopener noreferrer" class="inline-block bg-amber-500 hover:bg-amber-600 text-white font-semibold py-3 px-6 sm:px-8 rounded-lg transition-colors">
+        Ask About Paying Monthly
+      </a>
+      <p class="mt-6 text-sm text-gray-500 max-w-2xl mx-auto">{PAY_MONTHLY.terms}</p>
+    </div>
+  </div>
+</div>

@@ -4,7 +4,8 @@
 import Layout from '../../layouts/Layout.astro';
 import SmartCTA from '../interactive/SmartCTA.astro';
 import FreshnessBadge from '../content/FreshnessBadge.astro';
-import { SERVICES, fromPrice, gbp } from '../../data/services';
+import MonthlyPlans from './MonthlyPlans.astro';
+import { SERVICES, PRICES, PAY_MONTHLY, fromPrice, gbp } from '../../data/services';
 import { projects } from '../../data/projects';
 import type { ServicePage } from '../../data/servicePages';
 
@@ -53,6 +54,12 @@ const offers = [
     description: t.schemaDescription,
   })),
   ...(page.pricing.ranges ?? []).map(r => ({ name: r.name, price: r.price, monthly: false, description: r.schemaDescription })),
+  ...(page.pricing.monthlyPlans ? [{
+    name: 'Pay Monthly',
+    price: PRICES.monthly.from,
+    monthly: true,
+    description: PAY_MONTHLY.schemaDescription,
+  }] : []),
 ];
 
 const serviceSchema = {
@@ -336,6 +343,8 @@ const tick = 'M5 13l4 4L19 7';
         )}
 
         {page.pricing.note && <p class="mt-8 text-center text-gray-600" set:html={page.pricing.note} />}
+
+        {page.pricing.monthlyPlans && <MonthlyPlans />}
       </div>
     </div>
   </section>

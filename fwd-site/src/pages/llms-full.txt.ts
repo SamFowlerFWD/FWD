@@ -46,6 +46,8 @@ Norfolk examples: Salon 64, a hair salon in Dereham (https://f-w-d.co.uk/blog/bu
 - **Professional (${gbp(P.websites.professional)})**: Up to 10 pages, custom design, advanced SEO, blog/news section, 3 week delivery
 - **Bespoke (${gbp(P.websites.bespoke)}+)**: Unlimited pages, bespoke design, full SEO, e-commerce ready, custom integrations
 
+**Or pay monthly, with nothing upfront (from ${gbp(P.monthly.from)}/month):** Starts with a website, hosting, updates and small changes each month. Clients can add marketing (Google Business Profile, reviews, fresh content) and, if they want, a longer-term growth partnership where Sam is invested in how the business does. What's included and the fee are agreed with each client. The client's domain and content are always theirs.
+
 **What's included:** Mobile responsive design, SEO optimisation, fast loading, SSL security, content management, custom design to match your brand.
 
 ### Business Process Automation (from ${gbp(P.automation.simple)})
@@ -151,7 +153,7 @@ Based in Norwich, Norfolk, United Kingdom. Working with businesses across the UK
 ## Frequently Asked Questions
 
 **How much does a website cost?**
-Websites start from ${gbp(P.websites.starter)} for a simple 5-page site. Most business websites fall in the ${gbp(P.websites.professional)} range. Bespoke projects with e-commerce or complex features start from ${gbp(P.websites.bespoke)}.
+Websites start from ${gbp(P.websites.starter)} for a simple 5-page site. Most business websites fall in the ${gbp(P.websites.professional)} range. Bespoke projects with e-commerce or complex features start from ${gbp(P.websites.bespoke)}. Or pay monthly with nothing upfront, from ${gbp(P.monthly.from)}/month.
 
 **How long does it take to build a website?**
 Typically 2-4 weeks depending on the size and complexity of the project.

@@ -32,6 +32,7 @@ Sam works with all kinds of businesses, but knows two industries from the inside
 ## Services
 
 - **Professional Websites**: Fast, mobile-friendly websites from ${gbp(P.websites.starter)}
+- **Pay monthly**: A website with nothing to pay upfront from ${gbp(P.monthly.from)}/month, with marketing and longer-term growth support as the client wants it.
 - **Business Process Automation**: Automate invoicing, emails, data entry from ${gbp(P.automation.simple)}
 - **Custom App Development**: Booking systems, customer portals, iOS and Android apps from ${gbp(P.apps.smaller)}
 - **AI Training**: Hands-on ChatGPT and Claude training for businesses in Norwich and Norfolk, in person or over video, from ${gbp(P.ai.oneToOne)}

@@ -78,6 +78,8 @@ export interface ServicePage {
     ranges?: Range[];
     included?: { heading: string; items: string[] };
     note?: string;
+    /** Show the pay-monthly offer under the packages. */
+    monthlyPlans?: boolean;
   };
   related: { service: ServiceKey; text: string }[];
   relatedMore?: Link;
@@ -147,7 +149,7 @@ export const servicePages: ServicePage[] = [
     },
     pricing: {
       heading: 'Pricing',
-      intro: 'Straightforward pricing with no hidden fees.',
+      intro: 'Pay once and own it outright, or pay monthly with nothing upfront. No hidden fees.',
       tiers: [
         {
           name: 'Starter',
@@ -180,6 +182,7 @@ export const servicePages: ServicePage[] = [
         },
       ],
       note: 'All packages include a free consultation, professional design, and training on how to manage your site.',
+      monthlyPlans: true,
     },
     related: [
       { service: 'hosting', text: 'Keep your website running smoothly' },
@@ -191,6 +194,10 @@ export const servicePages: ServicePage[] = [
       {
         question: 'How much does a website cost?',
         answer: `Websites start from ${gbp(P.websites.starter)} for a simple 5-page business site. Most businesses choose the Professional package at ${gbp(P.websites.professional)}, which includes up to 10 pages, custom design, and advanced SEO. Bespoke projects with e-commerce or complex features start from ${gbp(P.websites.bespoke)}. I provide a fixed quote before starting so there are no surprises.`,
+      },
+      {
+        question: 'Can I pay monthly instead?',
+        answer: `Yes. Pay monthly starts from ${gbp(P.monthly.from)} a month with nothing upfront, for your website, hosting and small changes each month. From there I can be as involved as you want: marketing, getting you found on Google, systems that save you time, right up to being properly invested in how your business grows. We agree what's included and the monthly fee before we start.`,
       },
       {
         question: 'How long does it take to build a website?',
