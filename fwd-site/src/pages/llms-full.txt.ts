@@ -1,4 +1,8 @@
-# FWD Thinking Solutions: Full Details
+// Full plain-text summary of FWD for AI assistants.
+// Served at /llms-full.txt. Prices come from src/data/services.ts, so they stay in step with the site.
+import { PRICES as P, gbp } from '../data/services';
+
+const body = `# FWD Thinking Solutions: Full Details
 
 > Web development, business automation, and custom software for UK businesses. Based in Norwich, Norfolk.
 
@@ -31,20 +35,20 @@ Sam works with all kinds of businesses, but knows two industries from the inside
 
 ## Services
 
-### Web Design in Norwich and Norfolk (from £299)
+### Web Design in Norwich and Norfolk (from ${gbp(P.websites.starter)})
 
 Clean, fast, mobile-friendly websites for Norfolk and UK businesses, designed and built by Sam Fowler. Page: https://f-w-d.co.uk/services/professional-websites
 
 Norfolk examples: Salon 64, a hair salon in Dereham (https://f-w-d.co.uk/blog/building-salon-64-dereham), and Fakenham Dog Field, a booking system with Stripe payments and automatic gate access codes at Fakenham Racecourse (https://f-w-d.co.uk/blog/building-fakenham-dog-field).
 
 **Packages:**
-- **Starter (£299)**: Up to 5 pages, mobile responsive, basic SEO, contact form, 2 week delivery
-- **Professional (£799)**: Up to 10 pages, custom design, advanced SEO, blog/news section, 3 week delivery
-- **Bespoke (£1,999+)**: Unlimited pages, bespoke design, full SEO, e-commerce ready, custom integrations
+- **Starter (${gbp(P.websites.starter)})**: Up to 5 pages, mobile responsive, basic SEO, contact form, 2 week delivery
+- **Professional (${gbp(P.websites.professional)})**: Up to 10 pages, custom design, advanced SEO, blog/news section, 3 week delivery
+- **Bespoke (${gbp(P.websites.bespoke)}+)**: Unlimited pages, bespoke design, full SEO, e-commerce ready, custom integrations
 
 **What's included:** Mobile responsive design, SEO optimisation, fast loading, SSL security, content management, custom design to match your brand.
 
-### Business Process Automation (from £799)
+### Business Process Automation (from ${gbp(P.automation.simple)})
 
 Automate the repetitive tasks that eat into your day.
 
@@ -54,10 +58,10 @@ Automate the repetitive tasks that eat into your day.
 - Data & admin: data entry between systems, report generation, scheduling, stock management
 
 **Pricing:**
-- Simple automations: from £799 (1-3 processes, includes 30 days support)
-- Complex projects: from £3,000 (multi-system integrations, includes 90 days support)
+- Simple automations: from ${gbp(P.automation.simple)} (1-3 processes, includes 30 days support)
+- Complex projects: from ${gbp(P.automation.complex)} (multi-system integrations, includes 90 days support)
 
-### Custom App Development (from £1,299)
+### Custom App Development (from ${gbp(P.apps.smaller)})
 
 Web and mobile apps built by Sam in Norwich for businesses in Norfolk and across the UK, from focused tools to platforms on the App Store and Google Play. Examples: Hoofflix, the professional platform for farriers with apps on both stores (https://f-w-d.co.uk/blog/building-hoofflix); Horsebox Hire, a booking platform several hire companies can run on, with AI document checks and DVLA licence checks (https://f-w-d.co.uk/blog/building-horsebox-hire-software); Fakenham Dog Field (https://f-w-d.co.uk/blog/building-fakenham-dog-field). Cost guide: https://f-w-d.co.uk/blog/how-much-does-an-app-cost-uk
 
@@ -70,29 +74,29 @@ Web and mobile apps built by Sam in Norwich for businesses in Norfolk and across
 - Internal tools
 
 **Pricing:**
-- Smaller projects: from £1,299 (MVPs, simple tools, 3-5 week delivery)
-- Larger projects: from £5,000 (full-featured apps, 6-12 week delivery)
+- Smaller projects: from ${gbp(P.apps.smaller)} (MVPs, simple tools, 3-5 week delivery)
+- Larger projects: from ${gbp(P.apps.larger)} (full-featured apps, 6-12 week delivery)
 
 **Every project includes:** Source code ownership, documentation, team training, post-launch support, no vendor lock-in, fixed pricing.
 
-### AI Training (from £299)
+### AI Training (from ${gbp(P.ai.oneToOne)})
 
 Hands-on training in ChatGPT, Claude and other AI tools for businesses in Norwich and Norfolk, in person or over video, built around the client's real work rather than generic prompts. Page: https://f-w-d.co.uk/services/ai-training
 
 **Pricing:**
-- 1-to-1 training: £299 (2-hour session, 30 days email support)
-- Team workshop: £499 (half day, up to 8 people, team prompt library)
-- Ongoing support: £99/month (monthly check-in, cancel anytime)
+- 1-to-1 training: ${gbp(P.ai.oneToOne)} (2-hour session, 30 days email support)
+- Team workshop: ${gbp(P.ai.workshop)} (half day, up to 8 people, team prompt library)
+- Ongoing support: ${gbp(P.ai.support)}/month (monthly check-in, cancel anytime)
 
 Example: on Hoofflix, Sam set up the founder's AI assistant so he can draft articles and courses by talking them through; everything lands as a draft and nothing goes live without a person pressing Publish (https://f-w-d.co.uk/blog/building-hoofflix). Cost guide: https://f-w-d.co.uk/blog/how-much-does-ai-cost-small-business-uk
 
-### Hosting & Maintenance (from £20/month)
+### Hosting & Maintenance (from ${gbp(P.hosting.standard)}/month)
 
 Reliable hosting with ongoing support.
 
 **Plans:**
-- **Standard (£20/month)**: For small websites. Daily backups, SSL, security updates, performance monitoring, email support, monthly reports
-- **Premium (£149/month)**: For business websites. Everything in Standard plus priority support, performance optimisation, 2 content updates a month, uptime monitoring, weekly reports
+- **Standard (${gbp(P.hosting.standard)}/month)**: For small websites. Daily backups, SSL, security updates, performance monitoring, email support, monthly reports
+- **Premium (${gbp(P.hosting.premium)}/month)**: For business websites. Everything in Standard plus priority support, performance optimisation, 2 content updates a month, uptime monitoring, weekly reports
 - **Enterprise (custom pricing)**: For high-traffic sites, with dedicated resources
 
 No contracts, cancel anytime. Free migration from other hosts.
@@ -147,7 +151,7 @@ Based in Norwich, Norfolk, United Kingdom. Working with businesses across the UK
 ## Frequently Asked Questions
 
 **How much does a website cost?**
-Websites start from £299 for a simple 5-page site. Most business websites fall in the £799 range. Bespoke projects with e-commerce or complex features start from £1,999.
+Websites start from ${gbp(P.websites.starter)} for a simple 5-page site. Most business websites fall in the ${gbp(P.websites.professional)} range. Bespoke projects with e-commerce or complex features start from ${gbp(P.websites.bespoke)}.
 
 **How long does it take to build a website?**
 Typically 2-4 weeks depending on the size and complexity of the project.
@@ -156,7 +160,7 @@ Typically 2-4 weeks depending on the size and complexity of the project.
 Yes. I build cross-platform mobile apps for iOS and Android, as well as web applications.
 
 **Can you automate my business processes?**
-Most repetitive tasks can be automated. Common examples include invoicing, email follow-ups, data entry between systems, and scheduling. Simple automations start from £799.
+Most repetitive tasks can be automated. Common examples include invoicing, email follow-ups, data entry between systems, and scheduling. Simple automations start from ${gbp(P.automation.simple)}.
 
 **Do you offer hosting for existing websites?**
 Yes. I can host websites I didn't build. Free migration is included with all hosting plans.
@@ -171,3 +175,7 @@ Norwich, Norfolk, UK. I work with businesses across the United Kingdom.
 
 Website: https://f-w-d.co.uk
 Location: Norwich, Norfolk, United Kingdom
+`;
+
+export const GET = () =>
+  new Response(body, { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });

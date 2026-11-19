@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import Section from '../../components/layout/Section.astro';
 import SmartCTA from '../../components/interactive/SmartCTA.astro';
 import { getCollection, render } from 'astro:content';
+import { SERVICES } from '../../data/services';
 
 export async function getStaticPaths() {
   const industries = await getCollection('industries');
@@ -15,12 +16,9 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 
-const serviceLinks: Record<string, { label: string; href: string }> = {
-  websites: { label: 'Professional Websites', href: '/services/professional-websites' },
-  automation: { label: 'Business Automation', href: '/services/business-process-automation' },
-  apps: { label: 'Custom App Development', href: '/services/custom-app-development' },
-  hosting: { label: 'Hosting & Maintenance', href: '/services/hosting-maintenance' },
-};
+const serviceLinks: Record<string, { label: string; href: string }> = Object.fromEntries(
+  Object.values(SERVICES).map(service => [service.key, { label: service.name, href: service.href }]),
+);
 
 const industryLabel = entry.data.title.replace('Web Development for ', '').replace(' Businesses', '');
 ---

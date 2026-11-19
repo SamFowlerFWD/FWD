@@ -1,5 +1,6 @@
 ---
 import IndustryHub from '../components/hub/IndustryHub.astro';
+import { PRICES as P, gbp } from '../data/services';
 import { projectsFor } from '../data/projects';
 import { horseboxHireSoftwareSchema } from '../lib/schema';
 
@@ -70,7 +71,7 @@ const faqs = [
   },
   {
     question: 'How much does a website for an equestrian business cost?',
-    answer: 'Websites start from £299, and most equestrian business sites land between £799 and £2,500. Booking systems and platforms cost more, from £1,299, and every project gets a fixed quote before any work starts.',
+    answer: `Websites start from ${gbp(P.websites.starter)}, and most equestrian business sites land between ${gbp(P.websites.professional)} and ${gbp(P.websites.typicalTo)}. Booking systems and platforms cost more, from ${gbp(P.apps.smaller)}, and every project gets a fixed quote before any work starts.`,
   },
   {
     question: 'Can you build a booking system for lessons, clinics or livery?',

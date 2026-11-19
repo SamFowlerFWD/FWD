@@ -1,4 +1,6 @@
 ---
+import { serviceList } from '../../data/services';
+
 const currentYear = new Date().getFullYear();
 
 const navLinks = [
@@ -15,13 +17,7 @@ const navLinks = [
   { label: 'Privacy Policy', href: '/privacy-policy' },
 ];
 
-const serviceLinks = [
-  { label: 'Web Design', href: '/services/professional-websites' },
-  { label: 'Business Automation', href: '/services/business-process-automation' },
-  { label: 'Custom App Development', href: '/services/custom-app-development' },
-  { label: 'Hosting & Maintenance', href: '/services/hosting-maintenance' },
-  { label: 'AI Training', href: '/services/ai-training' },
-];
+const serviceLinks = serviceList().map(service => ({ label: service.name, href: service.href }));
 ---
 
 <footer class="bg-slate-900 text-white border-t border-slate-800">

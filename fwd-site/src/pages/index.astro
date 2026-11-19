@@ -6,6 +6,7 @@ import HeroSequence from '../components/homepage/HeroSequence.tsx';
 import TestimonialCarousel from '../components/homepage/TestimonialCarousel.tsx';
 import { getCollection } from 'astro:content';
 import { projects } from '../data/projects';
+import { serviceList, fromPrice } from '../data/services';
 
 // Proof straight after the hero: real projects with one real result each.
 const featuredWork = ['horsebox-hire-software', 'hoofflix', 'fakenham-dog-field', 'millers-fitness']
@@ -17,52 +18,17 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft && data.pub
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 3);
 
+// Service cards come from src/data/services.ts; the playground card is homepage-only.
 const services = [
-  {
-    icon: '&#9889;',
-    name: 'Business Automation',
-    price: 'From £799',
-    description: 'Automate invoicing, emails, data entry and scheduling. Let technology handle the routine.',
-    href: '/services/business-process-automation',
+  ...serviceList(['automation', 'websites', 'apps', 'hosting', 'ai']).map(service => ({
+    icon: service.icon,
+    name: service.shortName,
+    price: fromPrice(service, true),
+    description: service.homeText,
+    href: service.href,
     cta: 'Learn more',
     accent: 'purple',
-  },
-  {
-    icon: '&#127760;',
-    name: 'Web Design',
-    price: 'From £299',
-    description: 'Fast, mobile-friendly websites for Norwich and Norfolk businesses, built in 2 to 3 weeks. SEO-ready from day one.',
-    href: '/services/professional-websites',
-    cta: 'Learn more',
-    accent: 'purple',
-  },
-  {
-    icon: '&#128241;',
-    name: 'Custom Apps',
-    price: 'From £1,299',
-    description: 'Booking systems, dashboards, internal tools. Built around your specific needs.',
-    href: '/services/custom-app-development',
-    cta: 'Learn more',
-    accent: 'purple',
-  },
-  {
-    icon: '&#128640;',
-    name: 'Hosting & Maintenance',
-    price: 'From £20/mo',
-    description: 'Daily backups, security updates, performance monitoring and support when you need it.',
-    href: '/services/hosting-maintenance',
-    cta: 'Learn more',
-    accent: 'purple',
-  },
-  {
-    icon: '&#129302;',
-    name: 'AI Training',
-    price: 'From £299',
-    description: 'Learn to use ChatGPT, Claude and AI tools properly. Hands-on training for your team.',
-    href: '/services/ai-training',
-    cta: 'Learn more',
-    accent: 'purple',
-  },
+  })),
   {
     icon: '&#127918;',
     name: 'Playground',

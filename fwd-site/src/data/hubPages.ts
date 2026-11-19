@@ -2,6 +2,7 @@
 // Each one is rendered by src/pages/[hub]/[slug].astro using HubChildPage.astro.
 // Paragraphs in `problem`, `proof` and `costNote` may contain simple <a> links.
 import type { ServiceKey } from './taxonomy';
+import { PRICES as P, PAYMENT_PLANS_OVER, gbp } from './services';
 
 export type HubKey = 'equestrian' | 'engineering';
 
@@ -64,8 +65,8 @@ export const hubPages: HubPage[] = [
     projects: ['horsebox-hire-software', 'wee-horsebox-hire', 'jth-horseboxes'],
     cost: [
       { label: 'Horsebox hire', price: 'Monthly plan', text: "Horsebox Hire Software is a flat monthly fee plus a small percentage on bookings. No setup fee and no per-vehicle charges." },
-      { label: 'Builder or dealer website', price: '£799 to £2,500', text: "A fast site with model pages, specs, galleries and a proper enquiry form." },
-      { label: 'Stock, spec or quote tools', price: 'From £1,299', text: "Stock listings, spec comparisons or a build-your-box enquiry tool on top of your site." },
+      { label: 'Builder or dealer website', price: `${gbp(P.websites.professional)} to ${gbp(P.websites.typicalTo)}`, text: "A fast site with model pages, specs, galleries and a proper enquiry form." },
+      { label: 'Stock, spec or quote tools', price: `From ${gbp(P.apps.smaller)}`, text: "Stock listings, spec comparisons or a build-your-box enquiry tool on top of your site." },
     ],
     costNote: "Hire companies can see plans and book a demo at <a href=\"https://horseboxhiresoftware.co.uk\">horseboxhiresoftware.co.uk</a>. For deposits and agreements in more depth, read <a href=\"/blog/horsebox-hire-deposits-and-agreements\">how to handle horsebox hire deposits and agreements</a>.",
     faqs: [
@@ -108,8 +109,8 @@ export const hubPages: HubPage[] = [
     ],
     projects: ['hoofflix', 'britten-farriery', 'farriers-choice', 'mill-saddlery'],
     cost: [
-      { label: 'Website', price: '£799 to £2,500', text: "Most equine professional sites land here. A single-page site starts at £299." },
-      { label: 'Rebooking, records or booking', price: 'From £1,299', text: "A system built around how you work, from simple reminders to full client and horse records." },
+      { label: 'Website', price: `${gbp(P.websites.professional)} to ${gbp(P.websites.typicalTo)}`, text: `Most equine professional sites land here. A single-page site starts at ${gbp(P.websites.starter)}.` },
+      { label: 'Rebooking, records or booking', price: `From ${gbp(P.apps.smaller)}`, text: "A system built around how you work, from simple reminders to full client and horse records." },
       { label: 'CPD and handouts for farriers', price: 'Hoofflix', text: "If you're a farrier, Hoofflix already does CPD, research and owner handouts for a monthly subscription." },
     ],
     costNote: "Every project gets a fixed quote before any work starts. See <a href=\"/pricing\">pricing</a> or the <a href=\"/blog/how-much-does-a-website-cost-uk\">website cost guide</a>.",
@@ -155,8 +156,8 @@ export const hubPages: HubPage[] = [
     projects: ['the-balanced-horse', 'hoofflix'],
     cost: [
       { label: 'First course, no audience yet', price: 'Off the shelf', text: "Test the idea on an existing platform first. I'll tell you which one I'd use." },
-      { label: 'Your own platform', price: '£2,000 to £5,000', text: "Courses, subscriptions, one-off sales, drip release and your own admin." },
-      { label: 'Platform plus apps', price: '£5,000+', text: "The same platform with native apps on the App Store and Google Play." },
+      { label: 'Your own platform', price: `${gbp(P.apps.typicalFrom)} to ${gbp(P.apps.larger)}`, text: "Courses, subscriptions, one-off sales, drip release and your own admin." },
+      { label: 'Platform plus apps', price: `${gbp(P.apps.larger)}+`, text: "The same platform with native apps on the App Store and Google Play." },
     ],
     costNote: "Weigh it against what you'd pay in platform fees and transaction cuts over two or three years. For the full picture, read <a href=\"/blog/selling-online-courses-equine-professionals\">selling online courses as an equine professional</a>.",
     faqs: [
@@ -199,9 +200,9 @@ export const hubPages: HubPage[] = [
     ],
     projects: ['fakenham-dog-field', 'horsebox-hire-software', 'mill-saddlery'],
     cost: [
-      { label: 'Booking requests on your website', price: '£799 to £2,500', text: "Part of a website build. Customers request a slot and you confirm it." },
-      { label: 'Online booking with payments', price: 'From £1,299', text: "Customers see what's free, book and pay. Reminders included." },
-      { label: 'Lessons, arenas and livery together', price: '£2,000 to £5,000+', text: "One system for everything the yard sells, with gate codes if you need them." },
+      { label: 'Booking requests on your website', price: `${gbp(P.websites.professional)} to ${gbp(P.websites.typicalTo)}`, text: "Part of a website build. Customers request a slot and you confirm it." },
+      { label: 'Online booking with payments', price: `From ${gbp(P.apps.smaller)}`, text: "Customers see what's free, book and pay. Reminders included." },
+      { label: 'Lessons, arenas and livery together', price: `${gbp(P.apps.typicalFrom)} to ${gbp(P.apps.larger)}+`, text: "One system for everything the yard sells, with gate codes if you need them." },
     ],
     costNote: "If an off-the-shelf app already does what you need, I'll tell you. Start with my <a href=\"/blog/livery-yard-software-compared\">honest comparison of livery yard software</a>.",
     faqs: [
@@ -219,7 +220,7 @@ export const hubPages: HubPage[] = [
     slug: 'website-design',
     nav: 'Equestrian Website Design',
     title: 'Equestrian Website Design for Horse Businesses',
-    description: "Fast, findable websites for farriers, saddlers, yards, trainers and equine suppliers, from £299, built by a Norfolk developer who is a farrier himself.",
+    description: `Fast, findable websites for farriers, saddlers, yards, trainers and equine suppliers, from ${gbp(P.websites.starter)}, built by a Norfolk developer who is a farrier himself.`,
     h1: 'Equestrian Website Design',
     intro: "Most equestrian websites are made to look lovely and left there. I build sites that load fast on a phone at the yard, turn up when people search locally, and turn visitors into bookings and enquiries. And I know the industry, because I work in it.",
     whatsappMessage: "Hi Sam, I'd like to talk about a website for my equestrian business.",
@@ -235,7 +236,7 @@ export const hubPages: HubPage[] = [
       { title: 'Clear next steps', text: "Area covered, prices or starting prices, and a booking or enquiry form, all easy to find." },
       { title: 'Webshops', text: "Product catalogues and shops for equine suppliers, with the detail trade buyers need." },
       { title: 'Booking built in', text: "Booking requests or full online booking, so the site takes work while you're working." },
-      { title: 'Hosting and care', text: "I host and look after the site from £20 a month, so you're not on your own when something needs changing." },
+      { title: 'Hosting and care', text: `I host and look after the site from ${gbp(P.hosting.standard)} a month, so you're not on your own when something needs changing.` },
     ],
     proofHeading: 'Equestrian Sites I Look After',
     proof: [
@@ -243,13 +244,13 @@ export const hubPages: HubPage[] = [
     ],
     projects: ['britten-farriery', 'mill-saddlery', 'farriers-choice', 'jth-horseboxes'],
     cost: [
-      { label: 'Single page', price: '£299', text: "One well-built page with everything a customer needs to get in touch." },
-      { label: 'Typical business site', price: '£799 to £2,500', text: "Where most equestrian business sites land. Usually live in 2 to 4 weeks." },
-      { label: 'Webshop or booking', price: '£2,500+', text: "A catalogue, shop or booking system built into the site." },
+      { label: 'Single page', price: `${gbp(P.websites.starter)}`, text: "One well-built page with everything a customer needs to get in touch." },
+      { label: 'Typical business site', price: `${gbp(P.websites.professional)} to ${gbp(P.websites.typicalTo)}`, text: "Where most equestrian business sites land. Usually live in 2 to 4 weeks." },
+      { label: 'Webshop or booking', price: `${gbp(P.websites.typicalTo)}+`, text: "A catalogue, shop or booking system built into the site." },
     ],
     costNote: "Every project gets a fixed quote before work starts, and you own the site. See the <a href=\"/blog/how-much-does-a-website-cost-uk\">website cost guide</a> for how prices compare.",
     faqs: [
-      { question: 'How much does an equestrian website cost?', answer: "A single-page site starts at £299, and most equestrian business sites land between £799 and £2,500. Webshops and booking systems cost more. Every project gets a fixed quote before any work starts." },
+      { question: 'How much does an equestrian website cost?', answer: `A single-page site starts at ${gbp(P.websites.starter)}, and most equestrian business sites land between ${gbp(P.websites.professional)} and ${gbp(P.websites.typicalTo)}. Webshops and booking systems cost more. Every project gets a fixed quote before any work starts.` },
       { question: 'Do you use WordPress?', answer: "No. I build sites by hand, so they're fast and there are no plugins to keep updating. If you'd like to edit pages yourself, tell me at the start and I'll build that in." },
       { question: 'Will my site show up on Google?', answer: "Every site is built for search from day one: fast pages, proper titles, local signals and structured data. Nobody can honestly promise first place, but the basics will be right." },
       { question: 'I already have a website. Can you improve it?', answer: "Yes. Sometimes a rebuild is the right answer and sometimes a few fixes will do. I'll tell you which." },
@@ -265,7 +266,7 @@ export const hubPages: HubPage[] = [
     slug: 'manufacturer-websites',
     nav: 'Manufacturer Websites',
     title: 'Websites for Manufacturers and Engineering Firms',
-    description: "Websites for UK manufacturers and engineering firms that show what you make, prove what you can do and turn specs into quote requests. Fixed quotes from £799.",
+    description: `Websites for UK manufacturers and engineering firms that show what you make, prove what you can do and turn specs into quote requests. Fixed quotes from ${gbp(P.websites.professional)}.`,
     h1: 'Websites for Manufacturers and Engineering Firms',
     intro: "A buyer lands on your site with a job in mind. In the first thirty seconds they want to know what you make, whether you can do their job and how to get a price. I build manufacturer websites that answer all three, and I run a production business myself.",
     whatsappMessage: "Hi Sam, I run a manufacturing or engineering business and I'd like to talk about our website.",
@@ -273,7 +274,7 @@ export const hubPages: HubPage[] = [
     problem: [
       "A lot of engineering firms have a website that was right ten years ago: a home page about quality and service, a list of machines and a contact form. Buyers have to ring to find out the things they wanted to read.",
       "Meanwhile the material that would win work, like case studies, sectors served, accreditations and spec sheets, sits in someone's inbox or a folder on the server.",
-      "Specialist B2B agencies will fix that, often for £15,000 or more. Most small firms don't need that. They need a fast, clear site that does the selling before the phone rings.",
+      `Specialist B2B agencies will fix that, often for £15,000 or more. Most small firms don't need that. They need a fast, clear site that does the selling before the phone rings.`,
     ],
     build: [
       { title: 'Clear capability pages', text: "What you make, which processes and materials, and which industries you serve, in plain English." },
@@ -281,7 +282,7 @@ export const hubPages: HubPage[] = [
       { title: 'Proof that sells', text: "Case studies, sectors, accreditations and photos of real work." },
       { title: 'Quote forms that ask the right questions', text: "Quantities, materials, drawings and dates, so you get a usable enquiry instead of 'please call me'." },
       { title: 'Built for search', text: "A page for each product and process, so buyers searching for exactly what you make can find you." },
-      { title: 'Hosting and support', text: "I keep it fast, secure and up to date from £20 a month." },
+      { title: 'Hosting and support', text: `I keep it fast, secure and up to date from ${gbp(P.hosting.standard)} a month.` },
     ],
     proofHeading: 'Manufacturers I Work With',
     proof: [
@@ -290,9 +291,9 @@ export const hubPages: HubPage[] = [
     ],
     projects: ['harford-attachments', 'jth-horseboxes'],
     cost: [
-      { label: 'Capability website', price: 'From £799', text: "A clear, fast site that explains what you do and makes it easy to ask for a quote." },
-      { label: 'Typical manufacturer site', price: '£799 to £2,500', text: "Capability, sector and product pages, case studies and a proper quote form." },
-      { label: 'With catalogue or quote tools', price: '£2,500 to £5,000+', text: "A searchable product catalogue, data sheets or a quote tool built in." },
+      { label: 'Capability website', price: `From ${gbp(P.websites.professional)}`, text: "A clear, fast site that explains what you do and makes it easy to ask for a quote." },
+      { label: 'Typical manufacturer site', price: `${gbp(P.websites.professional)} to ${gbp(P.websites.typicalTo)}`, text: "Capability, sector and product pages, case studies and a proper quote form." },
+      { label: 'With catalogue or quote tools', price: `${gbp(P.websites.typicalTo)} to ${gbp(P.apps.larger)}+`, text: "A searchable product catalogue, data sheets or a quote tool built in." },
     ],
     costNote: "Every project gets a fixed quote before work starts, and you own the site, the content and the accounts. See <a href=\"/pricing\">pricing</a>.",
     faqs: [
@@ -334,9 +335,9 @@ export const hubPages: HubPage[] = [
     ],
     projects: ['harford-attachments', 'farriers-choice'],
     cost: [
-      { label: 'Small range on your website', price: '£799 to £2,500', text: "A few dozen products with proper spec pages, as part of a website build." },
-      { label: 'Searchable catalogue', price: '£2,500 to £5,000', text: "Filters, spec tables and data sheets generated from your product data." },
-      { label: 'Compatibility, trade login or stock', price: '£5,000+', text: "Machine fit-finders, trade pricing or live stock from your systems." },
+      { label: 'Small range on your website', price: `${gbp(P.websites.professional)} to ${gbp(P.websites.typicalTo)}`, text: "A few dozen products with proper spec pages, as part of a website build." },
+      { label: 'Searchable catalogue', price: `${gbp(P.websites.typicalTo)} to ${gbp(P.apps.larger)}`, text: "Filters, spec tables and data sheets generated from your product data." },
+      { label: 'Compatibility, trade login or stock', price: `${gbp(P.apps.larger)}+`, text: "Machine fit-finders, trade pricing or live stock from your systems." },
     ],
     costNote: "If your product data lives in a spreadsheet, that's a fine place to start. See the <a href=\"/blog/how-much-does-an-app-cost-uk\">app cost guide</a> for how bigger builds are priced.",
     faqs: [
@@ -379,9 +380,9 @@ export const hubPages: HubPage[] = [
     ],
     projects: ['horsebox-hire-software'],
     cost: [
-      { label: 'Smart enquiry form', price: 'From £799', text: "Asks the right questions and sends you a complete, structured request." },
-      { label: 'Quote tool or price calculator', price: 'From £1,299', text: "Your price rules in one tool, internal or customer-facing. Most land between £2,500 and £5,000." },
-      { label: 'Configurator with rules', price: '£2,500 to £5,000+', text: "Options that depend on each other, compatibility checks, live pricing and PDF quotes." },
+      { label: 'Smart enquiry form', price: `From ${gbp(P.websites.professional)}`, text: "Asks the right questions and sends you a complete, structured request." },
+      { label: 'Quote tool or price calculator', price: `From ${gbp(P.apps.smaller)}`, text: `Your price rules in one tool, internal or customer-facing. Most land between ${gbp(P.websites.typicalTo)} and ${gbp(P.apps.larger)}.` },
+      { label: 'Configurator with rules', price: `${gbp(P.websites.typicalTo)} to ${gbp(P.apps.larger)}+`, text: "Options that depend on each other, compatibility checks, live pricing and PDF quotes." },
     ],
     costNote: "More detail in <a href=\"/blog/how-much-does-a-product-configurator-cost\">what a product configurator costs</a> and <a href=\"/blog/replacing-spreadsheet-quoting\">replacing spreadsheet quoting</a>.",
     faqs: [
@@ -424,9 +425,9 @@ export const hubPages: HubPage[] = [
     ],
     projects: ['horsebox-hire-software'],
     cost: [
-      { label: 'Simple job board', price: 'From £1,299', text: "Jobs, stages and due dates on any screen. Often the biggest win on its own." },
-      { label: 'Job sheets and updates', price: '£2,000 to £5,000', text: "Job sheets, photos, stage updates from the floor and customer messages." },
-      { label: 'Connected to quotes and accounts', price: '£5,000+', text: "Quotes become jobs, jobs become invoices, without retyping anything." },
+      { label: 'Simple job board', price: `From ${gbp(P.apps.smaller)}`, text: "Jobs, stages and due dates on any screen. Often the biggest win on its own." },
+      { label: 'Job sheets and updates', price: `${gbp(P.apps.typicalFrom)} to ${gbp(P.apps.larger)}`, text: "Job sheets, photos, stage updates from the floor and customer messages." },
+      { label: 'Connected to quotes and accounts', price: `${gbp(P.apps.larger)}+`, text: "Quotes become jobs, jobs become invoices, without retyping anything." },
     ],
     costNote: "Start small and add to it. See <a href=\"/blog/business-tasks-you-should-automate\">business tasks worth automating</a> for where the quick wins usually are.",
     faqs: [
@@ -468,10 +469,10 @@ export const hubPages: HubPage[] = [
     ],
     projects: ['horsebox-hire-software', 'hoofflix'],
     cost: [
-      { label: 'Orders and documents portal', price: '£2,000 to £5,000', text: "Secure logins, order status, lead times and downloadable documents." },
-      { label: 'Dealer pricing, stock and integrations', price: '£5,000+', text: "Per-dealer prices, live stock and links to your accounts or stock system." },
+      { label: 'Orders and documents portal', price: `${gbp(P.apps.typicalFrom)} to ${gbp(P.apps.larger)}`, text: "Secure logins, order status, lead times and downloadable documents." },
+      { label: 'Dealer pricing, stock and integrations', price: `${gbp(P.apps.larger)}+`, text: "Per-dealer prices, live stock and links to your accounts or stock system." },
     ],
-    costNote: "Every project gets a fixed quote, with payment plans available on projects over £2,000. See <a href=\"/pricing\">pricing</a>.",
+    costNote: `Every project gets a fixed quote, with payment plans available on projects over ${gbp(PAYMENT_PLANS_OVER)}. See <a href="/pricing">pricing</a>.`,
     faqs: [
       { question: 'Does it connect to our accounts or stock system?', answer: "Usually. Most modern accounts and stock systems can share data with a portal. If yours can't, a regular export can keep it up to date. I'll check before I quote." },
       { question: 'Is it secure?', answer: "Each customer sees only their own data, enforced in the database rather than just hidden on the page. That's how Horsebox Hire Software keeps every hire company's data apart." },

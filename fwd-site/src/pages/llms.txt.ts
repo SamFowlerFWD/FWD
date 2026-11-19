@@ -1,4 +1,8 @@
-# FWD Thinking Solutions
+// Short plain-text summary of FWD for AI assistants.
+// Served at /llms.txt. Prices come from src/data/services.ts, so they stay in step with the site.
+import { PRICES as P, gbp } from '../data/services';
+
+const body = `# FWD Thinking Solutions
 
 > Web development, business automation, and custom software for UK businesses. Based in Norwich, Norfolk.
 
@@ -27,11 +31,11 @@ Sam works with all kinds of businesses, but knows two industries from the inside
 
 ## Services
 
-- **Professional Websites**: Fast, mobile-friendly websites from £299
-- **Business Process Automation**: Automate invoicing, emails, data entry from £799
-- **Custom App Development**: Booking systems, customer portals, iOS and Android apps from £1,299
-- **AI Training**: Hands-on ChatGPT and Claude training for businesses in Norwich and Norfolk, in person or over video, from £299
-- **Hosting & Maintenance**: Backups, security updates, support from £20/month
+- **Professional Websites**: Fast, mobile-friendly websites from ${gbp(P.websites.starter)}
+- **Business Process Automation**: Automate invoicing, emails, data entry from ${gbp(P.automation.simple)}
+- **Custom App Development**: Booking systems, customer portals, iOS and Android apps from ${gbp(P.apps.smaller)}
+- **AI Training**: Hands-on ChatGPT and Claude training for businesses in Norwich and Norfolk, in person or over video, from ${gbp(P.ai.oneToOne)}
+- **Hosting & Maintenance**: Backups, security updates, support from ${gbp(P.hosting.standard)}/month
 
 ## Location
 
@@ -68,3 +72,7 @@ Website: https://f-w-d.co.uk
 ## Full Version
 
 For detailed information, see: https://f-w-d.co.uk/llms-full.txt
+`;
+
+export const GET = () =>
+  new Response(body, { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });

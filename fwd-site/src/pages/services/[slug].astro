@@ -1,0 +1,17 @@
+---
+// The five service pages, all from src/data/servicePages.ts.
+import ServicePage from '../../components/services/ServicePage.astro';
+import { servicePages } from '../../data/servicePages';
+import { SERVICES } from '../../data/services';
+
+export function getStaticPaths() {
+  return servicePages.map(page => ({
+    params: { slug: SERVICES[page.service].href.replace('/services/', '') },
+    props: { page },
+  }));
+}
+
+const { page } = Astro.props;
+---
+
+<ServicePage page={page} />

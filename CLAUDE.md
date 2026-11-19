@@ -47,12 +47,12 @@ npm run preview      # Preview production build
 ./test-playground.sh # Test AI playground APIs
 ```
 
-## Key Services
+## Services and Prices
 
-1. **Business Process Automation** - Starting from £799
-2. **AI-Powered Websites** - Starting from £799
-3. **Custom App Development** - Starting from £1,299
-4. **AI Hosting & Maintenance** - From £99/month
+Every service name, link and price lives in `fwd-site/src/data/services.ts` (`PRICES` and `SERVICES`). The menu, footer, homepage, services, pricing and service pages, hub pages, llms.txt and structured data all read from it, so change prices there and nowhere else. Never type a price into a page; use `gbp(PRICES...)`.
+
+- The five service pages share one template: content in `src/data/servicePages.ts`, layout in `src/components/services/ServicePage.astro`, route `src/pages/services/[slug].astro`.
+- Blog posts are dated articles and keep their own typed prices.
 
 ## Branding
 

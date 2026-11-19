@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { serviceList, fromPrice } from '../../data/services';
 
 interface NavLink {
   label: string;
@@ -21,35 +22,14 @@ const Navigation: React.FC = () => {
     {
       label: 'Services',
       href: '/services',
-      dropdown: [
-        {
-          label: 'Business Process Automation',
-          href: '/services/business-process-automation',
-          description: 'Turn 40-hour weeks into 4-hour oversight',
-          badge: 'Popular'
-        },
-        {
-          label: 'Web Design',
-          href: '/services/professional-websites',
-          description: 'Fast websites for Norfolk and UK businesses'
-        },
-        {
-          label: 'Custom App Development',
-          href: '/services/custom-app-development',
-          description: 'Bespoke apps for your business'
-        },
-        {
-          label: 'Hosting & Maintenance',
-          href: '/services/hosting-maintenance',
-          description: 'Keep your site running smoothly',
-          badge: 'From £20/mo'
-        },
-        {
-          label: 'AI Training',
-          href: '/services/ai-training',
-          description: 'Learn to use AI tools properly'
-        }
-      ]
+      dropdown: serviceList(['automation', 'websites', 'apps', 'hosting', 'ai']).map(service => ({
+        label: service.name,
+        href: service.href,
+        description: service.menuText,
+        badge: service.key === 'automation' ? 'Popular'
+          : service.key === 'hosting' ? fromPrice(service, true)
+          : undefined,
+      }))
     },
     {
       label: 'Industries',

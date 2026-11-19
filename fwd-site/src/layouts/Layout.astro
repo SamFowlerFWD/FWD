@@ -3,6 +3,7 @@ import Nav from '../components/ui/Nav.astro';
 import Footer from '../components/ui/Footer.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import CookieConsent from '../components/CookieConsent.tsx';
+import { serviceList } from '../data/services';
 import '../styles/tokens.css';
 import '../styles/animations.css';
 import '../styles/global.css';
@@ -183,77 +184,24 @@ const pageTitle = isHomepage ? title : `${title} | FWD`;
         "hasOfferCatalog": {
           "@type": "OfferCatalog",
           "name": "Web Development & Business Solutions",
-          "itemListElement": [
-            {
-              "@type": "Offer",
-              "itemOffered": {
-                "@type": "Service",
-                "name": "Business Process Automation",
-                "description": "Automate repetitive business tasks including invoicing, emails, data entry and scheduling",
-                "url": "https://f-w-d.co.uk/services/business-process-automation"
-              },
-              "price": "799",
-              "priceCurrency": "GBP",
-              "priceSpecification": {
-                "@type": "PriceSpecification",
-                "price": "799",
-                "priceCurrency": "GBP",
-                "minPrice": "799"
-              }
+          "itemListElement": serviceList().map(service => ({
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": service.name,
+              "description": service.schemaDescription,
+              "url": `https://f-w-d.co.uk${service.href}`
             },
-            {
-              "@type": "Offer",
-              "itemOffered": {
-                "@type": "Service",
-                "name": "Web Design",
-                "description": "Fast, mobile-friendly, SEO-optimised websites for businesses in Norwich, Norfolk and the UK",
-                "url": "https://f-w-d.co.uk/services/professional-websites"
-              },
-              "price": "299",
+            "price": String(service.from),
+            "priceCurrency": "GBP",
+            "priceSpecification": {
+              "@type": "PriceSpecification",
+              "price": String(service.from),
               "priceCurrency": "GBP",
-              "priceSpecification": {
-                "@type": "PriceSpecification",
-                "price": "299",
-                "priceCurrency": "GBP",
-                "minPrice": "299"
-              }
-            },
-            {
-              "@type": "Offer",
-              "itemOffered": {
-                "@type": "Service",
-                "name": "Custom App Development",
-                "description": "Bespoke web and mobile applications including booking systems, dashboards and internal tools",
-                "url": "https://f-w-d.co.uk/services/custom-app-development"
-              },
-              "price": "1299",
-              "priceCurrency": "GBP",
-              "priceSpecification": {
-                "@type": "PriceSpecification",
-                "price": "1299",
-                "priceCurrency": "GBP",
-                "minPrice": "1299"
-              }
-            },
-            {
-              "@type": "Offer",
-              "itemOffered": {
-                "@type": "Service",
-                "name": "Hosting & Maintenance",
-                "description": "Reliable hosting with daily backups, security updates, performance monitoring and support",
-                "url": "https://f-w-d.co.uk/services/hosting-maintenance"
-              },
-              "price": "20",
-              "priceCurrency": "GBP",
-              "priceSpecification": {
-                "@type": "PriceSpecification",
-                "price": "20",
-                "priceCurrency": "GBP",
-                "minPrice": "20",
-                "unitText": "MONTH"
-              }
+              "minPrice": String(service.from),
+              ...(service.monthly ? { "unitText": "MONTH" } : {})
             }
-          ]
+          }))
         },
         "aggregateRating": {
           "@type": "AggregateRating",

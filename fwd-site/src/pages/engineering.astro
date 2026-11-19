@@ -1,5 +1,6 @@
 ---
 import IndustryHub from '../components/hub/IndustryHub.astro';
+import { PRICES as P, gbp } from '../data/services';
 
 const operator = [
   {
@@ -61,7 +62,7 @@ const faqs = [
   },
   {
     question: 'How much does a website for a manufacturer cost?',
-    answer: 'A solid capability website starts from £799. Product catalogues with spec sheets, quote tools or customer portals usually land between £2,500 and £5,000 or more. Every project gets a fixed quote before any work starts.',
+    answer: `A solid capability website starts from ${gbp(P.websites.professional)}. Product catalogues with spec sheets, quote tools or customer portals usually land between ${gbp(P.websites.typicalTo)} and ${gbp(P.apps.larger)} or more. Every project gets a fixed quote before any work starts.`,
   },
   {
     question: 'Can it connect to the systems we already use?',

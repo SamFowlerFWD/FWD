@@ -12,19 +12,14 @@ export const INDUSTRIES = {
   'trades-construction': { label: 'Trades & Construction', href: '/industries/trades-construction', hub: false },
 } as const;
 
-export const SERVICES = {
-  websites: { label: 'Websites', href: '/services/professional-websites' },
-  apps: { label: 'Apps', href: '/services/custom-app-development' },
-  automation: { label: 'Automation', href: '/services/business-process-automation' },
-  ai: { label: 'AI', href: '/services/ai-training' },
-  hosting: { label: 'Hosting', href: '/services/hosting-maintenance' },
-} as const;
+// Names, links and prices for each service live in ./services.ts.
+export const SERVICE_KEYS = ['websites', 'apps', 'automation', 'ai', 'hosting'] as const;
+export { SERVICES } from './services';
 
 export type IndustryKey = keyof typeof INDUSTRIES;
-export type ServiceKey = keyof typeof SERVICES;
+export type ServiceKey = (typeof SERVICE_KEYS)[number];
 
 export const INDUSTRY_KEYS = Object.keys(INDUSTRIES) as [IndustryKey, ...IndustryKey[]];
-export const SERVICE_KEYS = Object.keys(SERVICES) as [ServiceKey, ...ServiceKey[]];
 
 // Industry content-collection slugs that now live at a hub URL instead.
 export const HUB_REPLACES: Record<string, IndustryKey> = {
