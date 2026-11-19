@@ -109,7 +109,7 @@ export const hubPages: HubPage[] = [
     ],
     projects: ['hoofflix', 'britten-farriery', 'farriers-choice', 'mill-saddlery'],
     cost: [
-      { label: 'Website', price: `${gbp(P.websites.professional)} to ${gbp(P.websites.typicalTo)}`, text: `Most equine professional sites land here. A single-page site starts at ${gbp(P.websites.starter)}.` },
+      { label: 'Website', price: `${gbp(P.websites.professional)} to ${gbp(P.websites.typicalTo)}`, text: `Most equine professional sites land here. A simple site of up to five pages starts at ${gbp(P.websites.starter)}.` },
       { label: 'Rebooking, records or booking', price: `From ${gbp(P.apps.smaller)}`, text: "A system built around how you work, from simple reminders to full client and horse records." },
       { label: 'CPD and handouts for farriers', price: 'Hoofflix', text: "If you're a farrier, Hoofflix already does CPD, research and owner handouts for a monthly subscription." },
     ],
@@ -244,13 +244,13 @@ export const hubPages: HubPage[] = [
     ],
     projects: ['britten-farriery', 'mill-saddlery', 'farriers-choice', 'jth-horseboxes'],
     cost: [
-      { label: 'Single page', price: `${gbp(P.websites.starter)}`, text: "One well-built page with everything a customer needs to get in touch." },
+      { label: 'Starter site', price: `${gbp(P.websites.starter)}`, text: "Up to five pages with everything a customer needs to get in touch." },
       { label: 'Typical business site', price: `${gbp(P.websites.professional)} to ${gbp(P.websites.typicalTo)}`, text: "Where most equestrian business sites land. Usually live in 2 to 4 weeks." },
-      { label: 'Webshop or booking', price: `${gbp(P.websites.typicalTo)}+`, text: "A catalogue, shop or booking system built into the site." },
+      { label: 'Webshop or booking', price: `${gbp(P.websites.bespoke)}+`, text: "A catalogue, shop or booking system built into the site." },
     ],
     costNote: "Every project gets a fixed quote before work starts, and you own the site. See the <a href=\"/blog/how-much-does-a-website-cost-uk\">website cost guide</a> for how prices compare.",
     faqs: [
-      { question: 'How much does an equestrian website cost?', answer: `A single-page site starts at ${gbp(P.websites.starter)}, and most equestrian business sites land between ${gbp(P.websites.professional)} and ${gbp(P.websites.typicalTo)}. Webshops and booking systems cost more. Every project gets a fixed quote before any work starts.` },
+      { question: 'How much does an equestrian website cost?', answer: `A simple site of up to five pages starts at ${gbp(P.websites.starter)}, and most equestrian business sites land between ${gbp(P.websites.professional)} and ${gbp(P.websites.typicalTo)}. Webshops and booking systems cost more. Every project gets a fixed quote before any work starts.` },
       { question: 'Do you use WordPress?', answer: "No. I build sites by hand, so they're fast and there are no plugins to keep updating. If you'd like to edit pages yourself, tell me at the start and I'll build that in." },
       { question: 'Will my site show up on Google?', answer: "Every site is built for search from day one: fast pages, proper titles, local signals and structured data. Nobody can honestly promise first place, but the basics will be right." },
       { question: 'I already have a website. Can you improve it?', answer: "Yes. Sometimes a rebuild is the right answer and sometimes a few fixes will do. I'll tell you which." },
