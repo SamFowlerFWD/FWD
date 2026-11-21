@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { PRICES, gbp } from '../../data/services';
 
 // ─── Terminal ───────────────────────────────────────────────
 
@@ -270,16 +271,16 @@ export default function HeroSequence() {
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                 Based in Norfolk, working across the UK
               </div>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-3 sm:mb-4 tracking-tight">
-                One Developer.<br />
-                <span className="bg-gradient-to-r from-amber-400 to-amber-300 bg-clip-text text-transparent">No Middlemen.</span>
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4 tracking-tight">
+                Websites and systems{' '}
+                <span className="bg-gradient-to-r from-amber-400 to-amber-300 bg-clip-text text-transparent">for businesses the agencies won't bother{'\u00a0'}with.</span>
               </h1>
               <p className="text-base sm:text-lg text-gray-300 max-w-xl mx-auto lg:mx-0 mb-4 sm:mb-7">
-                Websites, apps and automation for UK businesses. You deal directly with the person who builds it.
+                One developer, no middlemen. Fixed prices, or pay monthly from {gbp(PRICES.monthly.from)} with nothing upfront.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-2.5 sm:gap-3">
                 <a href="https://wa.me/447516330379?text=Hi%20Sam%2C%20I%20found%20your%20website%20and%20I%27m%20interested%20in%20discussing%20a%20project." target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 py-3 sm:px-8 sm:py-4 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold shadow-lg shadow-amber-500/20 hover:-translate-y-0.5 transition-all duration-200">
-                  <WaIcon /> Message on WhatsApp
+                  <WaIcon /> Message Sam
                 </a>
                 <a href="/work" className="inline-flex items-center gap-2 px-6 py-3 sm:px-8 sm:py-4 rounded-lg border-2 border-white/20 text-white font-bold hover:bg-white hover:text-slate-900 transition-all duration-200">
                   See My Work
