@@ -9,7 +9,9 @@ export const COMPANY = {
   email: 'thinking@f-w-d.co.uk',
   website: 'f-w-d.co.uk',
   url: 'https://f-w-d.co.uk',
-  logoUrl: 'https://f-w-d.co.uk/fwd-logo-email.png',
+  // Served from the pages.dev address on purpose: Cloudflare's hotlink
+  // protection on f-w-d.co.uk refuses images asked for by a webmail page.
+  logoUrl: 'https://fwd-site.pages.dev/fwd-logo-email.png',
   // Brand colours (tailwind.config.mjs and the logo).
   purple: '#6D28D9',
   ink: '#0A0E27',
