@@ -3,6 +3,8 @@
 const MESSAGES: Record<string, string> = {
   signed_out: 'You have been signed out. Please sign in again.',
   link_expired: 'That sign-in link has expired or has already been used. Enter your email to get a new one.',
+  code_wrong: 'That code is not right, or it has expired. Check it and try again, or ask for a new email.',
+  push_failed: 'The test could not be sent. Turn notifications off and on again, then try once more.',
   invalid: 'Please check what you entered and try again.',
   email_in_use: 'That email address is already in use.',
   already_signed: 'This agreement has already been signed.',

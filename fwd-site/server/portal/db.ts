@@ -123,6 +123,17 @@ const MIGRATIONS: string[][] = [
       tone TEXT NOT NULL DEFAULT 'info', created_at TEXT NOT NULL, done_at TEXT)`,
     `CREATE INDEX IF NOT EXISTS idx_notifications_open ON notifications (done_at, created_at)`,
   ],
+  // 10: the client area as a phone app. push_subscriptions is each device Sam
+  // has turned notifications on for. login_codes is the 6 digit code in the
+  // sign-in email, for the installed app, where an emailed link opens the
+  // browser instead: one per person, replaced each time, five guesses at most.
+  [
+    `CREATE TABLE IF NOT EXISTS push_subscriptions (
+      endpoint TEXT PRIMARY KEY, user_id TEXT NOT NULL, p256dh TEXT NOT NULL, auth TEXT NOT NULL,
+      device TEXT NOT NULL DEFAULT '', created_at TEXT NOT NULL)`,
+    `CREATE TABLE IF NOT EXISTS login_codes (
+      user_id TEXT PRIMARY KEY, code_hash TEXT NOT NULL, expires_at TEXT NOT NULL, attempts INTEGER NOT NULL DEFAULT 0)`,
+  ],
 ];
 
 let ready = false;

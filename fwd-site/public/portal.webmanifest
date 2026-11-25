@@ -1,0 +1,17 @@
+{
+  "name": "FWD client area",
+  "short_name": "FWD",
+  "description": "Sign agreements, send your brief and files, and see where your project is.",
+  "id": "/portal",
+  "start_url": "/portal",
+  "scope": "/portal",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#0f172a",
+  "lang": "en-GB",
+  "icons": [
+    { "src": "/portal-icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/portal-icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/portal-icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

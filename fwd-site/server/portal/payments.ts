@@ -11,6 +11,7 @@
 
 import { HttpError, adminEmail, clean, json, now, pounds, readJson } from './core';
 import { sendEmail, toBase64 } from './email';
+import { sendPush } from './push';
 import { invoicePdf } from './pdf';
 import * as revolut from './revolut';
 import { type Ctx, type Handler, type Route, clientLogin, getContract, getProject, loginLink, record } from './router';
@@ -180,13 +181,21 @@ async function cardInvoices(c: Ctx, line: PaymentLine): Promise<void> {
 
 export type Tone = 'action' | 'info';
 
-// Puts a notification on Sam's projects page. Never throws.
+// Puts a notification on Sam's projects page and sends it to his phone
+// (push.ts) if he has turned that on. Never throws.
 export async function notify(c: Ctx, projectId: string | null, title: string, body: string, tone: Tone = 'info'): Promise<void> {
   try {
     await c.db
       .prepare('INSERT INTO notifications (project_id, title, body, tone, created_at) VALUES (?, ?, ?, ?, ?)')
       .bind(projectId, title.slice(0, 200), body.slice(0, 1000), tone, now())
       .run();
+    const [project, open] = await Promise.all([
+      projectId ? c.db.prepare('SELECT name FROM projects WHERE id = ?').bind(projectId).first<{ name: string }>() : null,
+      c.db.prepare('SELECT COUNT(*) AS n FROM notifications WHERE done_at IS NULL').first<{ n: number }>(),
+    ]);
+    // Say which project it is, unless the title already does.
+    const name = project?.name && !title.includes(project.name) ? `${project.name}. ` : '';
+    await sendPush(c, { title, body: name + body, url: projectId ? `/portal#/p/${projectId}` : '/portal', count: open?.n });
   } catch (err) {
     console.error('Could not save notification', err);
   }

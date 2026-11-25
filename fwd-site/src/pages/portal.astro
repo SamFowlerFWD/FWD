@@ -15,7 +15,18 @@ import '../styles/global.css';
     <meta name="robots" content="noindex, nofollow" />
     <meta name="referrer" content="no-referrer" />
     <link rel="icon" type="image/webp" href="/fwd-logo.webp" />
+    <!-- Lets the client area be added to a phone's home screen as an app. -->
+    <link rel="manifest" href="/portal.webmanifest" />
+    <link rel="apple-touch-icon" href="/portal-icon-180.png" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="FWD" />
     <title>Client area | FWD</title>
+    <script is:inline>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/portal-sw.js', { scope: '/portal' }).catch(function () {});
+      }
+    </script>
   </head>
   <body class="min-h-screen bg-slate-50">
     <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:rounded focus:bg-white focus:px-3 focus:py-2">Skip to content</a>

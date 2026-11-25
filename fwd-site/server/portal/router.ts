@@ -12,6 +12,7 @@ import { bankDetails, notify, paymentLines, paymentRoutes, requestOnSigning, syn
 import { paymentsEnabled } from './revolut';
 import { bankRoutes, bankStatus, syncBank } from './bank';
 import { dailyRoutes } from './daily';
+import { pushRoutes } from './push';
 import { BRIEF_QUESTIONS, DEFAULT_ITEMS, MAX_UPLOAD_BYTES, STAGES } from '../../src/data/portal';
 
 const COOKIE = 'fwd_portal';
@@ -111,6 +112,17 @@ const login: Handler = async (c) => {
   if ((recent?.n ?? 0) >= 5) return json({ ok: true });
 
   const link = await loginLink(c, user.id, LOGIN_LINK_MS);
+  // The same email carries a 6 digit code. The app on a phone's home screen
+  // cannot use the link (it opens the browser, which is signed in separately),
+  // so there the code is typed in instead.
+  const code = String(crypto.getRandomValues(new Uint32Array(1))[0] % 1_000_000).padStart(6, '0');
+  await c.db
+    .prepare(
+      `INSERT INTO login_codes (user_id, code_hash, expires_at, attempts) VALUES (?, ?, ?, 0)
+       ON CONFLICT (user_id) DO UPDATE SET code_hash = excluded.code_hash, expires_at = excluded.expires_at, attempts = 0`,
+    )
+    .bind(user.id, await sha256(`${user.id}:${code}`), later(LOGIN_LINK_MS))
+    .run();
   await sendEmail(c.env, {
     to: [user.email],
     subject: 'Your FWD sign-in link',
@@ -121,10 +133,43 @@ const login: Handler = async (c) => {
       '',
       link,
       '',
-      'It works once and expires in 30 minutes. If you did not ask for this, you can ignore this email.',
+      `Using the FWD app on your phone? Type in this code instead: ${code}`,
+      '',
+      'Both work once and expire in 30 minutes. If you did not ask for this, you can ignore this email.',
     ].join('\n'),
   });
-  return json({ ok: true, ...(c.env.PORTAL_DEV === '1' ? { devLink: link } : {}) });
+  return json({ ok: true, ...(c.env.PORTAL_DEV === '1' ? { devLink: link, devCode: code } : {}) });
+};
+
+// Signs someone in: a new session, and the cookie that goes with it.
+async function startSession(c: Ctx, user: User, first: ReturnType<D1['prepare']>): Promise<Response> {
+  const session = randomToken();
+  await c.db.batch([
+    first,
+    c.db
+      .prepare('INSERT INTO sessions (token_hash, user_id, created_at, expires_at) VALUES (?, ?, ?, ?)')
+      .bind(await sha256(session), user.id, now(), later(SESSION_MS)),
+    c.db.prepare('UPDATE users SET last_login_at = ? WHERE id = ?').bind(now(), user.id),
+  ]);
+  return json({ ok: true, user: publicUser(user) }, 200, { 'Set-Cookie': cookie(c.url, session, SESSION_MS / 1000) });
+}
+
+// Signing in with the code from the email. Every wrong guess is counted, and
+// after five the code is dead and a new email is needed.
+const verifyCode: Handler = async (c) => {
+  const body = await readJson(c.request);
+  const email = clean(body.email, 200).toLowerCase();
+  const code = clean(body.code, 20).replace(/\D/g, '');
+  const user = await c.db.prepare('SELECT id, email, name, role, client_id FROM users WHERE email = ?').bind(email).first<User>();
+  if (!user || code.length !== 6) throw new HttpError(401, 'code_wrong');
+  const counted = await c.db
+    .prepare('UPDATE login_codes SET attempts = attempts + 1 WHERE user_id = ? AND expires_at > ? AND attempts < 5')
+    .bind(user.id, now())
+    .run();
+  if (!counted.meta?.changes) throw new HttpError(401, 'code_wrong');
+  const row = await c.db.prepare('SELECT code_hash FROM login_codes WHERE user_id = ?').bind(user.id).first<{ code_hash: string }>();
+  if (!row || row.code_hash !== (await sha256(`${user.id}:${code}`))) throw new HttpError(401, 'code_wrong');
+  return startSession(c, user, c.db.prepare('DELETE FROM login_codes WHERE user_id = ?').bind(user.id));
 };
 
 const verify: Handler = async (c) => {
@@ -141,15 +186,7 @@ const verify: Handler = async (c) => {
   const user = await c.db.prepare('SELECT id, email, name, role, client_id FROM users WHERE id = ?').bind(row.user_id).first<User>();
   if (!user) throw new HttpError(401, 'link_expired');
 
-  const session = randomToken();
-  await c.db.batch([
-    c.db.prepare('UPDATE login_tokens SET used_at = ? WHERE token_hash = ?').bind(now(), hash),
-    c.db
-      .prepare('INSERT INTO sessions (token_hash, user_id, created_at, expires_at) VALUES (?, ?, ?, ?)')
-      .bind(await sha256(session), user.id, now(), later(SESSION_MS)),
-    c.db.prepare('UPDATE users SET last_login_at = ? WHERE id = ?').bind(now(), user.id),
-  ]);
-  return json({ ok: true, user: publicUser(user) }, 200, { 'Set-Cookie': cookie(c.url, session, SESSION_MS / 1000) });
+  return startSession(c, user, c.db.prepare('UPDATE login_tokens SET used_at = ? WHERE token_hash = ?').bind(now(), hash));
 };
 
 const logout: Handler = async (c) => {
@@ -743,6 +780,23 @@ async function getItem(c: Ctx, itemId: string) {
   return item;
 }
 
+// Tells Sam when a client adds something to their project. The same news is
+// only passed on once in half an hour, so ten files in a row is one notification.
+async function clientNews(c: Ctx, projectId: string, what: string, body: string): Promise<void> {
+  if (c.user!.role !== 'client') return;
+  try {
+    const project = await c.db.prepare('SELECT name FROM projects WHERE id = ?').bind(projectId).first<{ name: string }>();
+    const title = `${what}: ${project?.name ?? 'project'}`;
+    const recent = await c.db
+      .prepare('SELECT id FROM notifications WHERE project_id = ? AND title = ? AND body = ? AND created_at > ?')
+      .bind(projectId, title, body, new Date(Date.now() - 30 * MINUTE).toISOString())
+      .first();
+    if (!recent) await notify(c, projectId, title, body);
+  } catch (err) {
+    console.error('Could not pass on client news', err);
+  }
+}
+
 const addItem: Handler = async (c, [id]) => {
   await getProject(c, id);
   const body = await readJson(c.request);
@@ -771,6 +825,9 @@ const updateItem: Handler = async (c, [itemId]) => {
   ];
   if (status !== item.status) statements.push(...record(c, item.project_id, `"${item.label}" marked ${status === 'done' ? 'done' : 'not done'}`));
   await c.db.batch(statements);
+  const who = c.user!.name || c.user!.email;
+  if (note && note !== item.note) await clientNews(c, item.project_id, 'Note added', `${who} left a note on "${item.label}".`);
+  else if (status === 'done' && item.status !== 'done') await clientNews(c, item.project_id, 'Ticked off', `${who} ticked off "${item.label}".`);
   return json({ ok: true });
 };
 
@@ -813,6 +870,7 @@ const uploadFile: Handler = async (c, [itemId]) => {
       .bind(id, item.project_id, itemId, key, filename, upload.size, clean(upload.type, 100), c.user!.id, now()),
     ...record(c, item.project_id, `Uploaded ${filename} to "${item.label}"`),
   ]);
+  await clientNews(c, item.project_id, 'Files uploaded', `${c.user!.name || c.user!.email} uploaded to "${item.label}".`);
   return json({ ok: true, id });
 };
 
@@ -912,8 +970,10 @@ const routes: Route[] = [
   ...paymentRoutes,
   ...bankRoutes,
   ...dailyRoutes,
+  ...pushRoutes,
   ['POST', /^\/login$/, 'public', login],
   ['POST', /^\/verify$/, 'public', verify],
+  ['POST', /^\/verify-code$/, 'public', verifyCode],
   ['POST', /^\/logout$/, 'public', logout],
   ['GET', /^\/me$/, 'public', me],
 

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { api, errorText, formatDate, formatDateTime, type BankDetails } from './api';
 import { Button, Card, Field, Notice, Pill, inputClass, useAction } from './ui';
 import { STAGES } from '../../data/portal';
+import PushSwitch, { setBadge } from './PushSwitch';
 
 interface ProjectRow {
   id: string; name: string; stage: string; updated_at: string; client_name: string; company: string;
@@ -57,6 +58,7 @@ function Notifications({ items, reload }: { items: NotificationRow[]; reload: ()
         </>
       )}
       {error && <div className="mt-2"><Notice tone="error">{error}</Notice></div>}
+      <div className="mt-4 border-t border-slate-200 pt-4"><PushSwitch /></div>
     </Card>
   );
 }
@@ -66,6 +68,20 @@ export default function AdminHome() {
   const [error, setError] = useState('');
   const load = useCallback(() => api<Overview>('/projects').then(setData).catch((err) => setError(errorText(err))), []);
   useEffect(() => { load(); }, [load]);
+
+  // Keep the list fresh when the app has been sitting in the background: reload
+  // when it comes back to the front, and when a notification arrives.
+  useEffect(() => {
+    const onShow = () => { if (document.visibilityState === 'visible') load(); };
+    const onMessage = (event: MessageEvent) => { if (event.data?.type === 'portal:push') load(); };
+    document.addEventListener('visibilitychange', onShow);
+    navigator.serviceWorker?.addEventListener('message', onMessage);
+    return () => {
+      document.removeEventListener('visibilitychange', onShow);
+      navigator.serviceWorker?.removeEventListener('message', onMessage);
+    };
+  }, [load]);
+  useEffect(() => { if (data) setBadge((data.notifications || []).length); }, [data]);
 
   if (error) return <Notice tone="error">{error}</Notice>;
   if (!data) return <p className="py-10 text-center text-slate-600">Loading...</p>;
