@@ -195,7 +195,21 @@ const logout: Handler = async (c) => {
   return json({ ok: true }, 200, { 'Set-Cookie': cookie(c.url, '', 0) });
 };
 
-const me: Handler = async (c) => json({ ok: true, user: c.user ? publicUser(c.user) : null });
+// Also keeps Sam signed in: each time he opens the client area his 30 days
+// start again (at most once a day), so the app on his phone only signs him out
+// after a month unused. Clients still sign in again after 30 days.
+const me: Handler = async (c) => {
+  const headers: Record<string, string> = {};
+  const token = cookieToken(c.request);
+  if (c.user?.role === 'admin' && token) {
+    const renewed = await c.db
+      .prepare('UPDATE sessions SET expires_at = ? WHERE token_hash = ? AND expires_at < ?')
+      .bind(later(SESSION_MS), await sha256(token), later(SESSION_MS - DAY))
+      .run();
+    if (renewed.meta?.changes) headers['Set-Cookie'] = cookie(c.url, token, SESSION_MS / 1000);
+  }
+  return json({ ok: true, user: c.user ? publicUser(c.user) : null }, 200, headers);
+};
 
 // ---------- shared helpers ----------
 
