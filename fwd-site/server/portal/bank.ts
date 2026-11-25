@@ -7,6 +7,8 @@
 //
 // A payment is only ticked when the amount is exactly right. Anything else is
 // recorded and emailed to Sam to look at, and he can always tick by hand.
+// A payment with no code of ours is flagged for him only if it is exactly the
+// amount of something waiting to be paid (a forgotten or mistyped reference).
 
 import { type Env, HttpError, json, now, pounds } from './core';
 import { type PaymentLine, monthlyInvoice, refreshStandingOrder, systemNote, tellSam } from './payments';
@@ -123,7 +125,7 @@ async function handle(c: Ctx, line: PaymentLine, txn: Transaction, leg: Leg, sum
     if (!saved.meta?.changes) return; // someone else's page load got here first
     summary.flagged++;
     await systemNote(c, line.project_id, `${line.label}: ${detail}`).run();
-    await tellSam(c, line.project_id, `Check a payment: ${line.label}`, `${detail}\n\nNothing has been ticked. Have a look in Revolut, then tick or mark it by hand if it is right.`);
+    await tellSam(c, line.project_id, `Check a payment: ${line.label}`, `${detail}\n\nNothing has been ticked. Have a look in Revolut, then tick or mark it by hand if it is right.`, 'action');
   };
   const wanted = `${pounds(line.amount)}${line.kind === 'monthly' ? ' a month' : ''}`;
 
@@ -161,6 +163,24 @@ async function handle(c: Ctx, line: PaymentLine, txn: Transaction, leg: Leg, sum
   summary.ticked++;
   await systemNote(c, line.project_id, `${line.label}: ${monthName(period)} received (${pounds(amount)} on ${paidOn}), ticked automatically`).run();
   await tellSam(c, line.project_id, `Received: ${line.label}, ${monthName(period)}`, `${pounds(amount)} arrived on ${paidOn} with reference ${line.reference}. ${monthName(period)} has been ticked.`);
+}
+
+// A payment with no reference we recognise, but exactly the amount of
+// something that is waiting to be paid. Most likely the client forgot the
+// reference or mistyped it. Nothing is ticked: Sam is asked to look.
+async function maybe(c: Ctx, line: PaymentLine, txn: Transaction, leg: Leg, said: string, summary: Summary): Promise<void> {
+  const amount = Math.round(leg.amount * 100);
+  const paidOn = ukDay(txn.completed_at || txn.created_at);
+  const reference = said.replace(/\s+/g, ' ').trim().slice(0, 80);
+  const detail = `${pounds(amount)} arrived on ${paidOn} ${reference ? `with the reference "${reference}"` : 'with no reference'}. That is the amount of ${line.label}, but the reference does not match`;
+  const saved = await c.db
+    .prepare("INSERT OR IGNORE INTO bank_matches (txn_id, payment_id, project_id, outcome, period, amount, paid_on, detail, created_at) VALUES (?, ?, ?, 'maybe', NULL, ?, ?, ?, ?)")
+    .bind(txn.id, line.id, line.project_id, amount, paidOn, detail, now())
+    .run();
+  if (!saved.meta?.changes) return;
+  summary.flagged++;
+  await systemNote(c, line.project_id, `${line.label}: ${detail}`).run();
+  await tellSam(c, line.project_id, `Is this payment for ${line.label}?`, `${detail}.\n\nNothing has been ticked. If it is this payment, ${line.kind === 'one_off' ? 'press "Mark as paid"' : 'tick the month'} on the project page.`, 'action');
 }
 
 // Looks for new payments. Runs at most every 10 minutes unless forced, and
@@ -201,9 +221,20 @@ export async function syncBank(c: Ctx, force = false): Promise<Summary | null> {
         if (!leg) continue;
         summary.looked++;
         // The payer's reference can arrive in either place, depending on how the payment was sent.
-        const text = squash(`${txn.reference || ''} ${(txn.legs || []).map((l) => l.description || '').join(' ')}`);
+        const said = `${txn.reference || ''} ${(txn.legs || []).map((l) => l.description || '').join(' ')}`;
+        const text = squash(said);
         const line = lines.find((l) => mentions(text, (l.kind === 'one_off' ? l.invoice_no : l.reference)!));
-        if (line) await handle(c, line, txn, leg, summary);
+        if (line) {
+          await handle(c, line, txn, leg, summary);
+          continue;
+        }
+        // No reference of ours. Only worth a look if it is exactly the amount of something waiting.
+        // A payment from before it was asked for cannot be for it.
+        const arrived = new Date(txn.completed_at || txn.created_at).getTime();
+        const sameAmount = lines.filter(
+          (l) => l.amount === Math.round(leg.amount * 100) && arrived >= new Date(l.requested_at || l.created_at).getTime() - DAY,
+        );
+        if (sameAmount.length) await maybe(c, sameAmount[0], txn, leg, said, summary);
       }
     }
     await stamp('bank_ok_at');

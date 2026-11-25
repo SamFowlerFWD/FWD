@@ -178,7 +178,24 @@ async function cardInvoices(c: Ctx, line: PaymentLine): Promise<void> {
 
 // ---------- keeping in step with Revolut ----------
 
-export async function tellSam(c: Ctx, projectId: string, subject: string, text: string) {
+export type Tone = 'action' | 'info';
+
+// Puts a notification on Sam's projects page. Never throws.
+export async function notify(c: Ctx, projectId: string | null, title: string, body: string, tone: Tone = 'info'): Promise<void> {
+  try {
+    await c.db
+      .prepare('INSERT INTO notifications (project_id, title, body, tone, created_at) VALUES (?, ?, ?, ?, ?)')
+      .bind(projectId, title.slice(0, 200), body.slice(0, 1000), tone, now())
+      .run();
+  } catch (err) {
+    console.error('Could not save notification', err);
+  }
+}
+
+// Everything Sam is emailed about a payment also goes on his projects page.
+// 'action' means he needs to do something; 'info' is just so he knows.
+export async function tellSam(c: Ctx, projectId: string, subject: string, text: string, tone: Tone = 'info') {
+  await notify(c, projectId, subject, text, tone);
   const project = await c.db.prepare('SELECT name FROM projects WHERE id = ?').bind(projectId).first<{ name: string }>();
   await sendEmail(c.env, {
     to: [adminEmail(c.env)],
@@ -245,7 +262,7 @@ async function syncLine(c: Ctx, line: PaymentLine): Promise<void> {
     : next === 'finished' ? [`Finished: ${line.label}`, `${line.label} (${amount}) has taken its last payment.`]
     : [`Cancelled: ${line.label}`, `${line.label} (${amount}) has been cancelled at Revolut, so no more payments will be taken.`];
   await systemNote(c, line.project_id, news[0]).run();
-  await tellSam(c, line.project_id, news[0], news[1]);
+  await tellSam(c, line.project_id, news[0], news[1], next === 'overdue' || next === 'cancelled' ? 'action' : 'info');
 }
 
 // Checks every line on a project that could have changed. Never throws: a
@@ -309,13 +326,14 @@ export async function paymentLines(c: Ctx, projectId: string) {
   ]);
   // Payments that arrived but were not ticked, for Sam to look at.
   const flagged = admin
-    ? (await c.db.prepare("SELECT payment_id, detail FROM bank_matches WHERE project_id = ? AND outcome IN ('wrong_amount','extra') ORDER BY created_at DESC").bind(projectId).all<{ payment_id: string; detail: string }>()).results
+    ? (await c.db.prepare("SELECT payment_id, detail FROM bank_matches WHERE project_id = ? AND outcome IN ('wrong_amount','extra','maybe') ORDER BY created_at DESC").bind(projectId).all<{ payment_id: string; detail: string }>()).results
     : [];
   return lines.results.map((l) => ({
     method: l.method, reference: l.reference,
     received: receipts.results.filter((r) => r.payment_id === l.id).map((r) => r.period),
     auto: receipts.results.filter((r) => r.payment_id === l.id && r.source === 'revolut').map((r) => r.period),
-    ...(admin ? { flagged: flagged.filter((f) => f.payment_id === l.id).map((f) => f.detail) } : {}),
+    // Once a single payment is paid there is nothing left to look at.
+    ...(admin ? { flagged: l.status === 'paid' ? [] : flagged.filter((f) => f.payment_id === l.id).map((f) => f.detail) } : {}),
     invoices: invoices.results.filter((i) => i.payment_id === l.id).map((i) => ({
       number: i.invoice_no, period: i.period, amount: i.amount, ...(admin ? { emailed: Boolean(i.emailed_at) } : {}),
     })),
@@ -470,7 +488,7 @@ const chooseStandingOrder: Handler = async (c, [lineId]) => {
     ...record(c, line.project_id, `${line.label}: paying by standing order`),
   ]);
   if (c.user!.role === 'client') {
-    await tellSam(c, line.project_id, `Standing order chosen: ${line.label}`, `${c.user!.name || c.user!.email} has chosen to pay ${line.label} (${pounds(line.amount)} a month) by standing order. Tick each month off in the client area when it arrives.`);
+    await tellSam(c, line.project_id, `Standing order chosen: ${line.label}`, `${c.user!.name || c.user!.email} has chosen to pay ${line.label} (${pounds(line.amount)} a month) by standing order. The site ticks each month when it arrives with the right reference; otherwise tick it by hand.`);
   }
   return json({ ok: true });
 };

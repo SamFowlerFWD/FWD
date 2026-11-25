@@ -115,6 +115,14 @@ const MIGRATIONS: string[][] = [
     `ALTER TABLE contracts ADD COLUMN fwd_signature TEXT`,
     `ALTER TABLE contracts ADD COLUMN signer_signature TEXT`,
   ],
+  // 9: notifications for Sam on the projects page. tone is 'action' (needs
+  // him to do something) or 'info' (just so he knows).
+  [
+    `CREATE TABLE IF NOT EXISTS notifications (
+      id INTEGER PRIMARY KEY AUTOINCREMENT, project_id TEXT, title TEXT NOT NULL, body TEXT NOT NULL DEFAULT '',
+      tone TEXT NOT NULL DEFAULT 'info', created_at TEXT NOT NULL, done_at TEXT)`,
+    `CREATE INDEX IF NOT EXISTS idx_notifications_open ON notifications (done_at, created_at)`,
+  ],
 ];
 
 let ready = false;

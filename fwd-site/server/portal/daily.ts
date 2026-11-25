@@ -54,7 +54,7 @@ async function lateStandingOrders(c: Ctx): Promise<number> {
       if (waiting < FIRST_PAYMENT_DAYS * DAY || !(await firstTime(c, `no-first:${line.id}`))) continue;
       told++;
       await systemNote(c, line.project_id, `${line.label}: no standing order payment seen after ${FIRST_PAYMENT_DAYS} days`).run();
-      await tellSam(c, line.project_id, `No first payment yet: ${line.label}`, `The client chose to pay ${line.label} (${amount}) by standing order, reference ${line.reference}, but nothing has arrived after ${FIRST_PAYMENT_DAYS} days. They may not have set it up. The client has not been contacted.`);
+      await tellSam(c, line.project_id, `No first payment yet: ${line.label}`, `The client chose to pay ${line.label} (${amount}) by standing order, reference ${line.reference}, but nothing has arrived after ${FIRST_PAYMENT_DAYS} days. They may not have set it up. The client has not been contacted.`, 'action');
       continue;
     }
     const ticked = (await c.db.prepare('SELECT period, received_at FROM payment_receipts WHERE payment_id = ?').bind(line.id).all<{ period: string; received_at: string }>()).results;
@@ -62,7 +62,7 @@ async function lateStandingOrders(c: Ctx): Promise<number> {
       if (!(await firstTime(c, `late:${line.id}:${period}`))) continue;
       told++;
       await systemNote(c, line.project_id, `${line.label}: ${monthName(period)} payment is late`).run();
-      await tellSam(c, line.project_id, `Late payment: ${line.label}, ${monthName(period)}`, `The ${monthName(period)} standing order payment for ${line.label} (${amount}), reference ${line.reference}, has not arrived. It is more than ${GRACE_DAYS} days past the usual day. The client has not been contacted. If it did arrive with a different reference, tick the month by hand.`);
+      await tellSam(c, line.project_id, `Late payment: ${line.label}, ${monthName(period)}`, `The ${monthName(period)} standing order payment for ${line.label} (${amount}), reference ${line.reference}, has not arrived. It is more than ${GRACE_DAYS} days past the usual day. The client has not been contacted. If it did arrive with a different reference, tick the month by hand.`, 'action');
     }
   }
   return told;

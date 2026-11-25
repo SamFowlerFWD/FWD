@@ -8,7 +8,7 @@ import {
 import { ensureSchema } from './db';
 import { sendEmail, toBase64 } from './email';
 import { signedPack } from './pdf';
-import { bankDetails, paymentLines, paymentRoutes, requestOnSigning, syncProject, syncStale } from './payments';
+import { bankDetails, notify, paymentLines, paymentRoutes, requestOnSigning, syncProject, syncStale } from './payments';
 import { paymentsEnabled } from './revolut';
 import { bankRoutes, bankStatus, syncBank } from './bank';
 import { dailyRoutes } from './daily';
@@ -314,6 +314,15 @@ const listProjects: Handler = async (c) => {
       paymentsEnabled: paymentsEnabled(c.env),
       bank: await bankDetails(c),
       bankMatching: await bankStatus(c),
+      notifications: (
+        await c.db
+          .prepare(
+            `SELECT n.id, n.project_id, n.title, n.body, n.tone, n.created_at, p.name AS project_name
+             FROM notifications n LEFT JOIN projects p ON p.id = n.project_id
+             WHERE n.done_at IS NULL ORDER BY n.created_at DESC LIMIT 40`,
+          )
+          .all()
+      ).results,
     });
   }
   const projects = await c.db
@@ -648,6 +657,8 @@ const signContract: Handler = async (c, [id]) => {
     ...record(c, id, `Statement of Work signed by ${name}, ${position}`),
   ]);
 
+  await notify(c, id, `Signed: ${project.name}`, `${name}, ${position}, signed the Statement of Work and Terms of Business.`);
+
   // Anything set to be paid on signing can now be paid.
   await requestOnSigning(c, id).catch((err) => console.error('Could not request payments on signing', err));
 
@@ -705,6 +716,7 @@ const saveBrief: Handler = async (c, [id]) => {
   await c.db.batch(statements);
 
   if (firstSubmit) {
+    await notify(c, id, `Brief received: ${project.name}`, `${c.user!.name || c.user!.email} has filled in the brief.`);
     await sendEmail(c.env, {
       to: [adminEmail(c.env)],
       replyTo: c.user!.email,
@@ -884,7 +896,19 @@ const deleteTask: Handler = async (c, [taskId]) => {
 // ---------- routing ----------
 
 const ID = '([0-9a-f-]{36})';
+// Sam clears a notification once he has dealt with it, or all of them at once.
+const clearNotification: Handler = async (c, [id]) => {
+  await c.db.prepare('UPDATE notifications SET done_at = ? WHERE id = ? AND done_at IS NULL').bind(now(), Number(id)).run();
+  return json({ ok: true });
+};
+const clearNotifications: Handler = async (c) => {
+  await c.db.prepare('UPDATE notifications SET done_at = ? WHERE done_at IS NULL').bind(now()).run();
+  return json({ ok: true });
+};
+
 const routes: Route[] = [
+  ['POST', /^\/notifications\/(\d{1,12})\/done$/, 'admin', clearNotification],
+  ['POST', /^\/notifications\/done$/, 'admin', clearNotifications],
   ...paymentRoutes,
   ...bankRoutes,
   ...dailyRoutes,

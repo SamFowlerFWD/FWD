@@ -12,9 +12,54 @@ interface ProjectRow {
 interface ClientRow { id: string; name: string; company: string; email: string | null; last_login_at: string | null }
 interface TermsRow { id: string; label: string; filename: string; created_at: string }
 interface BankMatching { enabled: boolean; checkedAt: string | null; dailyAt: string | null }
-interface Overview { projects: ProjectRow[]; clients: ClientRow[]; terms: TermsRow | null; bank: BankDetails | null; bankMatching: BankMatching }
+interface NotificationRow { id: number; project_id: string | null; project_name: string | null; title: string; body: string; tone: 'action' | 'info'; created_at: string }
+interface Overview { projects: ProjectRow[]; clients: ClientRow[]; terms: TermsRow | null; bank: BankDetails | null; bankMatching: BankMatching; notifications: NotificationRow[] }
 
 const today = () => new Date().toISOString().slice(0, 10);
+
+// What has happened since Sam last looked. Things he needs to act on come first.
+function Notifications({ items, reload }: { items: NotificationRow[]; reload: () => Promise<unknown> }) {
+  const { busy, error, run } = useAction();
+  const clear = (path: string) => run(async () => { await api(path, { method: 'POST', body: {} }); await reload(); });
+  const sorted = [...items].sort((a, b) => (a.tone === b.tone ? 0 : a.tone === 'action' ? -1 : 1));
+  const toDo = items.filter((n) => n.tone === 'action').length;
+  return (
+    <Card
+      title="Notifications"
+      status={items.length ? <Pill tone={toDo ? 'amber' : 'green'}>{toDo ? `${toDo} to look at` : `${items.length} new`}</Pill> : undefined}
+    >
+      {items.length === 0 ? (
+        <p className="text-slate-600">Nothing new. Payments, signatures and anything that needs you will show here.</p>
+      ) : (
+        <>
+          <ul className="divide-y divide-slate-200">
+            {sorted.map((n) => (
+              <li key={n.id} className="flex flex-wrap items-start justify-between gap-x-4 gap-y-1 py-3">
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold text-slate-900">
+                    <span className={`mr-2 rounded-full px-2 py-0.5 text-xs font-semibold ${n.tone === 'action' ? 'bg-amber-100 text-amber-900' : 'bg-slate-100 text-slate-700'}`}>
+                      {n.tone === 'action' ? 'Needs you' : 'For info'}
+                    </span>
+                    {n.project_id ? <a className="text-violet-700 underline" href={`#/p/${n.project_id}`}>{n.title}</a> : n.title}
+                  </p>
+                  {n.body && <p className="mt-1 whitespace-pre-line text-sm text-slate-700">{n.body}</p>}
+                  <p className="mt-1 text-xs text-slate-500">{n.project_name ? `${n.project_name}, ` : ''}{formatDateTime(n.created_at)}</p>
+                </div>
+                <Button variant="secondary" disabled={busy} onClick={() => clear(`/notifications/${n.id}/done`)}>
+                  Done<span className="sr-only">: {n.title}</span>
+                </Button>
+              </li>
+            ))}
+          </ul>
+          {items.length > 1 && (
+            <Button variant="link" className="mt-2 text-sm" disabled={busy} onClick={() => clear('/notifications/done')}>Clear all</Button>
+          )}
+        </>
+      )}
+      {error && <div className="mt-2"><Notice tone="error">{error}</Notice></div>}
+    </Card>
+  );
+}
 
 export default function AdminHome() {
   const [data, setData] = useState<Overview | null>(null);
@@ -28,6 +73,8 @@ export default function AdminHome() {
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold text-slate-900">Projects</h1>
+
+      <Notifications items={data.notifications || []} reload={load} />
 
       {!data.terms && <Notice tone="info">Before you send a Statement of Work, upload your Terms of Business at the bottom of this page.</Notice>}
 
