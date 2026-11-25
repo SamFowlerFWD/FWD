@@ -40,7 +40,8 @@ async function call<T>(env: Env, method: string, path: string, body?: unknown, i
   }
 }
 
-export interface Order { id: string; state: string; checkout_url?: string; amount?: number }
+export interface Order { id: string; state: string; checkout_url?: string; amount?: number; updated_at?: string }
+export interface Cycle { id: string; number: number; state: string; start_date: string; order_id?: string | null }
 export interface Subscription { id: string; state: string; setup_order_id?: string; start_date?: string }
 
 export const createCustomer = (env: Env, email: string, fullName: string) =>
@@ -97,3 +98,8 @@ export const createSubscription = (
 export const getSubscription = (env: Env, id: string) => call<Subscription>(env, 'GET', `/api/subscriptions/${id}`);
 
 export const cancelSubscription = (env: Env, id: string) => call<unknown>(env, 'POST', `/api/subscriptions/${id}/cancel`);
+
+// The monthly billing cycles of a subscription, newest first. One page is
+// plenty: only cycles not yet invoiced matter, and it is checked often.
+export const getCycles = async (env: Env, id: string) =>
+  (await call<{ cycles?: Cycle[] }>(env, 'GET', `/api/subscriptions/${id}/cycles`)).cycles ?? [];

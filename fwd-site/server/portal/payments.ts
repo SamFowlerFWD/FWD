@@ -10,7 +10,7 @@
 // Nothing is created at Revolut until the client presses Pay.
 
 import { HttpError, adminEmail, clean, json, now, pounds, readJson } from './core';
-import { sendEmail } from './email';
+import { sendEmail, toBase64 } from './email';
 import { invoicePdf } from './pdf';
 import * as revolut from './revolut';
 import { type Ctx, type Handler, type Route, clientLogin, getProject, loginLink, record } from './router';
@@ -53,7 +53,13 @@ async function getLine(c: Ctx, id: string): Promise<PaymentLine> {
 export const systemNote = (c: Ctx, projectId: string, action: string) =>
   c.db.prepare("INSERT INTO activity (project_id, actor, action, created_at) VALUES (?, 'Revolut', ?, ?)").bind(projectId, action, now());
 
-// Invoice numbers run in one sequence across every project.
+// Invoice numbers and standing order references come from a counter, but the
+// counter is scrambled into a five-digit number so nobody can tell from
+// "0003" how many there have been. Each counter value gives a different
+// number (7919 shares no factor with 90,000), so they never repeat.
+const scramble = (count: number, shift: number) =>
+  count > 90_000 ? String(100_000 + count) : String(10_000 + ((count * 7919 + shift) % 90_000));
+
 async function nextInvoiceNo(c: Ctx): Promise<string> {
   const row = await c.db
     .prepare(
@@ -61,7 +67,7 @@ async function nextInvoiceNo(c: Ctx): Promise<string> {
        ON CONFLICT (key) DO UPDATE SET value = CAST(CAST(value AS INTEGER) + 1 AS TEXT) RETURNING value`,
     )
     .first<{ value: string }>();
-  return `FWD-INV-${String(row?.value ?? '1').padStart(4, '0')}`;
+  return `FWD-INV-${scramble(Number(row?.value ?? 1), 30_011)}`;
 }
 
 // Makes a planned line payable. One-off lines get their invoice number here.
@@ -80,6 +86,94 @@ export async function requestOnSigning(c: Ctx, projectId: string): Promise<void>
     .bind(projectId)
     .all<PaymentLine>();
   for (const line of lines.results) await makePayable(c, line);
+}
+
+// ---------- an invoice for each month of a monthly payment ----------
+
+export interface MonthlyInvoice {
+  invoice_no: string; payment_id: string; project_id: string; ref: string; period: string; amount: number;
+  paid_at: string; paid_how: string; emailed_at: string | null; void_at: string | null; created_at: string;
+}
+
+const monthLong = (period: string) => new Date(`${period}-15`).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+
+async function monthlyPdf(c: Ctx, line: PaymentLine, inv: MonthlyInvoice): Promise<Uint8Array> {
+  const project = await c.db.prepare('SELECT name, client_id FROM projects WHERE id = ?').bind(line.project_id).first<{ name: string; client_id: string }>();
+  const client = project && (await c.db.prepare('SELECT name, company FROM clients WHERE id = ?').bind(project.client_id).first<{ name: string; company: string }>());
+  return invoicePdf({
+    number: inv.invoice_no, issued: inv.paid_at, projectName: project?.name ?? '', clientName: client?.name ?? '',
+    company: client?.company ?? '', description: `${line.label}, ${monthLong(inv.period)}`, amount: inv.amount,
+    paidAt: inv.paid_at, paidHow: inv.paid_how,
+  });
+}
+
+// Called whenever a month is paid, by card or by standing order. Makes the
+// invoice once and emails it to the client. Never throws: a problem here
+// must not undo the payment being recorded.
+export async function monthlyInvoice(
+  c: Ctx, line: PaymentLine, m: { ref: string; period: string; amount: number; paidAt: string; paidHow: string },
+): Promise<void> {
+  try {
+    const existing = await c.db.prepare('SELECT * FROM monthly_invoices WHERE payment_id = ? AND ref = ?').bind(line.id, m.ref).first<MonthlyInvoice>();
+    if (existing) {
+      // A month that was unticked and ticked again keeps its invoice, and is not emailed twice.
+      if (existing.void_at) await c.db.prepare('UPDATE monthly_invoices SET void_at = NULL WHERE invoice_no = ?').bind(existing.invoice_no).run();
+      return;
+    }
+    const inv: MonthlyInvoice = {
+      invoice_no: await nextInvoiceNo(c), payment_id: line.id, project_id: line.project_id, ref: m.ref, period: m.period,
+      amount: m.amount, paid_at: m.paidAt, paid_how: m.paidHow, emailed_at: null, void_at: null, created_at: now(),
+    };
+    const made = await c.db
+      .prepare('INSERT OR IGNORE INTO monthly_invoices (invoice_no, payment_id, project_id, ref, period, amount, paid_at, paid_how, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
+      .bind(inv.invoice_no, inv.payment_id, inv.project_id, inv.ref, inv.period, inv.amount, inv.paid_at, inv.paid_how, inv.created_at)
+      .run();
+    if (!made.meta?.changes) return; // another page load got here first
+
+    const project = await c.db.prepare('SELECT name, client_id FROM projects WHERE id = ?').bind(line.project_id).first<{ name: string; client_id: string }>();
+    const login = project && (await clientLogin(c, project.client_id));
+    if (!project || !login) return;
+    const pdf = await monthlyPdf(c, line, inv);
+    const sent = await sendEmail(c.env, {
+      to: [login.email],
+      subject: `Invoice ${inv.invoice_no}: ${line.label}, ${monthLong(inv.period)}`,
+      text: [
+        `Hi ${login.name.split(' ')[0]},`, '',
+        `Thank you for your payment of ${pounds(inv.amount)} for ${line.label} (${project.name}), ${monthLong(inv.period)}.`,
+        'Your invoice is attached, marked as paid. There is nothing more to do.', '',
+        `All your invoices are also in the client area: ${c.url.origin}/portal`,
+      ].join('\n'),
+      attachments: [{ filename: `${inv.invoice_no}.pdf`, content: toBase64(pdf) }],
+    });
+    if (sent) await c.db.prepare('UPDATE monthly_invoices SET emailed_at = ? WHERE invoice_no = ?').bind(now(), inv.invoice_no).run();
+  } catch (err) {
+    console.error('Monthly invoice failed', line.id, m.ref, err);
+  }
+}
+
+const ukMonth = (iso: string) => new Date(iso).toLocaleDateString('en-CA', { timeZone: 'Europe/London' }).slice(0, 7);
+
+// Card payments: Revolut has one billing cycle per month, each with its own
+// order. A cycle whose order has completed is a month that has been paid.
+async function cardInvoices(c: Ctx, line: PaymentLine): Promise<void> {
+  try {
+    const cycles = await revolut.getCycles(c.env, line.subscription_id!);
+    if (!cycles.length) return;
+    const done = new Set(
+      (await c.db.prepare('SELECT ref FROM monthly_invoices WHERE payment_id = ?').bind(line.id).all<{ ref: string }>()).results.map((r) => r.ref),
+    );
+    const fresh = cycles.filter((cy) => cy.order_id && !done.has(cy.id)).sort((a, b) => a.number - b.number);
+    for (const cycle of fresh) {
+      const order = await revolut.getOrder(c.env, cycle.order_id!);
+      if (order.state !== 'completed') continue;
+      await monthlyInvoice(c, line, {
+        ref: cycle.id, period: ukMonth(cycle.start_date), amount: order.amount ?? line.amount,
+        paidAt: order.updated_at || cycle.start_date, paidHow: 'Revolut',
+      });
+    }
+  } catch (err) {
+    console.error('Card invoices failed', line.id, err);
+  }
 }
 
 // ---------- keeping in step with Revolut ----------
@@ -131,6 +225,7 @@ async function syncLine(c: Ctx, line: PaymentLine): Promise<void> {
     await c.db.prepare('UPDATE payments SET subscription_id = NULL, order_id = NULL, checkout_url = NULL, synced_at = ? WHERE id = ?').bind(now(), line.id).run();
     return;
   }
+  if (['active', 'overdue', 'finished', 'cancelled'].includes(sub.state)) await cardInvoices(c, line);
   if (next === line.status) {
     await stamp.run();
     return;
@@ -191,9 +286,10 @@ export async function syncStale(c: Ctx): Promise<void> {
 
 export async function paymentLines(c: Ctx, projectId: string) {
   const admin = c.user!.role === 'admin';
-  const [lines, receipts] = await Promise.all([
+  const [lines, receipts, invoices] = await Promise.all([
     c.db.prepare('SELECT * FROM payments WHERE project_id = ? ORDER BY position, created_at').bind(projectId).all<PaymentLine>(),
     c.db.prepare('SELECT payment_id, period, source FROM payment_receipts WHERE project_id = ? ORDER BY period').bind(projectId).all<{ payment_id: string; period: string; source: string }>(),
+    c.db.prepare('SELECT * FROM monthly_invoices WHERE project_id = ? AND void_at IS NULL ORDER BY paid_at DESC').bind(projectId).all<MonthlyInvoice>(),
   ]);
   // Payments that arrived but were not ticked, for Sam to look at.
   const flagged = admin
@@ -204,6 +300,9 @@ export async function paymentLines(c: Ctx, projectId: string) {
     received: receipts.results.filter((r) => r.payment_id === l.id).map((r) => r.period),
     auto: receipts.results.filter((r) => r.payment_id === l.id && r.source === 'revolut').map((r) => r.period),
     ...(admin ? { flagged: flagged.filter((f) => f.payment_id === l.id).map((f) => f.detail) } : {}),
+    invoices: invoices.results.filter((i) => i.payment_id === l.id).map((i) => ({
+      number: i.invoice_no, period: i.period, amount: i.amount, ...(admin ? { emailed: Boolean(i.emailed_at) } : {}),
+    })),
     id: l.id, kind: l.kind, label: l.label, amount: l.amount, months: l.months, min_months: l.min_months,
     due_on: l.due_on, status: l.status, invoice_no: l.invoice_no, requested_at: l.requested_at,
     paid_at: l.paid_at, ended_at: l.ended_at,
@@ -329,7 +428,7 @@ async function nextReference(c: Ctx): Promise<string> {
        ON CONFLICT (key) DO UPDATE SET value = CAST(CAST(value AS INTEGER) + 1 AS TEXT) RETURNING value`,
     )
     .first<{ value: string }>();
-  return `FWD-SO-${String(row?.value ?? '1').padStart(4, '0')}`;
+  return `FWD-SO-${scramble(Number(row?.value ?? 1), 61_403)}`;
 }
 
 // The client (or Sam on their behalf) chooses to pay a monthly line by standing order.
@@ -380,6 +479,8 @@ const setReceipt: Handler = async (c, [lineId]) => {
   if (body.received === false) {
     await c.db.batch([
       c.db.prepare('DELETE FROM payment_receipts WHERE payment_id = ? AND period = ?').bind(lineId, period),
+      // The invoice number is kept, never reused, and comes back if the month is ticked again.
+      c.db.prepare('UPDATE monthly_invoices SET void_at = ? WHERE payment_id = ? AND ref = ?').bind(now(), lineId, period),
       ...record(c, line.project_id, `${line.label}: ${month} unticked`),
     ]);
   } else {
@@ -387,6 +488,7 @@ const setReceipt: Handler = async (c, [lineId]) => {
       c.db.prepare('INSERT OR IGNORE INTO payment_receipts (payment_id, project_id, period, received_at) VALUES (?, ?, ?, ?)').bind(lineId, line.project_id, period, now()),
       ...record(c, line.project_id, `${line.label}: ${month} received`),
     ]);
+    await monthlyInvoice(c, line, { ref: period, period, amount: line.amount, paidAt: now(), paidHow: 'standing order' });
   }
   await refreshStandingOrder(c, line);
   return json({ ok: true });
@@ -497,6 +599,19 @@ const invoice: Handler = async (c, [lineId]) => {
   });
 };
 
+const monthlyInvoiceFile: Handler = async (c, [number]) => {
+  const inv = await c.db.prepare('SELECT * FROM monthly_invoices WHERE invoice_no = ? AND void_at IS NULL').bind(number).first<MonthlyInvoice>();
+  if (!inv) throw new HttpError(404, 'not_found');
+  const line = await getLine(c, inv.payment_id); // checks the caller may see this project
+  return new Response((await monthlyPdf(c, line, inv)) as unknown as BodyInit, {
+    headers: {
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `inline; filename="${inv.invoice_no}.pdf"`,
+      'Cache-Control': 'no-store',
+    },
+  });
+};
+
 export const paymentRoutes: Route[] = [
   ['POST', new RegExp(`^/projects/${ID}/payments$`), 'admin', addLine],
   ['DELETE', new RegExp(`^/payments/${ID}$`), 'admin', removeLine],
@@ -509,4 +624,5 @@ export const paymentRoutes: Route[] = [
   ['POST', new RegExp(`^/payments/${ID}/receipts$`), 'admin', setReceipt],
   ['PUT', /^\/settings\/bank$/, 'admin', saveBank],
   ['GET', new RegExp(`^/payments/${ID}/invoice\\.pdf$`), 'user', invoice],
+  ['GET', /^\/invoices\/(FWD-INV-\d{4,6})\.pdf$/, 'user', monthlyInvoiceFile],
 ];

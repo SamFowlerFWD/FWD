@@ -92,6 +92,15 @@ const MIGRATIONS: string[][] = [
       period TEXT, amount INTEGER NOT NULL, paid_on TEXT NOT NULL, detail TEXT NOT NULL DEFAULT '', created_at TEXT NOT NULL)`,
     `CREATE INDEX IF NOT EXISTS idx_bank_matches_payment ON bank_matches (payment_id)`,
   ],
+  // 5: an invoice for each month of a monthly payment, made when the month is paid.
+  // ref is the month (standing order) or Revolut's billing cycle id (card).
+  [
+    `CREATE TABLE IF NOT EXISTS monthly_invoices (
+      invoice_no TEXT PRIMARY KEY, payment_id TEXT NOT NULL, project_id TEXT NOT NULL, ref TEXT NOT NULL,
+      period TEXT NOT NULL, amount INTEGER NOT NULL, paid_at TEXT NOT NULL, paid_how TEXT NOT NULL,
+      emailed_at TEXT, void_at TEXT, created_at TEXT NOT NULL, UNIQUE (payment_id, ref))`,
+    `CREATE INDEX IF NOT EXISTS idx_monthly_invoices_project ON monthly_invoices (project_id)`,
+  ],
 ];
 
 let ready = false;

@@ -79,6 +79,7 @@ export interface PaymentLine {
   invoice_no: string | null; requested_at: string | null; paid_at: string | null; ended_at: string | null;
   paid_how?: string | null;
   method: 'standing_order' | null; reference: string | null; received: string[]; auto: string[]; flagged?: string[];
+  invoices: { number: string; period: string; amount: number; emailed?: boolean }[];
 }
 export interface BankDetails { accountName: string; sortCode: string; accountNumber: string }
 export interface PortalUser { email: string; name: string; role: 'admin' | 'client' }

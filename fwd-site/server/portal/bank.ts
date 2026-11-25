@@ -2,14 +2,14 @@
 // Revolut business account (Revolut Business API, read-only).
 //
 // It only acts on a payment whose reference contains one of our own codes:
-// a standing order reference (FWD-SO-0001) or an invoice number
-// (FWD-INV-0001). Everything else in the account is ignored and never stored.
+// a standing order reference (FWD-SO-48213) or an invoice number
+// (FWD-INV-37930). Everything else in the account is ignored and never stored.
 //
 // A payment is only ticked when the amount is exactly right. Anything else is
 // recorded and emailed to Sam to look at, and he can always tick by hand.
 
 import { type Env, HttpError, json, now, pounds } from './core';
-import { type PaymentLine, refreshStandingOrder, systemNote, tellSam } from './payments';
+import { type PaymentLine, monthlyInvoice, refreshStandingOrder, systemNote, tellSam } from './payments';
 import type { Ctx, Handler, Route } from './router';
 
 const MINUTE = 60_000;
@@ -78,14 +78,14 @@ async function transactionsSince(env: Env, from: string): Promise<Transaction[]>
 
 // ---------- matching ----------
 
-// "fwd so 0001", "FWD-SO-0001" and "FWDSO0001" all count as the same code.
+// "fwd so 48213", "FWD-SO-48213" and "FWDSO48213" all count as the same code.
 const squash = (text: string) => text.toUpperCase().replace(/[^A-Z0-9]/g, '');
 
 function mentions(text: string, code: string): boolean {
   const at = text.indexOf(squash(code));
   if (at < 0) return false;
   const next = text[at + squash(code).length];
-  return !(next >= '0' && next <= '9'); // FWD-SO-0001 must not match FWD-SO-00012
+  return !(next >= '0' && next <= '9'); // FWD-SO-4821 must not match FWD-SO-48213
 }
 
 const ukDay = (iso: string) => new Date(iso).toLocaleDateString('en-CA', { timeZone: 'Europe/London' }); // YYYY-MM-DD
@@ -157,6 +157,7 @@ async function handle(c: Ctx, line: PaymentLine, txn: Transaction, leg: Leg, sum
     .bind(line.id, line.project_id, period, txn.completed_at || now())
     .run();
   await refreshStandingOrder(c, line);
+  await monthlyInvoice(c, line, { ref: period, period, amount, paidAt: txn.completed_at || now(), paidHow: 'standing order' });
   summary.ticked++;
   await systemNote(c, line.project_id, `${line.label}: ${monthName(period)} received (${pounds(amount)} on ${paidOn}), ticked automatically`).run();
   await tellSam(c, line.project_id, `Received: ${line.label}, ${monthName(period)}`, `${pounds(amount)} arrived on ${paidOn} with reference ${line.reference}. ${monthName(period)} has been ticked.`);

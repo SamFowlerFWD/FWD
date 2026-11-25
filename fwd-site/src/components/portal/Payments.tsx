@@ -72,6 +72,26 @@ const InvoiceLink = ({ line }: { line: PaymentLine }) =>
     </a>
   ) : null;
 
+// One invoice for each month that has been paid, newest first.
+function MonthlyInvoices({ line }: { line: PaymentLine }) {
+  if (!line.invoices?.length) return null;
+  return (
+    <div className="mt-3">
+      <p className="text-sm font-medium text-slate-800">Invoices</p>
+      <ul className="mt-1 flex flex-wrap gap-x-5 gap-y-1">
+        {line.invoices.map((inv) => (
+          <li key={inv.number} className="text-sm">
+            <a className="text-violet-700 underline" href={`/api/portal/invoices/${inv.number}.pdf`} target="_blank" rel="noopener">
+              {monthName(inv.period)}<span className="sr-only">, invoice {inv.number} (PDF, opens in a new tab)</span>
+            </a>
+            {inv.emailed === false && <span className="text-amber-800"> (not emailed)</span>}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 // ---------- Sam's view ----------
 
 export function AdminPayments({ id, data, reload }: { id: string; data: ProjectData; reload: Reload }) {
@@ -162,6 +182,7 @@ function AdminLine({ line, clientEmail, reload }: { line: PaymentLine; clientEma
       {line.method === 'standing_order' && ['requested', 'active', 'finished'].includes(line.status) && (
         <fieldset className="mt-3 rounded-lg border border-slate-200 p-3">
           <legend className="px-1 text-sm font-medium text-slate-800">Tick each month when the payment arrives</legend>
+          <p className="mb-2 text-sm text-slate-600">Ticking a month emails the client a paid invoice for it.</p>
           <ul className="flex flex-wrap gap-x-5 gap-y-2">
             {monthsToCheck(line).map((period) => (
               <li key={period}>
@@ -181,6 +202,7 @@ function AdminLine({ line, clientEmail, reload }: { line: PaymentLine; clientEma
           </ul>
         </fieldset>
       )}
+      <MonthlyInvoices line={line} />
       {(line.flagged || []).length > 0 && (
         <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
           <p className="font-medium">Arrived in Revolut but not ticked:</p>
@@ -368,6 +390,7 @@ function ClientLine({ line, enabled, bank, reload }: { line: PaymentLine; enable
       )}
       {line.status === 'overdue' && <p className="mt-2 text-sm text-amber-800">The last payment did not go through. Revolut will try again. If your card has changed, please email thinking@f-w-d.co.uk.</p>}
       <div className="mt-2"><InvoiceLink line={line} /></div>
+      <MonthlyInvoices line={line} />
       {error && <div className="mt-2"><Notice tone="error">{error}</Notice></div>}
     </li>
   );
