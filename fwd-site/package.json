@@ -6,6 +6,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "revolut:keys": "node scripts/revolut-signing-key.mjs",
     "portal:dev": "astro build && wrangler pages dev dist --port 8788 --d1 DB=fwd-portal-local --r2 FILES=fwd-portal-files-local --binding PORTAL_DEV=1",
     "astro": "astro",
     "test": "playwright test",

@@ -10,6 +10,7 @@ import { sendEmail, toBase64 } from './email';
 import { signedPack } from './pdf';
 import { bankDetails, paymentLines, paymentRoutes, requestOnSigning, syncProject, syncStale } from './payments';
 import { paymentsEnabled } from './revolut';
+import { bankRoutes, bankStatus, syncBank } from './bank';
 import { BRIEF_QUESTIONS, DEFAULT_ITEMS, MAX_UPLOAD_BYTES, STAGES } from '../../src/data/portal';
 
 const COOKIE = 'fwd_portal';
@@ -202,6 +203,7 @@ export function record(c: Ctx, projectId: string, action: string) {
 async function projectPayload(c: Ctx, project: Project) {
   const admin = c.user!.role === 'admin';
   await syncProject(c, project.id); // pick up anything paid at Revolut since last time
+  await syncBank(c); // and any bank payments that have arrived
   const [client, contract, brief, items, files, tasks, activity, login] = await Promise.all([
     c.db.prepare('SELECT id, name, company FROM clients WHERE id = ?').bind(project.client_id).first<Client>(),
     getContract(c, project.id),
@@ -256,6 +258,7 @@ async function projectPayload(c: Ctx, project: Project) {
 const listProjects: Handler = async (c) => {
   if (c.user!.role === 'admin') {
     await syncStale(c);
+    await syncBank(c);
     const [projects, clients, terms] = await Promise.all([
       c.db
         .prepare(
@@ -285,6 +288,7 @@ const listProjects: Handler = async (c) => {
       terms: terms && { id: terms.id, label: terms.label, filename: terms.filename, created_at: terms.created_at },
       paymentsEnabled: paymentsEnabled(c.env),
       bank: await bankDetails(c),
+      bankMatching: await bankStatus(c),
     });
   }
   const projects = await c.db
@@ -385,7 +389,7 @@ const deleteProject: Handler = async (c, [id]) => {
   const keys = [...files.results.map((f) => f.r2_key), contract?.sow_key, contract?.signed_key].filter((k): k is string => Boolean(k));
   if (keys.length && c.env.FILES) await c.env.FILES.delete(keys);
   await c.db.batch(
-    ['contracts', 'briefs', 'items', 'files', 'tasks', 'activity', 'payments', 'payment_receipts']
+    ['contracts', 'briefs', 'items', 'files', 'tasks', 'activity', 'payments', 'payment_receipts', 'bank_matches']
       .map((table) => c.db.prepare(`DELETE FROM ${table} WHERE project_id = ?`).bind(id))
       .concat(c.db.prepare('DELETE FROM projects WHERE id = ?').bind(id)),
   );
@@ -833,6 +837,7 @@ const deleteTask: Handler = async (c, [taskId]) => {
 const ID = '([0-9a-f-]{36})';
 const routes: Route[] = [
   ...paymentRoutes,
+  ...bankRoutes,
   ['POST', /^\/login$/, 'public', login],
   ['POST', /^\/verify$/, 'public', verify],
   ['POST', /^\/logout$/, 'public', logout],

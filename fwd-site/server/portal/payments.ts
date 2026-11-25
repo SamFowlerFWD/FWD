@@ -50,7 +50,7 @@ async function getLine(c: Ctx, id: string): Promise<PaymentLine> {
   return line;
 }
 
-const systemNote = (c: Ctx, projectId: string, action: string) =>
+export const systemNote = (c: Ctx, projectId: string, action: string) =>
   c.db.prepare("INSERT INTO activity (project_id, actor, action, created_at) VALUES (?, 'Revolut', ?, ?)").bind(projectId, action, now());
 
 // Invoice numbers run in one sequence across every project.
@@ -84,7 +84,7 @@ export async function requestOnSigning(c: Ctx, projectId: string): Promise<void>
 
 // ---------- keeping in step with Revolut ----------
 
-async function tellSam(c: Ctx, projectId: string, subject: string, text: string) {
+export async function tellSam(c: Ctx, projectId: string, subject: string, text: string) {
   const project = await c.db.prepare('SELECT name FROM projects WHERE id = ?').bind(projectId).first<{ name: string }>();
   await sendEmail(c.env, {
     to: [adminEmail(c.env)],
@@ -193,11 +193,17 @@ export async function paymentLines(c: Ctx, projectId: string) {
   const admin = c.user!.role === 'admin';
   const [lines, receipts] = await Promise.all([
     c.db.prepare('SELECT * FROM payments WHERE project_id = ? ORDER BY position, created_at').bind(projectId).all<PaymentLine>(),
-    c.db.prepare('SELECT payment_id, period FROM payment_receipts WHERE project_id = ? ORDER BY period').bind(projectId).all<{ payment_id: string; period: string }>(),
+    c.db.prepare('SELECT payment_id, period, source FROM payment_receipts WHERE project_id = ? ORDER BY period').bind(projectId).all<{ payment_id: string; period: string; source: string }>(),
   ]);
+  // Payments that arrived but were not ticked, for Sam to look at.
+  const flagged = admin
+    ? (await c.db.prepare("SELECT payment_id, detail FROM bank_matches WHERE project_id = ? AND outcome IN ('wrong_amount','extra') ORDER BY created_at DESC").bind(projectId).all<{ payment_id: string; detail: string }>()).results
+    : [];
   return lines.results.map((l) => ({
     method: l.method, reference: l.reference,
     received: receipts.results.filter((r) => r.payment_id === l.id).map((r) => r.period),
+    auto: receipts.results.filter((r) => r.payment_id === l.id && r.source === 'revolut').map((r) => r.period),
+    ...(admin ? { flagged: flagged.filter((f) => f.payment_id === l.id).map((f) => f.detail) } : {}),
     id: l.id, kind: l.kind, label: l.label, amount: l.amount, months: l.months, min_months: l.min_months,
     due_on: l.due_on, status: l.status, invoice_no: l.invoice_no, requested_at: l.requested_at,
     paid_at: l.paid_at, ended_at: l.ended_at,
@@ -367,7 +373,8 @@ const setReceipt: Handler = async (c, [lineId]) => {
   if (line.method !== 'standing_order' || !['requested', 'active', 'finished'].includes(line.status)) throw new HttpError(409, 'invalid');
   const body = await readJson(c.request);
   const period = clean(body.period, 7);
-  if (!PERIOD_RE.test(period) || period > now().slice(0, 7)) throw new HttpError(422, 'invalid');
+  // A month that has not started cannot be ticked, but any tick can be removed.
+  if (!PERIOD_RE.test(period) || (body.received !== false && period > now().slice(0, 7))) throw new HttpError(422, 'invalid');
   const month = new Date(`${period}-15`).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
 
   if (body.received === false) {
@@ -381,16 +388,20 @@ const setReceipt: Handler = async (c, [lineId]) => {
       ...record(c, line.project_id, `${line.label}: ${month} received`),
     ]);
   }
-  // The line is running once any month has arrived, and finished once a fixed
-  // term has had all its payments.
-  const count = (await c.db.prepare('SELECT COUNT(*) AS n FROM payment_receipts WHERE payment_id = ?').bind(lineId).first<{ n: number }>())?.n ?? 0;
+  await refreshStandingOrder(c, line);
+  return json({ ok: true });
+};
+
+// A standing order line is running once any month has arrived, and finished
+// once a fixed term has had all its payments.
+export async function refreshStandingOrder(c: Ctx, line: PaymentLine): Promise<void> {
+  const count = (await c.db.prepare('SELECT COUNT(*) AS n FROM payment_receipts WHERE payment_id = ?').bind(line.id).first<{ n: number }>())?.n ?? 0;
   const status = count === 0 ? 'requested' : line.months && count >= line.months ? 'finished' : 'active';
   await c.db
     .prepare('UPDATE payments SET status = ?, paid_at = CASE WHEN ? = 0 THEN NULL ELSE COALESCE(paid_at, ?) END, ended_at = ? WHERE id = ?')
-    .bind(status, count, now(), status === 'finished' ? now() : null, lineId)
+    .bind(status, count, now(), status === 'finished' ? now() : null, line.id)
     .run();
-  return json({ ok: true });
-};
+}
 
 const saveBank: Handler = async (c) => {
   const body = await readJson(c.request);

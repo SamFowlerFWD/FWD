@@ -64,6 +64,7 @@ Private area at `/portal` where clients sign their agreement, fill in a brief an
 - Needs two Cloudflare bindings on the Pages project: `DB` (D1) and `FILES` (R2). Tables are created on first use.
 - Payments go through Revolut (`server/portal/payments.ts`, `server/portal/revolut.ts`). Each project has payment lines: single payments (deposit, balance) and monthly payments that roll on or stop after a set number of months. Needs the `REVOLUT_API_KEY` secret on the Pages project; without it clients cannot pay online. Card details are only ever entered on Revolut's checkout page.
 - A monthly payment can instead be paid by standing order. Nothing is collected automatically for those: Sam ticks each month off on the project page. Bank details shown to clients are entered on the projects page and stored in the `settings` table, never in code.
+- Bank payments can be ticked off automatically (`server/portal/bank.ts`). It reads the Revolut account's transactions with a second, read-only key (`REVOLUT_BANK_API_KEY` plus `REVOLUT_BANK_SIGNING_KEY`) and only acts on payments whose reference contains one of our codes (FWD-SO-0001, FWD-INV-0001) and whose amount is exact. Anything else is flagged for Sam. It runs when the client area is opened, at most every 10 minutes.
 - Database changes after go-live are added to `MIGRATIONS` in `server/portal/db.ts` and run once on the next request.
 - Run it locally with `npm run portal:dev` (port 8788). Sign-in links show on screen instead of being emailed. Never set `PORTAL_DEV` on the live site.
 

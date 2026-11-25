@@ -84,6 +84,14 @@ const MIGRATIONS: string[][] = [
       payment_id TEXT NOT NULL, project_id TEXT NOT NULL, period TEXT NOT NULL,
       received_at TEXT NOT NULL, PRIMARY KEY (payment_id, period))`,
   ],
+  // 4: bank payments matched automatically from the Revolut account
+  [
+    `ALTER TABLE payment_receipts ADD COLUMN source TEXT NOT NULL DEFAULT 'manual'`,
+    `CREATE TABLE IF NOT EXISTS bank_matches (
+      txn_id TEXT PRIMARY KEY, payment_id TEXT NOT NULL, project_id TEXT NOT NULL, outcome TEXT NOT NULL,
+      period TEXT, amount INTEGER NOT NULL, paid_on TEXT NOT NULL, detail TEXT NOT NULL DEFAULT '', created_at TEXT NOT NULL)`,
+    `CREATE INDEX IF NOT EXISTS idx_bank_matches_payment ON bank_matches (payment_id)`,
+  ],
 ];
 
 let ready = false;

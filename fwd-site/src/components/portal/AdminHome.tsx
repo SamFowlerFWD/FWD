@@ -11,7 +11,8 @@ interface ProjectRow {
 }
 interface ClientRow { id: string; name: string; company: string; email: string | null; last_login_at: string | null }
 interface TermsRow { id: string; label: string; filename: string; created_at: string }
-interface Overview { projects: ProjectRow[]; clients: ClientRow[]; terms: TermsRow | null; bank: BankDetails | null }
+interface BankMatching { enabled: boolean; checkedAt: string | null }
+interface Overview { projects: ProjectRow[]; clients: ClientRow[]; terms: TermsRow | null; bank: BankDetails | null; bankMatching: BankMatching }
 
 const today = () => new Date().toISOString().slice(0, 10);
 
@@ -84,7 +85,7 @@ export default function AdminHome() {
       </Card>
 
       <TermsOfBusiness terms={data.terms} reload={load} />
-      <BankDetailsCard bank={data.bank} reload={load} />
+      <BankDetailsCard bank={data.bank} matching={data.bankMatching} reload={load} />
     </div>
   );
 }
@@ -227,7 +228,9 @@ function TermsOfBusiness({ terms, reload }: { terms: TermsRow | null; reload: ()
   );
 }
 
-function BankDetailsCard({ bank, reload }: { bank: BankDetails | null; reload: () => Promise<unknown> }) {
+function BankDetailsCard({ bank, matching, reload }: { bank: BankDetails | null; matching: BankMatching; reload: () => Promise<unknown> }) {
+  const [checked, setChecked] = useState('');
+  const check = useAction();
   const [form, setForm] = useState<BankDetails>(bank || { accountName: 'FWD Thinking Solutions Limited', sortCode: '', accountNumber: '' });
   const [saved, setSaved] = useState(false);
   const { busy, error, run } = useAction();
@@ -256,6 +259,34 @@ function BankDetailsCard({ bank, reload }: { bank: BankDetails | null; reload: (
           {saved && <span role="status" className="text-sm text-green-700">Saved.</span>}
         </div>
       </form>
+      <div className="mt-5 border-t border-slate-200 pt-4">
+        <h3 className="font-semibold text-slate-900">Ticking payments off automatically</h3>
+        {matching.enabled ? (
+          <>
+            <p className="mt-1 text-sm text-slate-700">
+              On. When a payment arrives in Revolut with one of your references and the right amount, it is ticked for you.
+              {matching.checkedAt ? ` Last checked ${formatDateTime(matching.checkedAt)}.` : ' Not checked yet.'}
+            </p>
+            <div className="mt-2 flex flex-wrap items-center gap-3">
+              <Button
+                variant="secondary"
+                disabled={check.busy}
+                onClick={() => check.run(async () => {
+                  const res = await api<{ looked?: number; ticked?: number; flagged?: number }>('/bank/check', { method: 'POST', body: {} });
+                  setChecked(`Checked. ${res.ticked || 0} ticked, ${res.flagged || 0} to look at.`);
+                  await reload();
+                })}
+              >
+                {check.busy ? 'Checking...' : 'Check Revolut now'}
+              </Button>
+              {checked && <span role="status" className="text-sm text-green-700">{checked}</span>}
+            </div>
+            {check.error && <div className="mt-2"><Notice tone="error">{check.error}</Notice></div>}
+          </>
+        ) : (
+          <p className="mt-1 text-sm text-slate-700">Off. You tick bank payments by hand on each project.</p>
+        )}
+      </div>
     </Card>
   );
 }

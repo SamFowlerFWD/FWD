@@ -30,6 +30,11 @@ export interface R2 {
 //   REVOLUT_API_KEY     secret: Revolut Business > Merchant > API, the secret key.
 //                       Without it, payment lines still show but cannot be paid online.
 //   REVOLUT_API_BASE    optional: https://sandbox-merchant.revolut.com to test
+//   REVOLUT_BANK_API_KEY      secret, optional: a second Revolut key that can read
+//                             transactions, used to tick off bank payments automatically
+//   REVOLUT_BANK_SIGNING_KEY  secret: the Ed25519 private key that signs those requests
+//                             (the long line from private.pem, without the BEGIN/END lines)
+//   REVOLUT_BANK_API_BASE     optional: https://sandbox-b2b.revolut.com to test
 //   PORTAL_DEV          local testing only: "1" returns sign-in links in the
 //                       response instead of emailing them. Never set this live.
 export interface Env {
@@ -41,6 +46,9 @@ export interface Env {
   PORTAL_DEV?: string;
   REVOLUT_API_KEY?: string;
   REVOLUT_API_BASE?: string;
+  REVOLUT_BANK_API_KEY?: string;
+  REVOLUT_BANK_SIGNING_KEY?: string;
+  REVOLUT_BANK_API_BASE?: string;
 }
 
 export interface User {

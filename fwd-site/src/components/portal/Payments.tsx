@@ -26,7 +26,10 @@ const monthName = (period: string) => new Date(`${period}-15`).toLocaleDateStrin
 // newest first. A fixed term stops at its number of payments.
 function monthsToCheck(line: PaymentLine): string[] {
   const start = (line.received[0] && line.received[0] < (line.requested_at || '').slice(0, 7) ? line.received[0] : (line.requested_at || new Date().toISOString()).slice(0, 7));
-  const end = new Date().toISOString().slice(0, 7);
+  // A payment that arrives a few days early can be ticked for next month.
+  const lastTicked = line.received[line.received.length - 1] || '';
+  const thisMonth = new Date().toISOString().slice(0, 7);
+  const end = lastTicked > thisMonth ? lastTicked : thisMonth;
   const months: string[] = [];
   let [year, month] = start.split('-').map(Number);
   while (`${year}-${String(month).padStart(2, '0')}` <= end && months.length < 120) {
@@ -171,11 +174,20 @@ function AdminLine({ line, clientEmail, reload }: { line: PaymentLine; clientEma
                     onChange={(e) => post('receipts', { period, received: e.target.checked })}
                   />
                   {monthName(period)}
+                  {line.auto.includes(period) && <span className="text-slate-500">(seen in Revolut)</span>}
                 </label>
               </li>
             ))}
           </ul>
         </fieldset>
+      )}
+      {(line.flagged || []).length > 0 && (
+        <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+          <p className="font-medium">Arrived in Revolut but not ticked:</p>
+          <ul className="list-disc pl-5">
+            {line.flagged!.map((detail, i) => <li key={i}>{detail.charAt(0).toUpperCase() + detail.slice(1)}.</li>)}
+          </ul>
+        </div>
       )}
       {devLink && <a className="mt-2 block break-all text-sm text-violet-700 underline" data-testid="dev-link" href={devLink}>{devLink}</a>}
       {error && <div className="mt-2"><Notice tone="error">{error}</Notice></div>}

@@ -78,7 +78,7 @@ export interface PaymentLine {
   status: 'planned' | 'requested' | 'paid' | 'active' | 'overdue' | 'cancelled' | 'finished';
   invoice_no: string | null; requested_at: string | null; paid_at: string | null; ended_at: string | null;
   paid_how?: string | null;
-  method: 'standing_order' | null; reference: string | null; received: string[];
+  method: 'standing_order' | null; reference: string | null; received: string[]; auto: string[]; flagged?: string[];
 }
 export interface BankDetails { accountName: string; sortCode: string; accountNumber: string }
 export interface PortalUser { email: string; name: string; role: 'admin' | 'client' }
