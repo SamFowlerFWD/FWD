@@ -5,6 +5,7 @@
 User-agent: *
 Allow: /
 Disallow: /api/
+Disallow: /portal
 Disallow: /_astro/
 
 # Major search engines

@@ -54,6 +54,16 @@ Every service name, link and price lives in `fwd-site/src/data/services.ts` (`PR
 - The five service pages share one template: content in `src/data/servicePages.ts`, layout in `src/components/services/ServicePage.astro`, route `src/pages/services/[slug].astro`.
 - Blog posts are dated articles and keep their own typed prices.
 
+## Client Area
+
+Private area at `/portal` where clients sign their agreement, fill in a brief and upload content, and Sam tracks every project.
+
+- Screens: `src/components/portal/` (one React app on `src/pages/portal.astro`). API: `server/portal/`, served by `functions/api/portal/[[path]].ts`.
+- Stages, brief questions and the starting checklist live in `src/data/portal.ts`.
+- Sign-in is by emailed one-time link (Resend). No passwords are stored. The admin is `PORTAL_ADMIN_EMAIL` (defaults to thinking@f-w-d.co.uk).
+- Needs two Cloudflare bindings on the Pages project: `DB` (D1) and `FILES` (R2). Tables are created on first use.
+- Run it locally with `npm run portal:dev` (port 8788). Sign-in links show on screen instead of being emailed. Never set `PORTAL_DEV` on the live site.
+
 ## Branding
 
 - **Full Name**: FWD Thinking Solutions

@@ -6,6 +6,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "portal:dev": "astro build && wrangler pages dev dist --port 8788 --d1 DB=fwd-portal-local --r2 FILES=fwd-portal-files-local --binding PORTAL_DEV=1",
     "astro": "astro",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
@@ -20,6 +21,7 @@
     "@types/react": "^19.1.11",
     "@types/react-dom": "^19.1.8",
     "astro": "^5.13.3",
+    "pdf-lib": "^1.17.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "tailwindcss": "^4.1.12"

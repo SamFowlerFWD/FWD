@@ -83,6 +83,8 @@ export default defineConfig({
     mdx(),
     sitemap({
       changefreq: 'weekly',
+      // The client area is private and must not be listed.
+      filter: (page) => !/\/portal\/?$/.test(page),
       serialize(item) {
         const lastmod = lastModified(new URL(item.url).pathname);
         if (lastmod) item.lastmod = lastmod;

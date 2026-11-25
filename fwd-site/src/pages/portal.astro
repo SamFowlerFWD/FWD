@@ -1,0 +1,36 @@
+---
+// The client area. One page; PortalApp shows the right screen for whoever is
+// signed in (Sam sees every project, a client sees only theirs).
+// Kept off the main Layout on purpose: no analytics, no nav, not indexed.
+import PortalApp from '../components/portal/PortalApp.tsx';
+import '../styles/tokens.css';
+import '../styles/global.css';
+---
+
+<!DOCTYPE html>
+<html lang="en-GB">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="referrer" content="no-referrer" />
+    <link rel="icon" type="image/webp" href="/fwd-logo.webp" />
+    <title>Client area | FWD</title>
+  </head>
+  <body class="min-h-screen bg-slate-50">
+    <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:rounded focus:bg-white focus:px-3 focus:py-2">Skip to content</a>
+    <header class="bg-slate-900">
+      <div class="mx-auto flex max-w-4xl items-center justify-between px-4 py-4 sm:px-6">
+        <a href="/portal" class="flex items-center gap-3 text-white">
+          <img src="/fwd-logo.webp" alt="" width="36" height="36" class="rounded" />
+          <span class="text-lg font-bold">FWD <span class="font-normal text-slate-300">client area</span></span>
+        </a>
+        <a href="/" class="text-sm text-slate-200 underline">Back to website</a>
+      </div>
+    </header>
+    <main id="main" class="mx-auto max-w-4xl px-4 py-8 sm:px-6">
+      <PortalApp client:only="react" />
+      <noscript><p>The client area needs JavaScript switched on.</p></noscript>
+    </main>
+  </body>
+</html>

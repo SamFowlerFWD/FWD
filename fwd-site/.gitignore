@@ -25,3 +25,6 @@ test-results/
 
 # jetbrains setting folder
 .idea/
+
+# local Cloudflare test data
+.wrangler/

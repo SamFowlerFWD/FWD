@@ -1,0 +1,18 @@
+# Cloudflare Pages settings for f-w-d.co.uk. This file is the source of truth:
+# bindings set in the Cloudflare dashboard are ignored while it exists.
+# Secrets (RESEND_API_KEY) are not kept here; set them with
+#   wrangler pages secret put NAME --project-name fwd-site
+name = "fwd-site"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-01-05"
+
+# Client area (/portal): records
+[[d1_databases]]
+binding = "DB"
+database_name = "fwd-portal"
+database_id = "51432688-fab6-47b4-8700-e5e15df51d14"
+
+# Client area (/portal): SOWs, Terms, signed copies and client uploads
+[[r2_buckets]]
+binding = "FILES"
+bucket_name = "fwd-portal-files"
