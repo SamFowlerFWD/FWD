@@ -101,6 +101,8 @@ const MIGRATIONS: string[][] = [
       emailed_at TEXT, void_at TEXT, created_at TEXT NOT NULL, UNIQUE (payment_id, ref))`,
     `CREATE INDEX IF NOT EXISTS idx_monthly_invoices_project ON monthly_invoices (project_id)`,
   ],
+  // 6: things Sam has already been told about (a late payment), so he is told once
+  [`CREATE TABLE IF NOT EXISTS notices (key TEXT PRIMARY KEY, created_at TEXT NOT NULL)`],
 ];
 
 let ready = false;

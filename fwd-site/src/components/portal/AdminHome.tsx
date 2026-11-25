@@ -11,7 +11,7 @@ interface ProjectRow {
 }
 interface ClientRow { id: string; name: string; company: string; email: string | null; last_login_at: string | null }
 interface TermsRow { id: string; label: string; filename: string; created_at: string }
-interface BankMatching { enabled: boolean; checkedAt: string | null }
+interface BankMatching { enabled: boolean; checkedAt: string | null; dailyAt: string | null }
 interface Overview { projects: ProjectRow[]; clients: ClientRow[]; terms: TermsRow | null; bank: BankDetails | null; bankMatching: BankMatching }
 
 const today = () => new Date().toISOString().slice(0, 10);
@@ -266,6 +266,7 @@ function BankDetailsCard({ bank, matching, reload }: { bank: BankDetails | null;
             <p className="mt-1 text-sm text-slate-700">
               On. When a payment arrives in Revolut with one of your references and the right amount, it is ticked for you.
               {matching.checkedAt ? ` Last checked ${formatDateTime(matching.checkedAt)}.` : ' Not checked yet.'}
+              {matching.dailyAt ? ` It also checks by itself every morning (last ran ${formatDateTime(matching.dailyAt)}) and emails you if a standing order payment is late.` : ''}
             </p>
             <div className="mt-2 flex flex-wrap items-center gap-3">
               <Button

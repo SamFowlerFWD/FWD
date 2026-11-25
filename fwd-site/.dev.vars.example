@@ -12,3 +12,6 @@ REVOLUT_API_BASE=https://sandbox-merchant.revolut.com
 REVOLUT_BANK_API_KEY=
 REVOLUT_BANK_SIGNING_KEY=
 REVOLUT_BANK_API_BASE=https://sandbox-b2b.revolut.com
+
+# Shared with the daily timer (cron-worker/). Any value locally.
+CRON_SECRET=local-test-only

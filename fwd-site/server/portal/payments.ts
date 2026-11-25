@@ -267,6 +267,22 @@ export async function syncProject(c: Ctx, projectId: string): Promise<void> {
   }
 }
 
+// For the daily check: every card payment that could have changed.
+export async function syncAllCards(c: Ctx): Promise<number> {
+  if (!revolut.paymentsEnabled(c.env)) return 0;
+  const lines = await c.db
+    .prepare("SELECT * FROM payments WHERE status IN ('requested','active','overdue') AND (order_id IS NOT NULL OR subscription_id IS NOT NULL) ORDER BY synced_at LIMIT 40")
+    .all<PaymentLine>();
+  for (const line of lines.results) {
+    try {
+      await syncLine(c, line);
+    } catch (err) {
+      console.error('Payment sync failed', line.id, err);
+    }
+  }
+  return lines.results.length;
+}
+
 // For the projects list: a few of the monthly payments that have not been
 // checked for a while, so a failed payment shows up without opening each project.
 export async function syncStale(c: Ctx): Promise<void> {

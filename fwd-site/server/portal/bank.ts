@@ -217,7 +217,8 @@ export async function syncBank(c: Ctx, force = false): Promise<Summary | null> {
 
 export async function bankStatus(c: Ctx) {
   const row = await c.db.prepare("SELECT value FROM settings WHERE key = 'bank_ok_at'").first<{ value: string }>();
-  return { enabled: bankEnabled(c.env), checkedAt: row?.value ?? null };
+  const daily = await c.db.prepare("SELECT value FROM settings WHERE key = 'daily_check_at'").first<{ value: string }>();
+  return { enabled: bankEnabled(c.env), checkedAt: row?.value ?? null, dailyAt: daily?.value ?? null };
 }
 
 const checkNow: Handler = async (c) => json({ ok: true, ...(await syncBank(c, true)) });

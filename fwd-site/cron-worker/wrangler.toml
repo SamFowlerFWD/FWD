@@ -1,0 +1,14 @@
+# A tiny timer. Once a day it asks the website to check Revolut, so payments
+# are ticked and invoices sent even if nobody opens the client area.
+# Deploy with: npm run cron:deploy
+# Its secret must match the website's: CRON_SECRET (see scripts/set-cron-secret.sh).
+name = "fwd-portal-cron"
+main = "index.js"
+compatibility_date = "2026-01-05"
+workers_dev = false
+
+[triggers]
+crons = ["0 7 * * *"] # 7am UTC every day
+
+[vars]
+SITE = "https://f-w-d.co.uk"

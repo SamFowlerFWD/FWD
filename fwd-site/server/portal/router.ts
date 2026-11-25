@@ -11,6 +11,7 @@ import { signedPack } from './pdf';
 import { bankDetails, paymentLines, paymentRoutes, requestOnSigning, syncProject, syncStale } from './payments';
 import { paymentsEnabled } from './revolut';
 import { bankRoutes, bankStatus, syncBank } from './bank';
+import { dailyRoutes } from './daily';
 import { BRIEF_QUESTIONS, DEFAULT_ITEMS, MAX_UPLOAD_BYTES, STAGES } from '../../src/data/portal';
 
 const COOKIE = 'fwd_portal';
@@ -838,6 +839,7 @@ const ID = '([0-9a-f-]{36})';
 const routes: Route[] = [
   ...paymentRoutes,
   ...bankRoutes,
+  ...dailyRoutes,
   ['POST', /^\/login$/, 'public', login],
   ['POST', /^\/verify$/, 'public', verify],
   ['POST', /^\/logout$/, 'public', logout],
@@ -884,7 +886,8 @@ export async function handle(context: { request: Request; env: Env; params: { pa
     const path = '/' + [context.params.path ?? []].flat().join('/');
 
     // Anything that changes data must come from this site's own pages.
-    if (request.method !== 'GET' && request.method !== 'HEAD') {
+    // (The daily timer is not a browser; it proves itself with a shared secret instead.)
+    if (request.method !== 'GET' && request.method !== 'HEAD' && path !== '/cron') {
       const origin = request.headers.get('Origin');
       if (!origin || new URL(origin).host !== url.host) throw new HttpError(403, 'bad_origin');
     }

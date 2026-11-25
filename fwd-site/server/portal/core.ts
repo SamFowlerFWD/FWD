@@ -49,6 +49,7 @@ export interface Env {
   REVOLUT_BANK_API_KEY?: string;
   REVOLUT_BANK_SIGNING_KEY?: string;
   REVOLUT_BANK_API_BASE?: string;
+  CRON_SECRET?: string; // shared with the daily timer in cron-worker/
 }
 
 export interface User {
