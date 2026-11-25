@@ -7,7 +7,11 @@
 //   CONTACT_FROM    (optional)          defaults to "FWD website <website@f-w-d.co.uk>";
 //                                       the domain must be verified in Resend
 
+import type { D1 } from '../../server/portal/core';
+import { saveEnquiry } from '../../server/portal/enquiries';
+
 interface Env {
+  DB?: D1; // the client area's database: enquiries also show there and on Sam's phone
   RESEND_API_KEY?: string;
   CONTACT_TO?: string;
   CONTACT_FROM?: string;
@@ -49,6 +53,8 @@ export const onRequestPost = async ({ request, env }: Context) => {
   const page = clean(data.page, 200);
 
   if (!name || !EMAIL_RE.test(email)) return json({ ok: false, error: 'invalid' }, 422);
+  // Saved before the email is tried, so an enquiry is not lost if the email fails.
+  if (env.DB) await saveEnquiry(env.DB, { name, email, message, page });
   if (!env.RESEND_API_KEY) return json({ ok: false, error: 'not_configured' }, 503);
 
   const text = [

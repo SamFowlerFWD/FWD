@@ -6,7 +6,7 @@ import PushSwitch, { setBadge } from './PushSwitch';
 
 interface ProjectRow {
   id: string; name: string; stage: string; updated_at: string; client_name: string; company: string;
-  contract_status: 'draft' | 'sent' | 'signed' | null; brief_submitted_at: string | null;
+  contract_status: 'draft' | 'sent' | 'signed' | null; brief_submitted_at: string | null; sow_seen_at: string | null;
   items_total: number; items_done: number; tasks_open: number; next_due: string | null;
   payments_due: number; payments_overdue: number; standing_orders_to_check: number;
 }
@@ -14,7 +14,8 @@ interface ClientRow { id: string; name: string; company: string; email: string |
 interface TermsRow { id: string; label: string; filename: string; created_at: string }
 interface BankMatching { enabled: boolean; checkedAt: string | null; dailyAt: string | null }
 interface NotificationRow { id: number; project_id: string | null; project_name: string | null; title: string; body: string; tone: 'action' | 'info'; created_at: string }
-interface Overview { projects: ProjectRow[]; clients: ClientRow[]; terms: TermsRow | null; bank: BankDetails | null; bankMatching: BankMatching; notifications: NotificationRow[] }
+interface EnquiryRow { id: string; name: string; email: string; message: string; page: string; created_at: string }
+interface Overview { enquiries?: EnquiryRow[]; projects: ProjectRow[]; clients: ClientRow[]; terms: TermsRow | null; bank: BankDetails | null; bankMatching: BankMatching; notifications: NotificationRow[] }
 
 const today = () => new Date().toISOString().slice(0, 10);
 
@@ -62,6 +63,34 @@ function Notifications({ items, reload }: { items: NotificationRow[]; reload: ()
   );
 }
 
+// Messages from the website contact form. They are emailed too; this is the
+// same list on the phone. Only shown when there is something waiting.
+function Enquiries({ items, reload }: { items: EnquiryRow[]; reload: () => Promise<unknown> }) {
+  const { busy, error, run } = useAction();
+  if (!items.length) return null;
+  return (
+    <Card title="Website enquiries" status={<Pill tone="amber">{items.length} to answer</Pill>}>
+      <ul className="divide-y divide-slate-200">
+        {items.map((e) => (
+          <li key={e.id} className="py-3">
+            <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-1">
+              <p className="font-semibold text-slate-900">
+                {e.name} <a className="font-normal text-violet-700 underline" href={`mailto:${e.email}?subject=${encodeURIComponent('Your enquiry to FWD')}`}>{e.email}</a>
+              </p>
+              <Button variant="secondary" disabled={busy} onClick={() => run(async () => { await api(`/enquiries/${e.id}/done`, { method: 'POST', body: {} }); await reload(); })}>
+                Done<span className="sr-only">: enquiry from {e.name}</span>
+              </Button>
+            </div>
+            <p className="mt-1 whitespace-pre-line text-sm text-slate-700">{e.message || '(No message)'}</p>
+            <p className="mt-1 text-xs text-slate-500">{formatDateTime(e.created_at)}{e.page ? `, sent from ${e.page}` : ''}</p>
+          </li>
+        ))}
+      </ul>
+      {error && <div className="mt-2"><Notice tone="error">{error}</Notice></div>}
+    </Card>
+  );
+}
+
 export default function AdminHome() {
   const [data, setData] = useState<Overview | null>(null);
   const [error, setError] = useState('');
@@ -80,7 +109,7 @@ export default function AdminHome() {
       navigator.serviceWorker?.removeEventListener('message', onMessage);
     };
   }, [load]);
-  useEffect(() => { if (data) setBadge((data.notifications || []).length); }, [data]);
+  useEffect(() => { if (data) setBadge((data.notifications || []).length + (data.enquiries || []).length); }, [data]);
 
   if (error) return <Notice tone="error">{error}</Notice>;
   if (!data) return <p className="py-10 text-center text-slate-600">Loading...</p>;
@@ -90,6 +119,7 @@ export default function AdminHome() {
       <h1 className="text-3xl font-bold text-slate-900">Projects</h1>
 
       <Notifications items={data.notifications || []} reload={load} />
+      <Enquiries items={data.enquiries || []} reload={load} />
 
       {!data.terms && <Notice tone="info">Before you send a Statement of Work, upload your Terms of Business at the bottom of this page.</Notice>}
 
@@ -113,7 +143,7 @@ export default function AdminHome() {
                     </div>
                     <div className="mt-2 flex flex-wrap gap-2">
                       <Pill tone={p.contract_status === 'signed' ? 'green' : p.contract_status === 'sent' ? 'amber' : 'grey'}>
-                        Contract: {p.contract_status === 'signed' ? 'signed' : p.contract_status === 'sent' ? 'waiting' : 'not sent'}
+                        Contract: {p.contract_status === 'signed' ? 'signed' : p.contract_status === 'sent' ? (p.sow_seen_at ? 'read, not signed' : 'sent, not opened') : 'not sent'}
                       </Pill>
                       <Pill tone={p.brief_submitted_at ? 'green' : 'grey'}>Brief: {p.brief_submitted_at ? 'in' : 'waiting'}</Pill>
                       <Pill tone={p.items_total > 0 && p.items_done === p.items_total ? 'green' : 'grey'}>Checklist: {p.items_done}/{p.items_total}</Pill>

@@ -13,6 +13,8 @@ import { paymentsEnabled } from './revolut';
 import { bankRoutes, bankStatus, syncBank } from './bank';
 import { dailyRoutes } from './daily';
 import { pushRoutes } from './push';
+import { enquiryRoutes, openEnquiries } from './enquiries';
+import { followupRoutes, remindersFor, sawIt, sawTerms, viewsFor } from './followup';
 import { BRIEF_QUESTIONS, DEFAULT_ITEMS, MAX_UPLOAD_BYTES, STAGES } from '../../src/data/portal';
 
 const COOKIE = 'fwd_portal';
@@ -326,6 +328,8 @@ async function projectPayload(c: Ctx, project: Project) {
     // A client only sees the bank details when there is something to pay into them.
     bank: admin || payments.some((p) => p.status === 'requested' || p.method === 'standing_order') ? await bankDetails(c) : null,
     activity: activity.results,
+    // What the client has looked at, and when Sam last sent each reminder.
+    ...(admin ? { views: await viewsFor(c, project.id), reminders: await remindersFor(c, project.id) } : {}),
   };
 }
 
@@ -341,6 +345,7 @@ const listProjects: Handler = async (c) => {
           `SELECT p.id, p.name, p.stage, p.updated_at, p.client_id, c.name AS client_name, c.company,
             (SELECT status FROM contracts WHERE project_id = p.id) AS contract_status,
             (SELECT submitted_at FROM briefs WHERE project_id = p.id) AS brief_submitted_at,
+            (SELECT first_at FROM views WHERE project_id = p.id AND what = 'sow') AS sow_seen_at,
             (SELECT COUNT(*) FROM items WHERE project_id = p.id) AS items_total,
             (SELECT COUNT(*) FROM items WHERE project_id = p.id AND status = 'done') AS items_done,
             (SELECT COUNT(*) FROM tasks WHERE project_id = p.id AND done = 0) AS tasks_open,
@@ -365,6 +370,7 @@ const listProjects: Handler = async (c) => {
       paymentsEnabled: paymentsEnabled(c.env),
       bank: await bankDetails(c),
       bankMatching: await bankStatus(c),
+      enquiries: await openEnquiries(c),
       notifications: (
         await c.db
           .prepare(
@@ -383,7 +389,11 @@ const listProjects: Handler = async (c) => {
   return json({ ok: true, projects: projects.results });
 };
 
-const showProject: Handler = async (c, [id]) => json({ ok: true, ...(await projectPayload(c, await getProject(c, id))) });
+const showProject: Handler = async (c, [id]) => {
+  const project = await getProject(c, id);
+  await sawIt(c, id, 'opened');
+  return json({ ok: true, ...(await projectPayload(c, project)) });
+};
 
 const createClient: Handler = async (c) => {
   const body = await readJson(c.request);
@@ -474,7 +484,7 @@ const deleteProject: Handler = async (c, [id]) => {
   const keys = [...files.results.map((f) => f.r2_key), contract?.sow_key, contract?.signed_key].filter((k): k is string => Boolean(k));
   if (keys.length && c.env.FILES) await c.env.FILES.delete(keys);
   await c.db.batch(
-    ['contracts', 'briefs', 'items', 'files', 'tasks', 'activity', 'payments', 'payment_receipts', 'bank_matches']
+    ['contracts', 'briefs', 'items', 'files', 'tasks', 'activity', 'payments', 'payment_receipts', 'bank_matches', 'views']
       .map((table) => c.db.prepare(`DELETE FROM ${table} WHERE project_id = ?`).bind(id))
       .concat(c.db.prepare('DELETE FROM projects WHERE id = ?').bind(id)),
   );
@@ -557,6 +567,7 @@ const downloadTerms: Handler = async (c, [termsId]) => {
   const terms = await c.db.prepare('SELECT * FROM terms WHERE id = ?').bind(termsId).first<Terms>();
   const object = terms && c.env.FILES ? await c.env.FILES.get(terms.r2_key) : null;
   if (!terms || !object) throw new HttpError(404, 'not_found');
+  await sawTerms(c, termsId);
   return inlinePdf(object.body, `FWD Terms of Business, ${terms.label}.pdf`);
 };
 
@@ -578,6 +589,7 @@ const uploadSow: Handler = async (c, [id]) => {
          fwd_signature = NULL WHERE project_id = ?`,
       )
       .bind(key, filename, await sha256(bytes), bytes.byteLength, now(), id),
+    c.db.prepare("DELETE FROM views WHERE project_id = ? AND what IN ('sow', 'terms')").bind(id),
     ...record(c, id, `Statement of Work uploaded (${filename})${contract.status === 'sent' ? ', so it was taken back to be signed and sent again' : ''}`),
   ]);
   if (contract.sow_key) await c.env.FILES!.delete(contract.sow_key);
@@ -590,6 +602,7 @@ const downloadSow: Handler = async (c, [id]) => {
   if (!contract?.sow_key || (contract.status === 'draft' && c.user!.role !== 'admin')) throw new HttpError(404, 'not_found');
   const object = c.env.FILES ? await c.env.FILES.get(contract.sow_key) : null;
   if (!object) throw new HttpError(404, 'not_found');
+  await sawIt(c, id, 'sow');
   return inlinePdf(object.body, contract.sow_filename || 'Statement of Work.pdf');
 };
 
@@ -985,6 +998,8 @@ const routes: Route[] = [
   ...bankRoutes,
   ...dailyRoutes,
   ...pushRoutes,
+  ...enquiryRoutes,
+  ...followupRoutes,
   ['POST', /^\/login$/, 'public', login],
   ['POST', /^\/verify$/, 'public', verify],
   ['POST', /^\/verify-code$/, 'public', verifyCode],

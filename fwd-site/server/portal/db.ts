@@ -134,6 +134,17 @@ const MIGRATIONS: string[][] = [
     `CREATE TABLE IF NOT EXISTS login_codes (
       user_id TEXT PRIMARY KEY, code_hash TEXT NOT NULL, expires_at TEXT NOT NULL, attempts INTEGER NOT NULL DEFAULT 0)`,
   ],
+  // 11: enquiries from the website contact form, shown on the projects page.
+  // views is the first and latest time a client opened their project page
+  // ('opened'), the Statement of Work ('sow') and the Terms ('terms').
+  [
+    `CREATE TABLE IF NOT EXISTS enquiries (
+      id TEXT PRIMARY KEY, name TEXT NOT NULL, email TEXT NOT NULL, message TEXT NOT NULL DEFAULT '',
+      page TEXT NOT NULL DEFAULT '', created_at TEXT NOT NULL, done_at TEXT)`,
+    `CREATE TABLE IF NOT EXISTS views (
+      project_id TEXT NOT NULL, what TEXT NOT NULL, first_at TEXT NOT NULL, last_at TEXT NOT NULL,
+      PRIMARY KEY (project_id, what))`,
+  ],
 ];
 
 let ready = false;

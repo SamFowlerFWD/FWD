@@ -12,6 +12,7 @@
 import { HttpError, adminEmail, clean, json, now, pounds, readJson } from './core';
 import { sendEmail, toBase64 } from './email';
 import { sendPush } from './push';
+import { waitingCount } from './enquiries';
 import { invoicePdf } from './pdf';
 import * as revolut from './revolut';
 import { type Ctx, type Handler, type Route, clientLogin, getContract, getProject, loginLink, record } from './router';
@@ -189,13 +190,13 @@ export async function notify(c: Ctx, projectId: string | null, title: string, bo
       .prepare('INSERT INTO notifications (project_id, title, body, tone, created_at) VALUES (?, ?, ?, ?, ?)')
       .bind(projectId, title.slice(0, 200), body.slice(0, 1000), tone, now())
       .run();
-    const [project, open] = await Promise.all([
+    const [project, count] = await Promise.all([
       projectId ? c.db.prepare('SELECT name FROM projects WHERE id = ?').bind(projectId).first<{ name: string }>() : null,
-      c.db.prepare('SELECT COUNT(*) AS n FROM notifications WHERE done_at IS NULL').first<{ n: number }>(),
+      waitingCount(c.db),
     ]);
     // Say which project it is, unless the title already does.
     const name = project?.name && !title.includes(project.name) ? `${project.name}. ` : '';
-    await sendPush(c, { title, body: name + body, url: projectId ? `/portal#/p/${projectId}` : '/portal', count: open?.n });
+    await sendPush(c, { title, body: name + body, url: projectId ? `/portal#/p/${projectId}` : '/portal', count });
   } catch (err) {
     console.error('Could not save notification', err);
   }

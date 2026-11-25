@@ -5,6 +5,7 @@ const MESSAGES: Record<string, string> = {
   link_expired: 'That sign-in link has expired or has already been used. Enter your email to get a new one.',
   code_wrong: 'That code is not right, or it has expired. Check it and try again, or ask for a new email.',
   push_failed: 'The test could not be sent. Turn notifications off and on again, then try once more.',
+  nothing_to_remind: 'There is nothing left to remind them about. Refresh the page.',
   invalid: 'Please check what you entered and try again.',
   email_in_use: 'That email address is already in use.',
   already_signed: 'This agreement has already been signed.',
@@ -114,4 +115,7 @@ export interface ProjectData {
   paymentsEnabled: boolean;
   bank: BankDetails | null;
   activity: { actor: string; action: string; created_at: string }[];
+  // Sam only: what the client has opened, and when each reminder was last sent.
+  views?: Record<string, { first_at: string; last_at: string }>;
+  reminders?: Record<string, string>;
 }

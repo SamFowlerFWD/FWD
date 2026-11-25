@@ -4,6 +4,7 @@ import { Button, Card, Field, Notice, Pill, inputClass, useAction } from './ui';
 import { BRIEF_QUESTIONS, STAGES } from '../../data/portal';
 import { AdminPayments } from './Payments';
 import SignaturePad from './SignaturePad';
+import { RemindButton, seenText } from './Remind';
 
 type Reload = () => Promise<unknown>;
 
@@ -22,7 +23,7 @@ export default function AdminProject({ id }: { id: string }) {
       <Header id={id} data={data} reload={load} />
       <Contract id={id} data={data} reload={load} />
       <AdminPayments id={id} data={data} reload={load} />
-      <BriefAnswers data={data} />
+      <BriefAnswers id={id} data={data} reload={load} />
       <Checklist id={id} data={data} reload={load} />
       <Tasks id={id} tasks={data.tasks} reload={load} />
       <Notes id={id} initial={data.project.notes || ''} />
@@ -59,6 +60,9 @@ function Header({ id, data, reload }: { id: string; data: ProjectData; reload: R
     <div>
       <h1 className="text-3xl font-bold text-slate-900">{project.name}</h1>
       <p className="text-slate-600">{[client?.name, client?.company, client?.email].filter(Boolean).join(' · ')}</p>
+      <p className="text-sm text-slate-600">
+        {data.views?.opened ? `${client?.name || 'The client'} last looked at this project ${formatDateTime(data.views.opened.last_at)}.` : `${client?.name || 'The client'} has not opened this project yet.`}
+      </p>
       <div className="mt-4 flex flex-wrap items-end gap-4">
         <label className="block">
           <span className="mb-1 block text-sm font-medium text-slate-800">Stage (the client sees this)</span>
@@ -215,6 +219,14 @@ function Contract({ id, data, reload }: { id: string; data: ProjectData; reload:
               {contract.fwd_name ? `Signed for FWD by ${contract.fwd_name}, ${contract.fwd_position}. ` : ''}Sent {formatDateTime(contract.sent_at)}.
             </p>
             <Signatures contract={contract} />
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <h3 className="font-semibold text-slate-900">Has the client read it?</h3>
+              <ul className="mt-1 text-sm text-slate-700">
+                <li>Statement of Work: {seenText(data, 'sow')}</li>
+                <li>Terms of Business: {seenText(data, 'terms')}</li>
+              </ul>
+              <div className="mt-3"><RemindButton id={id} what="sign" about="sign the agreement" data={data} reload={reload} /></div>
+            </div>
             <Button variant="secondary" disabled={busy} onClick={() => run(async () => { await api(`/projects/${id}/contract/unsend`, { method: 'POST', body: {} }); await reload(); setDevLink(''); setNote('Withdrawn. The client can no longer see it.'); })}>
               Withdraw
             </Button>
@@ -225,7 +237,7 @@ function Contract({ id, data, reload }: { id: string; data: ProjectData; reload:
   );
 }
 
-function BriefAnswers({ data }: { data: ProjectData }) {
+function BriefAnswers({ id, data, reload }: { id: string; data: ProjectData; reload: Reload }) {
   const { brief } = data;
   const answered = BRIEF_QUESTIONS.filter((q) => brief.answers[q.key]);
   return (
@@ -242,6 +254,7 @@ function BriefAnswers({ data }: { data: ProjectData }) {
           ))}
         </dl>
       )}
+      {!brief.submitted_at && <div className="mt-4"><RemindButton id={id} what="brief" about="send the brief" data={data} reload={reload} /></div>}
     </Card>
   );
 }
@@ -270,6 +283,11 @@ function Checklist({ id, data, reload }: { id: string; data: ProjectData; reload
           <ChecklistRow key={item.id} item={item} files={data.files.filter((f) => f.item_id === item.id)} reload={reload} />
         ))}
       </ul>
+      {done < data.items.length && (
+        <div className="mt-4 border-t border-slate-200 pt-4">
+          <RemindButton id={id} what="items" about={`send the ${data.items.length - done} ${data.items.length - done === 1 ? 'thing' : 'things'} still not done`} data={data} reload={reload} />
+        </div>
+      )}
       <form onSubmit={add} className="mt-4 grid gap-3 border-t border-slate-200 pt-4 sm:grid-cols-[1fr_1fr_auto_auto] sm:items-end">
         <Field label="Ask for something else"><input className={inputClass} required value={label} onChange={(e) => setLabel(e.target.value)} placeholder="Team photos" /></Field>
         <Field label="Help text (optional)"><input className={inputClass} value={help} onChange={(e) => setHelp(e.target.value)} /></Field>

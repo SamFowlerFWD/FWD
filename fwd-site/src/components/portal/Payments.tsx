@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { api, formatDate, formatMoney, type BankDetails, type PaymentLine, type ProjectData } from './api';
 import { Button, Card, Field, Notice, Pill, inputClass, useAction } from './ui';
+import { RemindButton } from './Remind';
 
 type Reload = () => Promise<unknown>;
 
@@ -109,7 +110,7 @@ export function AdminPayments({ id, data, reload }: { id: string; data: ProjectD
         <p className="text-slate-600">No payments set up for this project.</p>
       ) : (
         <ul className="divide-y divide-slate-200">
-          {data.payments.map((line) => <AdminLine key={line.id} line={line} clientEmail={data.client?.email} locked={waitForSignature} reload={reload} />)}
+          {data.payments.map((line) => <AdminLine key={line.id} id={id} data={data} line={line} clientEmail={data.client?.email} locked={waitForSignature} reload={reload} />)}
         </ul>
       )}
       <AddPayment id={id} reload={reload} />
@@ -117,7 +118,7 @@ export function AdminPayments({ id, data, reload }: { id: string; data: ProjectD
   );
 }
 
-function AdminLine({ line, clientEmail, locked, reload }: { line: PaymentLine; clientEmail?: string; locked: boolean; reload: Reload }) {
+function AdminLine({ id, data, line, clientEmail, locked, reload }: { id: string; data: ProjectData; line: PaymentLine; clientEmail?: string; locked: boolean; reload: Reload }) {
   const { busy, error, run } = useAction();
   const [devLink, setDevLink] = useState('');
   const post = (path: string, body: unknown = {}) => run(async () => {
@@ -186,6 +187,11 @@ function AdminLine({ line, clientEmail, locked, reload }: { line: PaymentLine; c
         )}
         <InvoiceLink line={line} />
       </div>
+      {(line.status === 'requested' || line.status === 'overdue') && (
+        <div className="mt-3">
+          <RemindButton id={id} what="pay" paymentId={line.id} about={`${line.kind === 'monthly' && line.status === 'requested' ? 'set up' : 'pay'} ${line.label}`} data={data} reload={reload} />
+        </div>
+      )}
       {line.method === 'standing_order' && ['requested', 'active', 'finished'].includes(line.status) && (
         <fieldset className="mt-3 rounded-lg border border-slate-200 p-3">
           <legend className="px-1 text-sm font-medium text-slate-800">Tick each month when the payment arrives</legend>
