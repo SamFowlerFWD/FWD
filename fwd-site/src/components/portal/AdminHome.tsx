@@ -58,7 +58,6 @@ function Notifications({ items, reload }: { items: NotificationRow[]; reload: ()
         </>
       )}
       {error && <div className="mt-2"><Notice tone="error">{error}</Notice></div>}
-      <div className="mt-4 border-t border-slate-200 pt-4"><PushSwitch /></div>
     </Card>
   );
 }
@@ -149,6 +148,7 @@ export default function AdminHome() {
 
       <TermsOfBusiness terms={data.terms} reload={load} />
       <BankDetailsCard bank={data.bank} matching={data.bankMatching} reload={load} />
+      <Card title="Notifications on this device"><PushSwitch /></Card>
     </div>
   );
 }
