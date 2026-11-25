@@ -8,6 +8,10 @@ const MESSAGES: Record<string, string> = {
   already_signed: 'This agreement has already been signed.',
   contract_changed: 'The documents were updated while you were reading. Please read them again before signing.',
   no_sow: 'Upload the Statement of Work first.',
+  sign_to_send: 'Draw your signature, type your name and position and tick the box, then send.',
+  draw_signature: 'Please draw your signature in the box.',
+  bad_signature: 'That signature could not be read. Clear the box and draw it again.',
+  sign_first: 'The client has not signed the agreement yet. You can ask for payment once they have.',
   no_terms: 'Upload your Terms of Business first, on the projects page.',
   not_pdf: 'That file is not a PDF. In Word, use File > Save As > PDF, then upload that.',
   too_large: 'That file is too big.',
@@ -93,6 +97,8 @@ export interface ContractView {
   hash: string;
   sent_at: string | null; signed_at: string | null; signer_name: string | null; signer_position: string | null;
   signer_email?: string | null; signer_ip?: string | null;
+  fwd_name: string | null; fwd_position: string | null; fwd_signed_at: string | null;
+  fwd_signature: string | null; signer_signature: string | null;
 }
 export interface ProjectData {
   project: { id: string; name: string; stage: string; notes?: string };

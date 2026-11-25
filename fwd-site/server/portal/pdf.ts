@@ -1,4 +1,5 @@
 import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from 'pdf-lib';
+import { COMPANY } from './company';
 import { pounds, ukDateTime } from './core';
 
 export interface SignatureRecord {
@@ -11,6 +12,14 @@ export interface SignatureRecord {
   termsHash: string;
   sentBy: string;
   sentAt: string;
+  // Sam's own signature. Missing only on agreements sent before he signed explicitly.
+  fwdName?: string | null;
+  fwdPosition?: string | null;
+  fwdSignedAt?: string | null;
+  fwdIp?: string | null;
+  // The signatures as drawn, as PNG files. A client who could not draw one has none.
+  fwdSignature?: Uint8Array | null;
+  signerSignature?: Uint8Array | null;
   signerName: string;
   signerPosition: string;
   signerEmail: string;
@@ -22,6 +31,32 @@ export interface SignatureRecord {
 const A4 = { width: 595.28, height: 841.89 };
 const MARGIN = 56;
 const WIDTH = A4.width - MARGIN * 2;
+
+// The FWD logo: three arrows, drawn as shapes so no image file is needed.
+// (x, top) is its top left corner; it is about 100 wide and 30 tall at size 1.
+function drawLogo(page: PDFPage, bold: PDFFont, x: number, top: number, size = 1) {
+  const k = 0.5 * size;
+  const arrows: [number, string, [number, number, number], [number, number, number], number][] = [
+    [20, 'F', [0, 0, 0], [1, 1, 1], 40],
+    [90, 'W', [0, 0.706, 0.847], [1, 1, 1], 105],
+    [160, 'D', [0.565, 0.933, 0.565], [0, 0, 0], 180],
+  ];
+  for (const [left, letter, fill, text, letterX] of arrows) {
+    page.drawSvgPath(`M ${left} 20 L ${left + 60} 50 L ${left} 80 Z`, { x: x - 20 * k, y: top + 20 * k, scale: k, color: rgb(...fill) });
+    page.drawText(letter, { x: x + (letterX - 20) * k, y: top - (58 - 20) * k, size: 24 * k, font: bold, color: rgb(...text) });
+  }
+}
+
+const PURPLE = rgb(0.427, 0.157, 0.851);
+
+// The same footer on every page FWD makes: who we are and where to find us.
+function drawFooter(page: PDFPage, font: PDFFont) {
+  const grey = rgb(0.39, 0.45, 0.55);
+  page.drawLine({ start: { x: MARGIN, y: 58 }, end: { x: A4.width - MARGIN, y: 58 }, thickness: 1.5, color: PURPLE });
+  page.drawText(safe(`${COMPANY.name}  |  ${COMPANY.registered}`), { x: MARGIN, y: 44, size: 8, font, color: grey });
+  page.drawText(safe(`Registered office: ${COMPANY.address}`), { x: MARGIN, y: 33, size: 8, font, color: grey });
+  page.drawText(safe(`${COMPANY.email}  |  ${COMPANY.website}`), { x: MARGIN, y: 22, size: 8, font, color: grey });
+}
 
 // The built-in PDF fonts only cover Windows-1252. Swap anything else for "?"
 // rather than failing to produce the document.
@@ -69,7 +104,9 @@ export async function signedPack(sow: ArrayBuffer, terms: ArrayBuffer, r: Signat
   const ink = rgb(0.06, 0.09, 0.16);
   const grey = rgb(0.39, 0.45, 0.55);
   const page: PDFPage = pdf.addPage([A4.width, A4.height]);
-  let y = A4.height - MARGIN;
+  drawLogo(page, bold, MARGIN, A4.height - 40, 0.8);
+  drawFooter(page, regular);
+  let y = A4.height - MARGIN - 30;
 
   const write = (text: string, font: PDFFont, size: number, colour = ink, gap = 0) => {
     for (const line of wrap(safe(text), font, size)) {
@@ -77,6 +114,21 @@ export async function signedPack(sow: ArrayBuffer, terms: ArrayBuffer, r: Signat
       if (line) page.drawText(line, { x: MARGIN, y, size, font, color: colour });
     }
     y -= gap;
+  };
+
+  // A drawn signature, shown at a fixed height above the signer's details.
+  const drawSignature = async (png?: Uint8Array | null) => {
+    if (!png) return;
+    try {
+      const image = await pdf.embedPng(png);
+      const height = 54;
+      const width = Math.min(WIDTH, (image.width / image.height) * height);
+      y -= height + 4;
+      page.drawImage(image, { x: MARGIN, y, width, height });
+      y -= 2;
+    } catch {
+      // An unreadable image must not stop the signed copy being made.
+    }
   };
 
   write('Signature record', bold, 18, ink, 4);
@@ -89,6 +141,7 @@ export async function signedPack(sow: ArrayBuffer, terms: ArrayBuffer, r: Signat
   write(`SHA-256 fingerprint: ${r.termsHash}`, regular, 8.5, grey, 16);
 
   write('Signed for and on behalf of the client', bold, 12, ink, 2);
+  await drawSignature(r.signerSignature);
   write(`Name: ${r.signerName}`, regular, 10.5);
   write(`Position: ${r.signerPosition}`, regular, 10.5);
   write(`Email: ${r.signerEmail}`, regular, 10.5);
@@ -97,15 +150,22 @@ export async function signedPack(sow: ArrayBuffer, terms: ArrayBuffer, r: Signat
   write(`Browser: ${r.signerUa || 'not recorded'}`, regular, 8.5, grey, 16);
 
   write('Signed for and on behalf of FWD Thinking Solutions Limited', bold, 12, ink, 2);
-  write('Name: Sam Fowler', regular, 10.5);
-  write('Position: Director', regular, 10.5);
+  await drawSignature(r.fwdSignature);
+  const fwdAt = r.fwdSignedAt || r.sentAt;
+  write(`Name: ${r.fwdName || 'Sam Fowler'}`, regular, 10.5);
+  write(`Position: ${r.fwdPosition || 'Director'}`, regular, 10.5);
   write(`Email: ${r.sentBy}`, regular, 10.5);
-  write(`Date: ${ukDateTime(r.sentAt)} (UK time)  |  ${r.sentAt} UTC`, regular, 10.5, ink, 16);
+  write(`Date: ${ukDateTime(fwdAt)} (UK time)  |  ${fwdAt} UTC`, regular, 10.5, ink, r.fwdName ? 0 : 16);
+  if (r.fwdName) write(`IP address: ${r.fwdIp || 'not recorded'}`, regular, 10.5, ink, 16);
 
   write(
-    'Both parties signed electronically through the FWD client area at f-w-d.co.uk. FWD signed by issuing these ' +
-      'documents for signature. The client signed in using a one-time link sent to the email address above, typed their ' +
-      'name and position, and confirmed that they had read and agreed to both documents and were authorised to sign. ' +
+    'Both parties signed electronically through the FWD client area at f-w-d.co.uk. ' +
+      (r.fwdName
+        ? 'FWD signed first: its signatory signed in, drew their signature, typed their name and position and confirmed they were signing both documents for FWD, before the documents were sent to the client. '
+        : 'FWD signed by issuing these documents for signature. ') +
+      'The client signed in using a one-time link sent to the email address above, ' +
+      (r.signerSignature ? 'drew their signature, ' : '') +
+      'typed their name and position, and confirmed that they had read and agreed to both documents and were authorised to sign. ' +
       'The fingerprints identify the exact files that were signed: any change to a file changes its fingerprint. ' +
       'This record takes the place of the handwritten signature block in the Statement of Work.',
     regular,
@@ -142,7 +202,10 @@ export async function invoicePdf(inv: InvoiceDetails): Promise<Uint8Array> {
   const grey = rgb(0.39, 0.45, 0.55);
   const page = pdf.addPage([A4.width, A4.height]);
   const right = A4.width - MARGIN;
-  let y = A4.height - MARGIN;
+  drawLogo(page, bold, MARGIN, A4.height - 40);
+  drawFooter(page, regular);
+  page.drawLine({ start: { x: MARGIN, y: A4.height - 84 }, end: { x: right, y: A4.height - 84 }, thickness: 1.5, color: PURPLE });
+  let y = A4.height - 96;
 
   const write = (text: string, font: PDFFont, size: number, colour = ink, gap = 0) => {
     for (const line of wrap(safe(text), font, size)) {
@@ -165,9 +228,10 @@ export async function invoicePdf(inv: InvoiceDetails): Promise<Uint8Array> {
   write(`Date: ${ukDate(inv.issued)}`, regular, 10.5, ink, 18);
 
   write('From', bold, 10.5, grey);
-  write('FWD Thinking Solutions Limited', bold, 10.5);
-  write('The Orchard, Common Road, East Tuddenham, Dereham, Norfolk, NR20 3AH', regular, 10.5);
-  write('Company number 17584500', regular, 10.5, ink, 14);
+  write(COMPANY.name, bold, 10.5);
+  write(COMPANY.address, regular, 10.5);
+  write(`Company number ${COMPANY.number}`, regular, 10.5);
+  write(`${COMPANY.email}  |  ${COMPANY.website}`, regular, 10.5, ink, 14);
 
   write('To', bold, 10.5, grey);
   write(inv.company || inv.clientName, bold, 10.5);
@@ -183,7 +247,7 @@ export async function invoicePdf(inv: InvoiceDetails): Promise<Uint8Array> {
   write('Total', bold, 12);
   rightText(pounds(inv.amount), y, bold, 12);
   y -= 6;
-  write('No VAT is charged. FWD Thinking Solutions Limited is not VAT registered.', regular, 9, grey, 18);
+  write(`No VAT is charged. ${COMPANY.name} is not VAT registered.`, regular, 9, grey, 18);
 
   if (inv.paidAt) {
     write(`Paid on ${ukDate(inv.paidAt)}${inv.paidHow ? ` by ${inv.paidHow === 'Revolut' ? 'card through Revolut' : inv.paidHow}` : ''}. Thank you.`, regular, 10.5);
@@ -192,8 +256,5 @@ export async function invoicePdf(inv: InvoiceDetails): Promise<Uint8Array> {
     write('Sign in to the client area at f-w-d.co.uk/portal and press Pay. Payment is taken securely by card through Revolut.', regular, 10.5);
   }
 
-  page.drawText('FWD Thinking Solutions Limited  |  Registered in England and Wales, company number 17584500  |  f-w-d.co.uk', {
-    x: MARGIN, y: 30, size: 8, font: regular, color: grey,
-  });
   return pdf.save();
 }

@@ -103,6 +103,18 @@ const MIGRATIONS: string[][] = [
   ],
   // 6: things Sam has already been told about (a late payment), so he is told once
   [`CREATE TABLE IF NOT EXISTS notices (key TEXT PRIMARY KEY, created_at TEXT NOT NULL)`],
+  // 7: Sam signs for FWD before the agreement goes to the client
+  [
+    `ALTER TABLE contracts ADD COLUMN fwd_name TEXT`,
+    `ALTER TABLE contracts ADD COLUMN fwd_position TEXT`,
+    `ALTER TABLE contracts ADD COLUMN fwd_signed_at TEXT`,
+    `ALTER TABLE contracts ADD COLUMN fwd_ip TEXT`,
+  ],
+  // 8: signatures drawn in a box, kept as small PNG images (data: addresses)
+  [
+    `ALTER TABLE contracts ADD COLUMN fwd_signature TEXT`,
+    `ALTER TABLE contracts ADD COLUMN signer_signature TEXT`,
+  ],
 ];
 
 let ready = false;

@@ -40,6 +40,8 @@ interface Contract {
   terms_id: string | null; sent_at: string | null; sent_by: string | null;
   signed_at: string | null; signer_name: string | null; signer_position: string | null; signer_email: string | null;
   signer_ip: string | null; signer_ua: string | null; signed_key: string | null;
+  fwd_name: string | null; fwd_position: string | null; fwd_signed_at: string | null; fwd_ip: string | null;
+  fwd_signature: string | null; signer_signature: string | null;
 }
 interface Terms { id: string; label: string; r2_key: string; filename: string; hash: string; size: number; created_at: string }
 
@@ -169,7 +171,7 @@ export async function getProject(c: Ctx, id: string): Promise<Project> {
   return project;
 }
 
-async function getContract(c: Ctx, projectId: string): Promise<Contract | null> {
+export async function getContract(c: Ctx, projectId: string): Promise<Contract | null> {
   return c.db.prepare('SELECT * FROM contracts WHERE project_id = ?').bind(projectId).first<Contract>();
 }
 
@@ -181,6 +183,26 @@ async function termsFor(c: Ctx, contract: Contract): Promise<Terms | null> {
   if (contract.status === 'draft' || !contract.terms_id) return currentTerms(c);
   return c.db.prepare('SELECT * FROM terms WHERE id = ?').bind(contract.terms_id).first<Terms>();
 }
+
+// A signature drawn in the browser arrives as a PNG in a data: address.
+// Checked to be a real, small PNG before it is kept: '' means none was sent.
+function drawnSignature(value: unknown): string {
+  if (typeof value !== 'string' || !value) return '';
+  const prefix = 'data:image/png;base64,';
+  if (!value.startsWith(prefix) || value.length < 600 || value.length > 300_000) throw new HttpError(422, 'bad_signature');
+  const body = value.slice(prefix.length);
+  if (!/^[A-Za-z0-9+/]+=*$/.test(body) || !body.startsWith('iVBORw0KGgo')) throw new HttpError(422, 'bad_signature');
+  return value;
+}
+
+export const signatureBytes = (dataUrl: string | null): Uint8Array | null => {
+  if (!dataUrl) return null;
+  try {
+    return Uint8Array.from(atob(dataUrl.slice(dataUrl.indexOf(',') + 1)), (ch) => ch.charCodeAt(0));
+  } catch {
+    return null;
+  }
+};
 
 // What the browser sends back when signing, to prove which two files it showed.
 const signingHash = (contract: Contract, terms: Terms | null) =>
@@ -239,6 +261,8 @@ async function projectPayload(c: Ctx, project: Project) {
           hash: signingHash(contract, terms),
           sent_at: contract.sent_at, signed_at: contract.signed_at,
           signer_name: contract.signer_name, signer_position: contract.signer_position,
+          fwd_name: contract.fwd_name, fwd_position: contract.fwd_position, fwd_signed_at: contract.fwd_signed_at,
+          fwd_signature: contract.fwd_signature, signer_signature: contract.signer_signature,
           ...(admin ? { signer_email: contract.signer_email, signer_ip: contract.signer_ip } : {}),
         }
       : null,
@@ -486,9 +510,15 @@ const uploadSow: Handler = async (c, [id]) => {
   await c.env.FILES!.put(key, bytes, { httpMetadata: { contentType: 'application/pdf' } });
   await c.db.batch([
     c.db
-      .prepare('UPDATE contracts SET sow_key = ?, sow_filename = ?, sow_hash = ?, sow_size = ?, updated_at = ? WHERE project_id = ?')
+      // A new file undoes Sam's signature and takes it back from the client:
+      // what he signed was the old file, so he signs and sends again.
+      .prepare(
+        `UPDATE contracts SET sow_key = ?, sow_filename = ?, sow_hash = ?, sow_size = ?, updated_at = ?, status = 'draft',
+         terms_id = NULL, sent_at = NULL, sent_by = NULL, fwd_name = NULL, fwd_position = NULL, fwd_signed_at = NULL, fwd_ip = NULL,
+         fwd_signature = NULL WHERE project_id = ?`,
+      )
       .bind(key, filename, await sha256(bytes), bytes.byteLength, now(), id),
-    ...record(c, id, `Statement of Work uploaded (${filename})`),
+    ...record(c, id, `Statement of Work uploaded (${filename})${contract.status === 'sent' ? ', so it was taken back to be signed and sent again' : ''}`),
   ]);
   if (contract.sow_key) await c.env.FILES!.delete(contract.sow_key);
   return json({ ok: true });
@@ -512,12 +542,25 @@ const sendContract: Handler = async (c, [id]) => {
   if (!terms) throw new HttpError(422, 'no_terms');
   const login = await clientLogin(c, project.client_id);
   if (!login) throw new HttpError(404, 'not_found');
+
+  // Sam signs first, in the same way the client will: name, position and a
+  // tick, tied to the exact two files on screen when he signed.
+  const body = await readJson(c.request);
+  const fwdName = clean(body.name, 100);
+  const fwdPosition = clean(body.position, 100);
+  const fwdSignature = drawnSignature(body.signature);
+  if (fwdName.length < 2 || !fwdPosition || body.agree !== true || !fwdSignature) throw new HttpError(422, 'sign_to_send');
+  if (clean(body.hash, 200) !== signingHash(contract, terms)) throw new HttpError(409, 'contract_changed');
+
   const link = await loginLink(c, login.id, INVITE_LINK_MS);
   await c.db.batch([
     c.db
-      .prepare("UPDATE contracts SET status = 'sent', terms_id = ?, sent_at = ?, sent_by = ?, updated_at = ? WHERE project_id = ?")
-      .bind(terms.id, now(), c.user!.email, now(), id),
-    ...record(c, id, `Statement of Work sent for signature with Terms of Business ${terms.label}`),
+      .prepare(
+        `UPDATE contracts SET status = 'sent', terms_id = ?, sent_at = ?, sent_by = ?, updated_at = ?,
+         fwd_name = ?, fwd_position = ?, fwd_signed_at = ?, fwd_ip = ?, fwd_signature = ? WHERE project_id = ?`,
+      )
+      .bind(terms.id, now(), c.user!.email, now(), fwdName, fwdPosition, now(), c.request.headers.get('CF-Connecting-IP') || '', fwdSignature, id),
+    ...record(c, id, `Statement of Work signed for FWD by ${fwdName}, ${fwdPosition}, and sent for signature with Terms of Business ${terms.label}`),
   ]);
   const sent = await sendEmail(c.env, {
     to: [login.email],
@@ -525,7 +568,7 @@ const sendContract: Handler = async (c, [id]) => {
     text: [
       `Hi ${login.name.split(' ')[0]},`,
       '',
-      `The Statement of Work for ${project.name} is ready for you to read and sign, along with our Terms of Business. Signing takes a couple of minutes:`,
+      `The Statement of Work for ${project.name} is ready for you to read and sign, along with our Terms of Business. I have signed my side. Signing yours takes a couple of minutes:`,
       '',
       link,
       '',
@@ -540,7 +583,7 @@ const unsendContract: Handler = async (c, [id]) => {
   const contract = await getContract(c, id);
   if (contract?.status !== 'sent') throw new HttpError(409, 'not_sent');
   await c.db.batch([
-    c.db.prepare("UPDATE contracts SET status = 'draft', terms_id = NULL, sent_at = NULL, sent_by = NULL WHERE project_id = ?").bind(id),
+    c.db.prepare("UPDATE contracts SET status = 'draft', terms_id = NULL, sent_at = NULL, sent_by = NULL, fwd_name = NULL, fwd_position = NULL, fwd_signed_at = NULL, fwd_ip = NULL, fwd_signature = NULL WHERE project_id = ?").bind(id),
     ...record(c, id, 'Statement of Work withdrawn for changes'),
   ]);
   return json({ ok: true });
@@ -561,6 +604,8 @@ async function buildSignedPack(c: Ctx, project: Project, contract: Contract): Pr
     sowFilename: contract.sow_filename ?? '', sowHash: contract.sow_hash ?? '',
     termsLabel: terms.label, termsHash: terms.hash,
     sentBy: contract.sent_by ?? adminEmail(c.env), sentAt: contract.sent_at ?? contract.signed_at!,
+    fwdName: contract.fwd_name, fwdPosition: contract.fwd_position, fwdSignedAt: contract.fwd_signed_at, fwdIp: contract.fwd_ip,
+    fwdSignature: signatureBytes(contract.fwd_signature), signerSignature: signatureBytes(contract.signer_signature),
     signerName: contract.signer_name ?? '', signerPosition: contract.signer_position ?? '',
     signerEmail: contract.signer_email ?? '', signerIp: contract.signer_ip ?? '',
     signerUa: contract.signer_ua ?? '', signedAt: contract.signed_at!,
@@ -581,7 +626,10 @@ const signContract: Handler = async (c, [id]) => {
   const body = await readJson(c.request);
   const name = clean(body.name, 100);
   const position = clean(body.position, 100);
+  // Drawn in the box, unless the client said they cannot draw one: then the typed name stands alone.
+  const signature = drawnSignature(body.signature);
   if (name.length < 2 || !position || body.agree !== true) throw new HttpError(422, 'invalid');
+  if (!signature && body.typedOnly !== true) throw new HttpError(422, 'draw_signature');
   // The browser sends back the fingerprints of the two files it showed. If the
   // SOW has been replaced since, the client must read the new one before signing.
   const hash = signingHash(contract, await termsFor(c, contract));
@@ -594,9 +642,9 @@ const signContract: Handler = async (c, [id]) => {
     c.db
       .prepare(
         `UPDATE contracts SET status = 'signed', signed_at = ?, signer_name = ?, signer_position = ?, signer_email = ?,
-         signer_ip = ?, signer_ua = ?, updated_at = ? WHERE project_id = ? AND status = 'sent'`,
+         signer_ip = ?, signer_ua = ?, signer_signature = ?, updated_at = ? WHERE project_id = ? AND status = 'sent'`,
       )
-      .bind(signedAt, name, position, c.user!.email, ip, ua, signedAt, id),
+      .bind(signedAt, name, position, c.user!.email, ip, ua, signature || null, signedAt, id),
     ...record(c, id, `Statement of Work signed by ${name}, ${position}`),
   ]);
 
@@ -609,7 +657,7 @@ const signContract: Handler = async (c, [id]) => {
   try {
     const pdf = await buildSignedPack(c, project, {
       ...contract, status: 'signed', signed_at: signedAt, signer_name: name, signer_position: position,
-      signer_email: c.user!.email, signer_ip: ip, signer_ua: ua,
+      signer_email: c.user!.email, signer_ip: ip, signer_ua: ua, signer_signature: signature || null,
     });
     emailed = await sendEmail(c.env, {
       to: [c.user!.email, adminEmail(c.env)],

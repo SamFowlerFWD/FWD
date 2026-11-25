@@ -3,6 +3,7 @@ import { api, errorText, formatDate, formatDateTime, formatSize, type Item, type
 import { Button, Card, Field, Notice, Pill, inputClass, useAction } from './ui';
 import { BRIEF_QUESTIONS, STAGES } from '../../data/portal';
 import { AdminPayments } from './Payments';
+import SignaturePad from './SignaturePad';
 
 type Reload = () => Promise<unknown>;
 
@@ -79,10 +80,33 @@ function Header({ id, data, reload }: { id: string; data: ProjectData; reload: R
   );
 }
 
+// The signatures as they were drawn.
+function Signatures({ contract }: { contract: NonNullable<ProjectData['contract']> }) {
+  const drawn = [
+    { who: 'Client', png: contract.signer_signature },
+    { who: 'FWD', png: contract.fwd_signature },
+  ].filter((s) => s.png);
+  if (!drawn.length) return null;
+  return (
+    <ul className="mb-3 flex flex-wrap gap-4">
+      {drawn.map((s) => (
+        <li key={s.who} className="rounded-lg border border-slate-200 bg-white p-2">
+          <img src={s.png!} alt={`${s.who} signature`} className="h-14 w-auto" />
+          <span className="block text-xs text-slate-600">{s.who}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 function Contract({ id, data, reload }: { id: string; data: ProjectData; reload: Reload }) {
   const contract = data.contract!;
   const [note, setNote] = useState('');
   const [devLink, setDevLink] = useState('');
+  const [fwdName, setFwdName] = useState('Sam Fowler');
+  const [fwdPosition, setFwdPosition] = useState('Director');
+  const [fwdAgree, setFwdAgree] = useState(false);
+  const [fwdSignature, setFwdSignature] = useState('');
   const { busy, error, run } = useAction();
   const sowUrl = `/api/portal/projects/${id}/contract/sow.pdf`;
 
@@ -96,7 +120,9 @@ function Contract({ id, data, reload }: { id: string; data: ProjectData; reload:
       <Card title="Contract" status={status}>
         <p className="mb-3 text-slate-800">
           Signed by <strong>{contract.signer_name}</strong>, {contract.signer_position} ({contract.signer_email}) on {formatDateTime(contract.signed_at)} from IP {contract.signer_ip || 'unknown'}.
+          {contract.fwd_name && <> Signed for FWD by <strong>{contract.fwd_name}</strong>, {contract.fwd_position}, on {formatDateTime(contract.fwd_signed_at)}.</>}
         </p>
+        <Signatures contract={contract} />
         <a className="font-medium text-violet-700 underline" href={`/api/portal/projects/${id}/contract.pdf`}>Download the signed copy (PDF)</a>
         <p className="mt-1 text-sm text-slate-600">One file: the Statement of Work, Terms of Business {contract.terms?.label} and the signature record.</p>
       </Card>
@@ -108,7 +134,8 @@ function Contract({ id, data, reload }: { id: string; data: ProjectData; reload:
     run(async () => {
       await api(`/projects/${id}/contract/sow`, { method: 'POST', file });
       await reload();
-      setNote(contract.status === 'sent' ? 'Replaced. The client will be asked to read the new version before signing.' : 'Uploaded.');
+      setFwdAgree(false);
+      setNote(contract.status === 'sent' ? 'Replaced, and taken back from the client. Sign and send the new version below.' : 'Uploaded.');
     });
   };
 
@@ -148,23 +175,46 @@ function Contract({ id, data, reload }: { id: string; data: ProjectData; reload:
         {note && <Notice tone="success">{note}</Notice>}
         {devLink && <a className="block break-all text-sm text-violet-700 underline" data-testid="dev-link" href={devLink}>{devLink}</a>}
         {contract.status === 'draft' ? (
-          <Button
-            disabled={busy || !contract.sow || !contract.terms}
-            onClick={() => {
-              if (!window.confirm(`Email ${data.client?.email} asking them to sign "${contract.sow?.filename}" and Terms of Business ${contract.terms?.label}?`)) return;
+          <form
+            className="space-y-3 rounded-xl border border-slate-200 bg-slate-50 p-4"
+            onSubmit={(event) => {
+              event.preventDefault();
+              if (!window.confirm(`Sign for FWD and email ${data.client?.email} asking them to sign "${contract.sow?.filename}" and Terms of Business ${contract.terms?.label}?`)) return;
               run(async () => {
-                const res = await api<{ sent: boolean; devLink?: string }>(`/projects/${id}/contract/send`, { method: 'POST', body: {} });
+                const res = await api<{ sent: boolean; devLink?: string }>(`/projects/${id}/contract/send`, {
+                  method: 'POST',
+                  body: { name: fwdName, position: fwdPosition, agree: fwdAgree, signature: fwdSignature, hash: contract.hash },
+                });
                 await reload();
                 setDevLink(res.devLink || '');
-                setNote(res.sent ? 'Sent. The client has been emailed.' : 'Ready for the client to sign, but the email could not be sent.');
+                setNote(res.sent ? 'Signed and sent. The client has been emailed.' : 'Signed and ready for the client to sign, but the email could not be sent.');
               });
             }}
           >
-            Send both for signature
-          </Button>
+            <h3 className="font-semibold text-slate-900">3. Sign for FWD, then send</h3>
+            <p className="text-sm text-slate-600">You sign first. Nothing goes to the client until you press the button.</p>
+            <SignaturePad label="Your signature" onChange={setFwdSignature} disabled={busy} />
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="Your full name">
+                <input className={inputClass} required minLength={2} value={fwdName} onChange={(e) => setFwdName(e.target.value)} />
+              </Field>
+              <Field label="Your position">
+                <input className={inputClass} required value={fwdPosition} onChange={(e) => setFwdPosition(e.target.value)} />
+              </Field>
+            </div>
+            <label className="flex items-start gap-3">
+              <input type="checkbox" className="mt-1 h-5 w-5 shrink-0 accent-violet-700" checked={fwdAgree} onChange={(e) => setFwdAgree(e.target.checked)} required />
+              <span className="text-slate-800">I have checked both documents and I sign them for and on behalf of FWD Thinking Solutions Limited.</span>
+            </label>
+            <Button type="submit" disabled={busy || !contract.sow || !contract.terms || !fwdSignature || !fwdAgree}>Sign and send to client</Button>
+            {!fwdSignature && <p className="text-sm text-slate-600">Draw your signature in the box to switch the button on.</p>}
+          </form>
         ) : (
           <>
-            <p className="text-sm text-slate-600">Sent {formatDateTime(contract.sent_at)}.</p>
+            <p className="text-sm text-slate-600">
+              {contract.fwd_name ? `Signed for FWD by ${contract.fwd_name}, ${contract.fwd_position}. ` : ''}Sent {formatDateTime(contract.sent_at)}.
+            </p>
+            <Signatures contract={contract} />
             <Button variant="secondary" disabled={busy} onClick={() => run(async () => { await api(`/projects/${id}/contract/unsend`, { method: 'POST', body: {} }); await reload(); setDevLink(''); setNote('Withdrawn. The client can no longer see it.'); })}>
               Withdraw
             </Button>

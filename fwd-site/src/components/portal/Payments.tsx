@@ -96,6 +96,8 @@ function MonthlyInvoices({ line }: { line: PaymentLine }) {
 
 export function AdminPayments({ id, data, reload }: { id: string; data: ProjectData; reload: Reload }) {
   const due = data.payments.filter((p) => p.status === 'requested' || p.status === 'overdue').length;
+  // Asking for money is a step after the agreement. With no SOW there is nothing to sign.
+  const waitForSignature = Boolean(data.contract?.sow && data.contract.status !== 'signed');
   return (
     <Card title="Payments" status={due ? <Pill tone="amber">{due} waiting</Pill> : undefined}>
       {!data.paymentsEnabled && (
@@ -107,7 +109,7 @@ export function AdminPayments({ id, data, reload }: { id: string; data: ProjectD
         <p className="text-slate-600">No payments set up for this project.</p>
       ) : (
         <ul className="divide-y divide-slate-200">
-          {data.payments.map((line) => <AdminLine key={line.id} line={line} clientEmail={data.client?.email} reload={reload} />)}
+          {data.payments.map((line) => <AdminLine key={line.id} line={line} clientEmail={data.client?.email} locked={waitForSignature} reload={reload} />)}
         </ul>
       )}
       <AddPayment id={id} reload={reload} />
@@ -115,7 +117,7 @@ export function AdminPayments({ id, data, reload }: { id: string; data: ProjectD
   );
 }
 
-function AdminLine({ line, clientEmail, reload }: { line: PaymentLine; clientEmail?: string; reload: Reload }) {
+function AdminLine({ line, clientEmail, locked, reload }: { line: PaymentLine; clientEmail?: string; locked: boolean; reload: Reload }) {
   const { busy, error, run } = useAction();
   const [devLink, setDevLink] = useState('');
   const post = (path: string, body: unknown = {}) => run(async () => {
@@ -141,9 +143,14 @@ function AdminLine({ line, clientEmail, reload }: { line: PaymentLine; clientEma
       </div>
       <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2">
         {line.status === 'planned' && (
-          <Button variant="secondary" disabled={busy} onClick={() => { if (window.confirm(`Email ${clientEmail} asking them to ${line.kind === 'monthly' ? 'set up' : 'pay'} ${line.label}, ${perMonth(line)}?`)) post('request'); }}>
+          <Button variant="secondary" disabled={busy || locked} onClick={() => { if (window.confirm(`Email ${clientEmail} asking them to ${line.kind === 'monthly' ? 'set up' : 'pay'} ${line.label}, ${perMonth(line)}?`)) post('request'); }}>
             Ask for this now
           </Button>
+        )}
+        {line.status === 'planned' && locked && (
+          <span className="text-sm text-slate-600">
+            {line.due_on === 'signing' ? 'Asked for automatically when the client signs.' : 'You can ask once the client has signed the agreement.'}
+          </span>
         )}
         {open && line.kind === 'one_off' && (
           <Button variant="link" className="text-sm" disabled={busy} onClick={() => { if (window.confirm(`Mark ${line.label} (${formatMoney(line.amount)}) as paid by bank transfer?`)) post('mark-paid', { how: 'bank transfer' }); }}>

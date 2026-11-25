@@ -13,7 +13,7 @@ import { HttpError, adminEmail, clean, json, now, pounds, readJson } from './cor
 import { sendEmail, toBase64 } from './email';
 import { invoicePdf } from './pdf';
 import * as revolut from './revolut';
-import { type Ctx, type Handler, type Route, clientLogin, getProject, loginLink, record } from './router';
+import { type Ctx, type Handler, type Route, clientLogin, getContract, getProject, loginLink, record } from './router';
 
 export interface PaymentLine {
   id: string; project_id: string; kind: 'one_off' | 'monthly'; label: string; amount: number;
@@ -383,6 +383,10 @@ const requestLine: Handler = async (c, [lineId]) => {
   const line = await getLine(c, lineId);
   if (line.status !== 'planned') throw new HttpError(409, 'payment_started');
   const project = await getProject(c, line.project_id);
+  // Money is asked for after the agreement is signed, never before. (A project
+  // with no Statement of Work at all has nothing to sign, so it is not held up.)
+  const contract = await getContract(c, line.project_id);
+  if (contract?.sow_key && contract.status !== 'signed') throw new HttpError(409, 'sign_first');
   const login = await clientLogin(c, project.client_id);
   if (!login) throw new HttpError(404, 'not_found');
   await makePayable(c, line);

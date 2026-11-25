@@ -3,6 +3,7 @@ import { api, errorText, formatDate, formatDateTime, formatSize, type Item, type
 import { Button, Card, Field, Notice, Pill, inputClass, useAction } from './ui';
 import { BRIEF_QUESTIONS, STAGES } from '../../data/portal';
 import { ClientPayments } from './Payments';
+import SignaturePad from './SignaturePad';
 
 export default function ClientProject({ id }: { id: string }) {
   const [data, setData] = useState<ProjectData | null>(null);
@@ -130,6 +131,8 @@ function Agreement({ id, data, reload }: { id: string; data: ProjectData; reload
   const [name, setName] = useState('');
   const [position, setPosition] = useState('');
   const [agree, setAgree] = useState(false);
+  const [signature, setSignature] = useState('');
+  const [typedOnly, setTypedOnly] = useState(false);
   const { busy, error, run } = useAction();
 
   if (!contract || !contract.sow || !contract.terms) {
@@ -144,7 +147,7 @@ function Agreement({ id, data, reload }: { id: string; data: ProjectData; reload
     event.preventDefault();
     run(async () => {
       try {
-        await api(`/projects/${id}/contract/sign`, { method: 'POST', body: { name, position, agree, hash: contract.hash } });
+        await api(`/projects/${id}/contract/sign`, { method: 'POST', body: { name, position, agree, signature: typedOnly ? '' : signature, typedOnly, hash: contract.hash } });
       } finally {
         await reload(); // also picks up a replaced document
       }
@@ -160,7 +163,12 @@ function Agreement({ id, data, reload }: { id: string; data: ProjectData; reload
 
   return (
     <Card id="agreement" title="1. Agreement" status={<Pill tone={signed ? 'green' : 'amber'}>{signed ? 'Signed' : 'Waiting for your signature'}</Pill>}>
-      {!signed && <p className="mb-4 text-slate-600">There are two documents. Please read both, then sign once at the bottom.</p>}
+      {!signed && (
+        <p className="mb-4 text-slate-600">
+          There are two documents. Please read both, then sign once at the bottom.
+          {contract.fwd_name ? ` ${contract.fwd_name} has already signed for FWD, on ${formatDateTime(contract.fwd_signed_at)}.` : ''}
+        </p>
+      )}
       <ul className="space-y-3">
         {documents.map((doc) => (
           <li key={doc.title} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
@@ -182,13 +190,21 @@ function Agreement({ id, data, reload }: { id: string; data: ProjectData; reload
 
       {signed ? (
         <div className="mt-4 space-y-2">
-          <Notice tone="success">Signed by {contract.signer_name}, {contract.signer_position}, on {formatDateTime(contract.signed_at)}.</Notice>
+          <Notice tone="success">
+            Signed by {contract.signer_name}, {contract.signer_position}, on {formatDateTime(contract.signed_at)}.
+            {contract.fwd_name ? ` Signed for FWD by ${contract.fwd_name}, ${contract.fwd_position}, on ${formatDateTime(contract.fwd_signed_at)}.` : ''}
+          </Notice>
           <a className="inline-block font-medium text-violet-700 underline" href={`/api/portal/projects/${id}/contract.pdf`}>Download your signed copy (PDF)</a>
         </div>
       ) : (
         <form onSubmit={sign} className="mt-5 space-y-4">
+          {!typedOnly && <SignaturePad label="Your signature" onChange={setSignature} disabled={busy} />}
+          <label className="flex items-start gap-3 text-sm text-slate-700">
+            <input type="checkbox" className="mt-0.5 h-4 w-4 shrink-0 accent-violet-700" checked={typedOnly} onChange={(e) => setTypedOnly(e.target.checked)} />
+            <span>I cannot draw a signature. Use my typed name as my signature instead.</span>
+          </label>
           <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Your full name" hint="Typing your name here is your signature.">
+            <Field label="Your full name">
               <input className={inputClass} required minLength={2} autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} />
             </Field>
             <Field label="Your position" hint="For example Director or Owner.">
@@ -202,7 +218,7 @@ function Agreement({ id, data, reload }: { id: string; data: ProjectData; reload
             </span>
           </label>
           {error && <Notice tone="error">{error}</Notice>}
-          <Button type="submit" disabled={busy || !agree || name.trim().length < 2 || !position.trim()}>{busy ? 'Signing...' : 'Sign'}</Button>
+          <Button type="submit" disabled={busy || !agree || name.trim().length < 2 || !position.trim() || (!typedOnly && !signature)}>{busy ? 'Signing...' : 'Sign'}</Button>
           <p className="text-sm text-slate-600">When you sign, the date, time and your IP address are recorded, and we both get a signed copy by email.</p>
         </form>
       )}
