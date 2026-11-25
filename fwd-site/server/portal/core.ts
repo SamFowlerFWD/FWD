@@ -4,7 +4,7 @@ export interface D1Statement {
   bind(...values: unknown[]): D1Statement;
   first<T = Record<string, unknown>>(): Promise<T | null>;
   all<T = Record<string, unknown>>(): Promise<{ results: T[] }>;
-  run(): Promise<unknown>;
+  run(): Promise<{ meta?: { changes?: number } }>;
 }
 export interface D1 {
   prepare(sql: string): D1Statement;
@@ -27,6 +27,9 @@ export interface R2 {
 //   RESEND_API_KEY      secret, already used by the contact form
 //   PORTAL_ADMIN_EMAIL  optional, defaults to thinking@f-w-d.co.uk
 //   PORTAL_FROM         optional, defaults to "FWD <website@f-w-d.co.uk>"
+//   REVOLUT_API_KEY     secret: Revolut Business > Merchant > API, the secret key.
+//                       Without it, payment lines still show but cannot be paid online.
+//   REVOLUT_API_BASE    optional: https://sandbox-merchant.revolut.com to test
 //   PORTAL_DEV          local testing only: "1" returns sign-in links in the
 //                       response instead of emailing them. Never set this live.
 export interface Env {
@@ -36,6 +39,8 @@ export interface Env {
   PORTAL_ADMIN_EMAIL?: string;
   PORTAL_FROM?: string;
   PORTAL_DEV?: string;
+  REVOLUT_API_KEY?: string;
+  REVOLUT_API_BASE?: string;
 }
 
 export interface User {
@@ -86,3 +91,6 @@ export async function readJson(request: Request): Promise<Record<string, unknown
 
 export const ukDateTime = (iso: string) =>
   new Date(iso).toLocaleString('en-GB', { timeZone: 'Europe/London', dateStyle: 'long', timeStyle: 'short' });
+
+export const pounds = (pence: number) =>
+  `£${(pence / 100).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;

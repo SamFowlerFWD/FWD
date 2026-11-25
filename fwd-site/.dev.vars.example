@@ -1,0 +1,7 @@
+# Local settings for `npm run portal:dev`. Copy this file to .dev.vars (which
+# is never committed) and fill in the key.
+#
+# Use a SANDBOX key here, never the live one:
+# sandbox-business.revolut.com > Merchant > APIs > Merchant API > Secret key
+REVOLUT_API_KEY=
+REVOLUT_API_BASE=https://sandbox-merchant.revolut.com

@@ -8,6 +8,8 @@ import {
 import { ensureSchema } from './db';
 import { sendEmail, toBase64 } from './email';
 import { signedPack } from './pdf';
+import { paymentLines, paymentRoutes, requestOnSigning, syncProject, syncStale } from './payments';
+import { paymentsEnabled } from './revolut';
 import { BRIEF_QUESTIONS, DEFAULT_ITEMS, MAX_UPLOAD_BYTES, STAGES } from '../../src/data/portal';
 
 const COOKIE = 'fwd_portal';
@@ -17,15 +19,16 @@ const SESSION_MS = 30 * DAY;
 const LOGIN_LINK_MS = 30 * MINUTE;
 const INVITE_LINK_MS = 7 * DAY;
 
-interface Ctx {
+export interface Ctx {
   request: Request;
   env: Env;
   db: D1;
   url: URL;
   user: User | null;
 }
-type Handler = (c: Ctx, params: string[]) => Promise<Response>;
+export type Handler = (c: Ctx, params: string[]) => Promise<Response>;
 type Access = 'public' | 'user' | 'admin';
+export type Route = [string, RegExp, Access, Handler];
 
 interface Project { id: string; client_id: string; name: string; stage: string; notes: string; created_at: string; updated_at: string }
 interface Client { id: string; name: string; company: string }
@@ -62,7 +65,7 @@ async function currentUser(db: D1, request: Request): Promise<User | null> {
     .first<User>();
 }
 
-async function loginLink(c: Ctx, userId: string, lifetimeMs: number): Promise<string> {
+export async function loginLink(c: Ctx, userId: string, lifetimeMs: number): Promise<string> {
   const token = randomToken();
   await c.db
     .prepare('INSERT INTO login_tokens (token_hash, user_id, created_at, expires_at) VALUES (?, ?, ?, ?)')
@@ -155,7 +158,7 @@ const me: Handler = async (c) => json({ ok: true, user: c.user ? publicUser(c.us
 
 // ---------- shared helpers ----------
 
-async function getProject(c: Ctx, id: string): Promise<Project> {
+export async function getProject(c: Ctx, id: string): Promise<Project> {
   const project = await c.db.prepare('SELECT * FROM projects WHERE id = ?').bind(id).first<Project>();
   // A client asking for someone else's project gets the same answer as a missing one.
   if (!project || (c.user!.role !== 'admin' && project.client_id !== c.user!.client_id)) {
@@ -181,14 +184,14 @@ async function termsFor(c: Ctx, contract: Contract): Promise<Terms | null> {
 const signingHash = (contract: Contract, terms: Terms | null) =>
   contract.sow_hash && terms ? `${contract.sow_hash}:${terms.hash}` : '';
 
-async function clientLogin(c: Ctx, clientId: string): Promise<User | null> {
+export async function clientLogin(c: Ctx, clientId: string): Promise<User | null> {
   return c.db
     .prepare("SELECT id, email, name, role, client_id FROM users WHERE client_id = ? AND role = 'client' ORDER BY created_at LIMIT 1")
     .bind(clientId)
     .first<User>();
 }
 
-function record(c: Ctx, projectId: string, action: string) {
+export function record(c: Ctx, projectId: string, action: string) {
   const actor = c.user!.role === 'admin' ? 'Sam' : c.user!.name || c.user!.email;
   return [
     c.db.prepare('INSERT INTO activity (project_id, actor, action, created_at) VALUES (?, ?, ?, ?)').bind(projectId, actor, action, now()),
@@ -198,6 +201,7 @@ function record(c: Ctx, projectId: string, action: string) {
 
 async function projectPayload(c: Ctx, project: Project) {
   const admin = c.user!.role === 'admin';
+  await syncProject(c, project.id); // pick up anything paid at Revolut since last time
   const [client, contract, brief, items, files, tasks, activity, login] = await Promise.all([
     c.db.prepare('SELECT id, name, company FROM clients WHERE id = ?').bind(project.client_id).first<Client>(),
     getContract(c, project.id),
@@ -238,6 +242,8 @@ async function projectPayload(c: Ctx, project: Project) {
     items: items.results,
     files: files.results,
     tasks: tasks.results,
+    payments: await paymentLines(c, project.id),
+    paymentsEnabled: paymentsEnabled(c.env),
     activity: activity.results,
   };
 }
@@ -246,6 +252,7 @@ async function projectPayload(c: Ctx, project: Project) {
 
 const listProjects: Handler = async (c) => {
   if (c.user!.role === 'admin') {
+    await syncStale(c);
     const [projects, clients, terms] = await Promise.all([
       c.db
         .prepare(
@@ -255,6 +262,8 @@ const listProjects: Handler = async (c) => {
             (SELECT COUNT(*) FROM items WHERE project_id = p.id) AS items_total,
             (SELECT COUNT(*) FROM items WHERE project_id = p.id AND status = 'done') AS items_done,
             (SELECT COUNT(*) FROM tasks WHERE project_id = p.id AND done = 0) AS tasks_open,
+            (SELECT COUNT(*) FROM payments WHERE project_id = p.id AND status = 'requested') AS payments_due,
+            (SELECT COUNT(*) FROM payments WHERE project_id = p.id AND status = 'overdue') AS payments_overdue,
             (SELECT MIN(due) FROM tasks WHERE project_id = p.id AND done = 0 AND due IS NOT NULL AND due != '') AS next_due
            FROM projects p JOIN clients c ON c.id = p.client_id ORDER BY p.updated_at DESC`,
         )
@@ -269,6 +278,7 @@ const listProjects: Handler = async (c) => {
     ]);
     return json({ ok: true, projects: projects.results, clients: clients.results,
       terms: terms && { id: terms.id, label: terms.label, filename: terms.filename, created_at: terms.created_at },
+      paymentsEnabled: paymentsEnabled(c.env),
     });
   }
   const projects = await c.db
@@ -361,12 +371,15 @@ const updateProject: Handler = async (c, [id]) => {
 
 const deleteProject: Handler = async (c, [id]) => {
   await getProject(c, id);
+  // A monthly payment would carry on being taken with nothing here to show for it.
+  const running = await c.db.prepare("SELECT 1 FROM payments WHERE project_id = ? AND status IN ('active','overdue')").bind(id).first();
+  if (running) throw new HttpError(409, 'payments_running');
   const files = await c.db.prepare('SELECT r2_key FROM files WHERE project_id = ?').bind(id).all<{ r2_key: string }>();
   const contract = await getContract(c, id);
   const keys = [...files.results.map((f) => f.r2_key), contract?.sow_key, contract?.signed_key].filter((k): k is string => Boolean(k));
   if (keys.length && c.env.FILES) await c.env.FILES.delete(keys);
   await c.db.batch(
-    ['contracts', 'briefs', 'items', 'files', 'tasks', 'activity']
+    ['contracts', 'briefs', 'items', 'files', 'tasks', 'activity', 'payments']
       .map((table) => c.db.prepare(`DELETE FROM ${table} WHERE project_id = ?`).bind(id))
       .concat(c.db.prepare('DELETE FROM projects WHERE id = ?').bind(id)),
   );
@@ -575,6 +588,9 @@ const signContract: Handler = async (c, [id]) => {
       .bind(signedAt, name, position, c.user!.email, ip, ua, signedAt, id),
     ...record(c, id, `Statement of Work signed by ${name}, ${position}`),
   ]);
+
+  // Anything set to be paid on signing can now be paid.
+  await requestOnSigning(c, id).catch((err) => console.error('Could not request payments on signing', err));
 
   // The signature is saved at this point. Making the PDF and sending the email
   // must never undo it, so a failure here is only logged.
@@ -809,7 +825,8 @@ const deleteTask: Handler = async (c, [taskId]) => {
 // ---------- routing ----------
 
 const ID = '([0-9a-f-]{36})';
-const routes: [string, RegExp, Access, Handler][] = [
+const routes: Route[] = [
+  ...paymentRoutes,
   ['POST', /^\/login$/, 'public', login],
   ['POST', /^\/verify$/, 'public', verify],
   ['POST', /^\/logout$/, 'public', logout],

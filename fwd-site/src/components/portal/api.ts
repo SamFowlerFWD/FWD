@@ -15,6 +15,11 @@ const MESSAGES: Record<string, string> = {
   storage_not_configured: 'File uploads are not switched on yet.',
   not_configured: 'The client area is not switched on yet.',
   not_found: 'That could not be found.',
+  bad_amount: 'Enter an amount in pounds, for example 450 or 1200.50.',
+  payment_started: 'That payment has already been paid or set up, so it cannot be changed here.',
+  payments_running: 'This project has a monthly payment running. Cancel it first.',
+  payments_not_configured: 'Online payment is not switched on yet.',
+  payment_provider_error: 'Revolut could not be reached. Please try again in a minute.',
 };
 
 export class ApiError extends Error {
@@ -62,6 +67,16 @@ export const formatDateTime = (iso?: string | null) =>
 export const formatSize = (bytes: number) =>
   bytes < 1024 * 1024 ? `${Math.max(1, Math.round(bytes / 1024))} KB` : `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 
+export const formatMoney = (pence: number) =>
+  `£${(pence / 100).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+export interface PaymentLine {
+  id: string; kind: 'one_off' | 'monthly'; label: string; amount: number;
+  months: number | null; min_months: number | null; due_on: 'signing' | 'manual';
+  status: 'planned' | 'requested' | 'paid' | 'active' | 'overdue' | 'cancelled' | 'finished';
+  invoice_no: string | null; requested_at: string | null; paid_at: string | null; ended_at: string | null;
+  paid_how?: string | null;
+}
 export interface PortalUser { email: string; name: string; role: 'admin' | 'client' }
 export interface Item { id: string; kind: 'upload' | 'access'; label: string; help: string; status: 'todo' | 'done'; note: string }
 export interface FileRow { id: string; item_id: string; filename: string; size: number; created_at: string }
@@ -82,5 +97,7 @@ export interface ProjectData {
   items: Item[];
   files: FileRow[];
   tasks: Task[];
+  payments: PaymentLine[];
+  paymentsEnabled: boolean;
   activity: { actor: string; action: string; created_at: string }[];
 }

@@ -1,5 +1,5 @@
 import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from 'pdf-lib';
-import { ukDateTime } from './core';
+import { pounds, ukDateTime } from './core';
 
 export interface SignatureRecord {
   projectName: string;
@@ -113,5 +113,87 @@ export async function signedPack(sow: ArrayBuffer, terms: ArrayBuffer, r: Signat
     grey,
   );
 
+  return pdf.save();
+}
+
+export interface InvoiceDetails {
+  number: string;
+  issued: string;
+  projectName: string;
+  clientName: string;
+  company: string;
+  description: string;
+  amount: number; // pence
+  paidAt: string | null;
+  paidHow: string | null;
+}
+
+const ukDate = (iso: string) => new Date(iso).toLocaleDateString('en-GB', { timeZone: 'Europe/London', day: 'numeric', month: 'long', year: 'numeric' });
+
+// A one-page invoice for a single payment. FWD is not VAT registered, so
+// there is no VAT line; change this if that changes (Terms clause 10.2).
+export async function invoicePdf(inv: InvoiceDetails): Promise<Uint8Array> {
+  const pdf = await PDFDocument.create();
+  pdf.setTitle(`Invoice ${inv.number}`);
+  pdf.setAuthor('FWD Thinking Solutions Limited');
+  const regular = await pdf.embedFont(StandardFonts.Helvetica);
+  const bold = await pdf.embedFont(StandardFonts.HelveticaBold);
+  const ink = rgb(0.06, 0.09, 0.16);
+  const grey = rgb(0.39, 0.45, 0.55);
+  const page = pdf.addPage([A4.width, A4.height]);
+  const right = A4.width - MARGIN;
+  let y = A4.height - MARGIN;
+
+  const write = (text: string, font: PDFFont, size: number, colour = ink, gap = 0) => {
+    for (const line of wrap(safe(text), font, size)) {
+      y -= size * 1.45;
+      if (line) page.drawText(line, { x: MARGIN, y, size, font, color: colour });
+    }
+    y -= gap;
+  };
+  const rightText = (text: string, atY: number, font: PDFFont, size: number, colour = ink) =>
+    page.drawText(safe(text), { x: right - font.widthOfTextAtSize(safe(text), size), y: atY, size, font, color: colour });
+  const rule = () => {
+    y -= 10;
+    page.drawLine({ start: { x: MARGIN, y }, end: { x: right, y }, thickness: 0.75, color: grey });
+    y -= 4;
+  };
+
+  write('Invoice', bold, 24, ink, 2);
+  rightText(inv.paidAt ? 'PAID' : 'DUE', y + 4, bold, 14, inv.paidAt ? rgb(0.09, 0.5, 0.24) : rgb(0.71, 0.33, 0.04));
+  write(`Invoice number: ${inv.number}`, regular, 10.5);
+  write(`Date: ${ukDate(inv.issued)}`, regular, 10.5, ink, 18);
+
+  write('From', bold, 10.5, grey);
+  write('FWD Thinking Solutions Limited', bold, 10.5);
+  write('The Orchard, Common Road, East Tuddenham, Dereham, Norfolk, NR20 3AH', regular, 10.5);
+  write('Company number 17584500', regular, 10.5, ink, 14);
+
+  write('To', bold, 10.5, grey);
+  write(inv.company || inv.clientName, bold, 10.5);
+  if (inv.company && inv.clientName) write(inv.clientName, regular, 10.5);
+  y -= 18;
+
+  write('Description', bold, 10.5, grey);
+  rightText('Amount', y, bold, 10.5, grey);
+  rule();
+  write(`${inv.description}: ${inv.projectName}`, regular, 11);
+  rightText(pounds(inv.amount), y, regular, 11);
+  rule();
+  write('Total', bold, 12);
+  rightText(pounds(inv.amount), y, bold, 12);
+  y -= 6;
+  write('No VAT is charged. FWD Thinking Solutions Limited is not VAT registered.', regular, 9, grey, 18);
+
+  if (inv.paidAt) {
+    write(`Paid on ${ukDate(inv.paidAt)}${inv.paidHow ? ` by ${inv.paidHow === 'Revolut' ? 'card through Revolut' : inv.paidHow}` : ''}. Thank you.`, regular, 10.5);
+  } else {
+    write('How to pay', bold, 10.5, grey);
+    write('Sign in to the client area at f-w-d.co.uk/portal and press Pay. Payment is taken securely by card through Revolut.', regular, 10.5);
+  }
+
+  page.drawText('FWD Thinking Solutions Limited  |  Registered in England and Wales, company number 17584500  |  f-w-d.co.uk', {
+    x: MARGIN, y: 30, size: 8, font: regular, color: grey,
+  });
   return pdf.save();
 }

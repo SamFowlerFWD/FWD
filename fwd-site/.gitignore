@@ -28,3 +28,4 @@ test-results/
 
 # local Cloudflare test data
 .wrangler/
+.dev.vars

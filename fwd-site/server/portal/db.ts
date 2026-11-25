@@ -59,10 +59,38 @@ const SCHEMA = [
   `CREATE INDEX IF NOT EXISTS idx_login_tokens_user ON login_tokens (user_id)`,
 ];
 
+// Changes made after the client area first went live. Each entry runs once, in
+// order, and the database remembers how far it has got. Only ever add to the end.
+const MIGRATIONS: string[][] = [
+  // 2: payments through Revolut
+  [
+    `CREATE TABLE IF NOT EXISTS payments (
+      id TEXT PRIMARY KEY, project_id TEXT NOT NULL,
+      kind TEXT NOT NULL CHECK (kind IN ('one_off','monthly')),
+      label TEXT NOT NULL, amount INTEGER NOT NULL, months INTEGER, min_months INTEGER,
+      due_on TEXT NOT NULL DEFAULT 'manual' CHECK (due_on IN ('signing','manual')),
+      status TEXT NOT NULL DEFAULT 'planned',
+      invoice_no TEXT, order_id TEXT, checkout_url TEXT, subscription_id TEXT,
+      requested_at TEXT, paid_at TEXT, ended_at TEXT, paid_how TEXT, synced_at TEXT,
+      position INTEGER NOT NULL DEFAULT 0, created_at TEXT NOT NULL)`,
+    `CREATE INDEX IF NOT EXISTS idx_payments_project ON payments (project_id)`,
+    `ALTER TABLE clients ADD COLUMN revolut_customer_id TEXT`,
+  ],
+];
+
 let ready = false;
 
 export async function ensureSchema(db: D1): Promise<void> {
   if (ready) return;
   await db.batch(SCHEMA.map((sql) => db.prepare(sql)));
+  const row = await db.prepare("SELECT value FROM settings WHERE key = 'schema_version'").first<{ value: string }>();
+  for (let version = Number(row?.value ?? 1); version - 1 < MIGRATIONS.length; version++) {
+    await db.batch([
+      ...MIGRATIONS[version - 1].map((sql) => db.prepare(sql)),
+      db
+        .prepare("INSERT INTO settings (key, value) VALUES ('schema_version', ?) ON CONFLICT (key) DO UPDATE SET value = excluded.value")
+        .bind(String(version + 1)),
+    ]);
+  }
   ready = true;
 }

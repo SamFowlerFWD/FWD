@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { api, errorText, formatDate, formatDateTime, formatSize, type Item, type ProjectData } from './api';
 import { Button, Card, Field, Notice, Pill, inputClass, useAction } from './ui';
 import { BRIEF_QUESTIONS, STAGES } from '../../data/portal';
+import { ClientPayments } from './Payments';
 
 export default function ClientProject({ id }: { id: string }) {
   const [data, setData] = useState<ProjectData | null>(null);
@@ -11,7 +12,16 @@ export default function ClientProject({ id }: { id: string }) {
     () => api<ProjectData>(`/projects/${id}`).then(setData).catch((err) => setError(errorText(err))),
     [id],
   );
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    load();
+    // Just back from Revolut's checkout: the payment can take a few seconds
+    // to show as paid, so look again shortly.
+    if (sessionStorage.getItem('portal:back-from-checkout')) {
+      sessionStorage.removeItem('portal:back-from-checkout');
+      const timers = [5000, 15000].map((ms) => window.setTimeout(load, ms));
+      return () => timers.forEach(window.clearTimeout);
+    }
+  }, [load]);
 
   if (error) return <Notice tone="error">{error}</Notice>;
   if (!data) return <p className="py-10 text-center text-slate-600">Loading...</p>;
@@ -23,6 +33,8 @@ export default function ClientProject({ id }: { id: string }) {
     { label: 'Tell me about the project', done: Boolean(brief.submitted_at), href: '#brief' },
     { label: `Send content and access (${itemsDone} of ${items.length})`, done: items.length > 0 && itemsDone === items.length, href: '#content' },
   ];
+  const paymentsDue = data.payments.filter((p) => p.status === 'requested').length;
+  if (paymentsDue) steps.splice(1, 0, { label: paymentsDue === 1 ? 'Make a payment' : `Make ${paymentsDue} payments`, done: false, href: '#payments' });
   const todo = steps.filter((s) => !s.done).length;
 
   return (
@@ -56,6 +68,7 @@ export default function ClientProject({ id }: { id: string }) {
       </Card>
 
       <Agreement id={id} data={data} reload={load} />
+      <ClientPayments data={data} reload={load} />
       <Brief id={id} data={data} reload={load} />
 
       <Card id="content" title="3. Content and access" status={<Pill tone={itemsDone === items.length && items.length ? 'green' : 'amber'}>{itemsDone} of {items.length} done</Pill>}>

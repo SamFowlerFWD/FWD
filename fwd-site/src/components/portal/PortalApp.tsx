@@ -25,6 +25,15 @@ export default function PortalApp() {
     window.addEventListener('hashchange', onHash);
     window.addEventListener('portal:signed-out', onSignedOut);
 
+    // Coming back from Revolut's checkout: /portal?project=<id> (plus whatever
+    // Revolut adds). Swap it for the normal project address.
+    const back = new URLSearchParams(window.location.search).get('project');
+    if (back && /^[0-9a-f-]{36}$/.test(back)) {
+      sessionStorage.setItem('portal:back-from-checkout', '1');
+      window.history.replaceState(null, '', `/portal#/p/${back}`);
+      setRoute(`/p/${back}`);
+    }
+
     const signin = readHash().match(/^\/signin\/([A-Za-z0-9_-]+)$/);
     if (signin) {
       // Take the one-time token out of the address bar straight away.

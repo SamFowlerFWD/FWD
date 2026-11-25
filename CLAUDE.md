@@ -62,6 +62,8 @@ Private area at `/portal` where clients sign their agreement, fill in a brief an
 - Stages, brief questions and the starting checklist live in `src/data/portal.ts`.
 - Sign-in is by emailed one-time link (Resend). No passwords are stored. The admin is `PORTAL_ADMIN_EMAIL` (defaults to thinking@f-w-d.co.uk).
 - Needs two Cloudflare bindings on the Pages project: `DB` (D1) and `FILES` (R2). Tables are created on first use.
+- Payments go through Revolut (`server/portal/payments.ts`, `server/portal/revolut.ts`). Each project has payment lines: single payments (deposit, balance) and monthly payments that roll on or stop after a set number of months. Needs the `REVOLUT_API_KEY` secret on the Pages project; without it clients cannot pay online. Card details are only ever entered on Revolut's checkout page.
+- Database changes after go-live are added to `MIGRATIONS` in `server/portal/db.ts` and run once on the next request.
 - Run it locally with `npm run portal:dev` (port 8788). Sign-in links show on screen instead of being emailed. Never set `PORTAL_DEV` on the live site.
 
 ## Branding

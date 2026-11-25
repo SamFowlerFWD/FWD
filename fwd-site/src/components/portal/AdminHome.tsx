@@ -7,6 +7,7 @@ interface ProjectRow {
   id: string; name: string; stage: string; updated_at: string; client_name: string; company: string;
   contract_status: 'draft' | 'sent' | 'signed' | null; brief_submitted_at: string | null;
   items_total: number; items_done: number; tasks_open: number; next_due: string | null;
+  payments_due: number; payments_overdue: number;
 }
 interface ClientRow { id: string; name: string; company: string; email: string | null; last_login_at: string | null }
 interface TermsRow { id: string; label: string; filename: string; created_at: string }
@@ -53,6 +54,8 @@ export default function AdminHome() {
                       </Pill>
                       <Pill tone={p.brief_submitted_at ? 'green' : 'grey'}>Brief: {p.brief_submitted_at ? 'in' : 'waiting'}</Pill>
                       <Pill tone={p.items_total > 0 && p.items_done === p.items_total ? 'green' : 'grey'}>Checklist: {p.items_done}/{p.items_total}</Pill>
+                      {p.payments_overdue > 0 && <Pill tone="amber">Payment failed</Pill>}
+                      {p.payments_due > 0 && <Pill tone="amber">Payment due</Pill>}
                       {p.tasks_open > 0 && <Pill tone="violet">{p.tasks_open} open {p.tasks_open === 1 ? 'task' : 'tasks'}</Pill>}
                       {p.next_due && <Pill tone={p.next_due < today() ? 'amber' : 'grey'}>{p.next_due < today() ? 'Overdue' : 'Next due'} {formatDate(p.next_due)}</Pill>}
                     </div>

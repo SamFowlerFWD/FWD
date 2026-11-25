@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { api, errorText, formatDate, formatDateTime, formatSize, type Item, type ProjectData, type Task } from './api';
 import { Button, Card, Field, Notice, Pill, inputClass, useAction } from './ui';
 import { BRIEF_QUESTIONS, STAGES } from '../../data/portal';
+import { AdminPayments } from './Payments';
 
 type Reload = () => Promise<unknown>;
 
@@ -19,6 +20,7 @@ export default function AdminProject({ id }: { id: string }) {
       <a className="text-sm text-violet-700 underline" href="#/">&larr; All projects</a>
       <Header id={id} data={data} reload={load} />
       <Contract id={id} data={data} reload={load} />
+      <AdminPayments id={id} data={data} reload={load} />
       <BriefAnswers data={data} />
       <Checklist id={id} data={data} reload={load} />
       <Tasks id={id} tasks={data.tasks} reload={load} />
