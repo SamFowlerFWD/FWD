@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { api, formatDate, formatMoney, type PaymentLine, type ProjectData } from './api';
+import { api, formatDate, formatMoney, type BankDetails, type PaymentLine, type ProjectData } from './api';
 import { Button, Card, Field, Notice, Pill, inputClass, useAction } from './ui';
 
 type Reload = () => Promise<unknown>;
@@ -20,7 +20,37 @@ function minimumTermEnds(line: PaymentLine): Date | null {
   return end;
 }
 
+const monthName = (period: string) => new Date(`${period}-15`).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
+
+// Every month from when a standing order was asked for up to this month,
+// newest first. A fixed term stops at its number of payments.
+function monthsToCheck(line: PaymentLine): string[] {
+  const start = (line.received[0] && line.received[0] < (line.requested_at || '').slice(0, 7) ? line.received[0] : (line.requested_at || new Date().toISOString()).slice(0, 7));
+  const end = new Date().toISOString().slice(0, 7);
+  const months: string[] = [];
+  let [year, month] = start.split('-').map(Number);
+  while (`${year}-${String(month).padStart(2, '0')}` <= end && months.length < 120) {
+    months.push(`${year}-${String(month).padStart(2, '0')}`);
+    if (++month > 12) { month = 1; year++; }
+  }
+  return (line.months ? months.slice(0, Math.max(line.months, line.received.length)) : months).reverse();
+}
+
+function BankBox({ bank, reference, amount, monthly }: { bank: BankDetails; reference: string; amount: number; monthly: boolean }) {
+  return (
+    <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm">
+      <dt className="text-slate-600">Pay to</dt><dd className="font-medium text-slate-900">{bank.accountName}</dd>
+      <dt className="text-slate-600">Sort code</dt><dd className="font-medium text-slate-900">{bank.sortCode}</dd>
+      <dt className="text-slate-600">Account number</dt><dd className="font-medium text-slate-900">{bank.accountNumber}</dd>
+      <dt className="text-slate-600">Amount</dt><dd className="font-medium text-slate-900">{formatMoney(amount)}{monthly ? ' every month' : ''}</dd>
+      <dt className="text-slate-600">Reference</dt><dd className="font-medium text-slate-900">{reference}</dd>
+    </dl>
+  );
+}
+
 function StatusPill({ line }: { line: PaymentLine }) {
+  if (line.method === 'standing_order' && line.status === 'requested') return <Pill tone="amber">Standing order, first payment not seen yet</Pill>;
+  if (line.method === 'standing_order' && line.status === 'active') return <Pill tone="green">Standing order since {formatDate(line.paid_at)}</Pill>;
   switch (line.status) {
     case 'planned': return <Pill>{line.due_on === 'signing' ? 'Due on signing' : 'Not requested yet'}</Pill>;
     case 'requested': return <Pill tone="amber">{line.kind === 'monthly' ? 'Waiting to be set up' : 'Due now'}</Pill>;
@@ -81,6 +111,7 @@ function AdminLine({ line, clientEmail, reload }: { line: PaymentLine; clientEma
           <span className="text-slate-800">{perMonth(line)}</span>
           {line.kind === 'monthly' && <span className="block text-sm text-slate-600">{termText(line)}</span>}
           {minEnd && line.status === 'active' && <span className="block text-sm text-slate-600">Minimum term ends {formatDate(minEnd.toISOString())}</span>}
+          {line.method === 'standing_order' && <span className="block text-sm text-slate-600">Paid by standing order, reference {line.reference}</span>}
           {line.status === 'paid' && line.paid_how && <span className="block text-sm text-slate-600">Paid by {line.paid_how === 'Revolut' ? 'card through Revolut' : line.paid_how}</span>}
         </div>
         <StatusPill line={line} />
@@ -101,6 +132,12 @@ function AdminLine({ line, clientEmail, reload }: { line: PaymentLine; clientEma
             Remove
           </Button>
         )}
+        {line.kind === 'monthly' && line.status === 'requested' && !line.method && (
+          <Button variant="link" className="text-sm" disabled={busy} onClick={() => post('standing-order')}>Client will pay by standing order</Button>
+        )}
+        {line.method === 'standing_order' && line.status === 'requested' && (
+          <Button variant="link" className="text-sm" disabled={busy} onClick={() => post('card')}>Switch back to card</Button>
+        )}
         {(line.status === 'active' || line.status === 'overdue') && (
           <Button
             variant="link"
@@ -108,14 +145,38 @@ function AdminLine({ line, clientEmail, reload }: { line: PaymentLine; clientEma
             disabled={busy}
             onClick={() => {
               const early = minEnd && minEnd > new Date() ? ` The minimum term runs until ${formatDate(minEnd.toISOString())}.` : '';
-              if (window.confirm(`Stop taking ${perMonth(line)} for ${line.label}? This cannot be undone: to start again the client would have to set it up afresh.${early}`)) post('cancel');
+              const message = line.method === 'standing_order'
+                ? `End ${line.label}? This only closes it here. A standing order is controlled by the client, so they must cancel it at their bank.${early}`
+                : `Stop taking ${perMonth(line)} for ${line.label}? This cannot be undone: to start again the client would have to set it up afresh.${early}`;
+              if (window.confirm(message)) post('cancel');
             }}
           >
-            Cancel monthly payment
+            {line.method === 'standing_order' ? 'End monthly payment' : 'Cancel monthly payment'}
           </Button>
         )}
         <InvoiceLink line={line} />
       </div>
+      {line.method === 'standing_order' && ['requested', 'active', 'finished'].includes(line.status) && (
+        <fieldset className="mt-3 rounded-lg border border-slate-200 p-3">
+          <legend className="px-1 text-sm font-medium text-slate-800">Tick each month when the payment arrives</legend>
+          <ul className="flex flex-wrap gap-x-5 gap-y-2">
+            {monthsToCheck(line).map((period) => (
+              <li key={period}>
+                <label className="flex items-center gap-2 text-sm text-slate-800">
+                  <input
+                    type="checkbox"
+                    className="h-5 w-5 accent-green-600"
+                    checked={line.received.includes(period)}
+                    disabled={busy}
+                    onChange={(e) => post('receipts', { period, received: e.target.checked })}
+                  />
+                  {monthName(period)}
+                </label>
+              </li>
+            ))}
+          </ul>
+        </fieldset>
+      )}
       {devLink && <a className="mt-2 block break-all text-sm text-violet-700 underline" data-testid="dev-link" href={devLink}>{devLink}</a>}
       {error && <div className="mt-2"><Notice tone="error">{error}</Notice></div>}
     </li>
@@ -224,15 +285,17 @@ export function ClientPayments({ data, reload }: { data: ProjectData; reload: Re
   return (
     <Card id="payments" title="Payments" status={due ? <Pill tone="amber">{due} due</Pill> : undefined}>
       <ul className="space-y-3">
-        {data.payments.map((line) => <ClientLine key={line.id} line={line} enabled={data.paymentsEnabled} reload={reload} />)}
+        {data.payments.map((line) => <ClientLine key={line.id} line={line} enabled={data.paymentsEnabled} bank={data.bank} reload={reload} />)}
       </ul>
-      <p className="mt-4 text-sm text-slate-600">Payments are taken securely by Revolut. Your card details go straight to them and are never seen or stored by FWD.</p>
+      <p className="mt-4 text-sm text-slate-600">Card payments are taken securely by Revolut. Your card details go straight to them and are never seen or stored by FWD.</p>
     </Card>
   );
 }
 
-function ClientLine({ line, enabled, reload }: { line: PaymentLine; enabled: boolean; reload: Reload }) {
+function ClientLine({ line, enabled, bank, reload }: { line: PaymentLine; enabled: boolean; bank: BankDetails | null; reload: Reload }) {
   const { busy, error, run } = useAction();
+  const choose = (path: string) => run(async () => { await api(`/payments/${line.id}/${path}`, { method: 'POST', body: {} }); await reload(); });
+  const standingOrder = line.method === 'standing_order';
   const pay = () => run(async () => {
     const res = await api<{ url?: string; paid?: boolean }>(`/payments/${line.id}/checkout`, { method: 'POST', body: {} });
     if (res.url) window.location.assign(res.url);
@@ -249,7 +312,22 @@ function ClientLine({ line, enabled, reload }: { line: PaymentLine; enabled: boo
         </div>
         <StatusPill line={line} />
       </div>
-      {line.status === 'requested' && (
+      {standingOrder && (line.status === 'requested' || line.status === 'active') && bank && (
+        <div className="mt-3">
+          <p className="text-sm text-slate-800">
+            {line.status === 'requested'
+              ? 'Set up a standing order with your bank using these details. Please use the reference exactly, so I can match your payment.'
+              : 'Your standing order details, in case you need them.'}
+          </p>
+          <BankBox bank={bank} reference={line.reference || ''} amount={line.amount} monthly />
+          {line.months && <p className="mt-2 text-sm text-slate-600">Set it to stop after {line.months} payments.</p>}
+          {line.received.length > 0 && <p className="mt-2 text-sm text-slate-600">Received so far: {line.received.map(monthName).join(', ')}.</p>}
+          {line.status === 'requested' && enabled && (
+            <Button variant="link" className="mt-2 text-sm" disabled={busy} onClick={() => choose('card')}>Pay by card instead</Button>
+          )}
+        </div>
+      )}
+      {line.status === 'requested' && !standingOrder && (
         <div className="mt-3">
           {enabled ? (
             <>
@@ -259,7 +337,20 @@ function ClientLine({ line, enabled, reload }: { line: PaymentLine; enabled: boo
               {line.kind === 'monthly' && <p className="mt-2 text-sm text-slate-600">The first payment is taken when you set it up, then on the same day each month.</p>}
             </>
           ) : (
-            <p className="text-sm text-slate-600">Online payment is being set up. I will email you when it is ready.</p>
+            !bank && <p className="text-sm text-slate-600">Online payment is being set up. I will email you when it is ready.</p>
+          )}
+          {bank && line.kind === 'monthly' && (
+            <p className="mt-3 text-sm text-slate-700">
+              {enabled ? 'Would you rather pay from your bank? ' : ''}
+              <Button variant="link" className="text-sm" disabled={busy} onClick={() => choose('standing-order')}>Pay by standing order{enabled ? ' instead' : ''}</Button>
+            </p>
+          )}
+          {bank && line.kind === 'one_off' && (
+            <details className="mt-3">
+              <summary className="cursor-pointer text-sm text-violet-700 underline">{enabled ? 'Pay by bank transfer instead' : 'Pay by bank transfer'}</summary>
+              <BankBox bank={bank} reference={line.invoice_no || ''} amount={line.amount} monthly={false} />
+              <p className="mt-2 text-sm text-slate-600">I will mark this as paid when it arrives.</p>
+            </details>
           )}
         </div>
       )}

@@ -8,7 +8,7 @@ import {
 import { ensureSchema } from './db';
 import { sendEmail, toBase64 } from './email';
 import { signedPack } from './pdf';
-import { paymentLines, paymentRoutes, requestOnSigning, syncProject, syncStale } from './payments';
+import { bankDetails, paymentLines, paymentRoutes, requestOnSigning, syncProject, syncStale } from './payments';
 import { paymentsEnabled } from './revolut';
 import { BRIEF_QUESTIONS, DEFAULT_ITEMS, MAX_UPLOAD_BYTES, STAGES } from '../../src/data/portal';
 
@@ -218,6 +218,7 @@ async function projectPayload(c: Ctx, project: Project) {
     admin ? clientLogin(c, project.client_id) : Promise.resolve(null),
   ]);
 
+  const payments = await paymentLines(c, project.id);
   // Clients never see a contract that is still a draft.
   const showContract = contract && (admin || contract.status !== 'draft');
   const terms = contract ? await termsFor(c, contract) : null;
@@ -242,8 +243,10 @@ async function projectPayload(c: Ctx, project: Project) {
     items: items.results,
     files: files.results,
     tasks: tasks.results,
-    payments: await paymentLines(c, project.id),
+    payments,
     paymentsEnabled: paymentsEnabled(c.env),
+    // A client only sees the bank details when there is something to pay into them.
+    bank: admin || payments.some((p) => p.status === 'requested' || p.method === 'standing_order') ? await bankDetails(c) : null,
     activity: activity.results,
   };
 }
@@ -264,6 +267,8 @@ const listProjects: Handler = async (c) => {
             (SELECT COUNT(*) FROM tasks WHERE project_id = p.id AND done = 0) AS tasks_open,
             (SELECT COUNT(*) FROM payments WHERE project_id = p.id AND status = 'requested') AS payments_due,
             (SELECT COUNT(*) FROM payments WHERE project_id = p.id AND status = 'overdue') AS payments_overdue,
+            (SELECT COUNT(*) FROM payments y WHERE y.project_id = p.id AND y.method = 'standing_order' AND y.status IN ('requested','active')
+              AND NOT EXISTS (SELECT 1 FROM payment_receipts r WHERE r.payment_id = y.id AND r.period = strftime('%Y-%m', 'now'))) AS standing_orders_to_check,
             (SELECT MIN(due) FROM tasks WHERE project_id = p.id AND done = 0 AND due IS NOT NULL AND due != '') AS next_due
            FROM projects p JOIN clients c ON c.id = p.client_id ORDER BY p.updated_at DESC`,
         )
@@ -279,6 +284,7 @@ const listProjects: Handler = async (c) => {
     return json({ ok: true, projects: projects.results, clients: clients.results,
       terms: terms && { id: terms.id, label: terms.label, filename: terms.filename, created_at: terms.created_at },
       paymentsEnabled: paymentsEnabled(c.env),
+      bank: await bankDetails(c),
     });
   }
   const projects = await c.db
@@ -379,7 +385,7 @@ const deleteProject: Handler = async (c, [id]) => {
   const keys = [...files.results.map((f) => f.r2_key), contract?.sow_key, contract?.signed_key].filter((k): k is string => Boolean(k));
   if (keys.length && c.env.FILES) await c.env.FILES.delete(keys);
   await c.db.batch(
-    ['contracts', 'briefs', 'items', 'files', 'tasks', 'activity', 'payments']
+    ['contracts', 'briefs', 'items', 'files', 'tasks', 'activity', 'payments', 'payment_receipts']
       .map((table) => c.db.prepare(`DELETE FROM ${table} WHERE project_id = ?`).bind(id))
       .concat(c.db.prepare('DELETE FROM projects WHERE id = ?').bind(id)),
   );

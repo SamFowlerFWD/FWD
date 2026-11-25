@@ -22,6 +22,22 @@ export interface PaymentLine {
   invoice_no: string | null; order_id: string | null; checkout_url: string | null; subscription_id: string | null;
   requested_at: string | null; paid_at: string | null; ended_at: string | null; paid_how: string | null;
   synced_at: string | null; created_at: string;
+  method: 'standing_order' | null; reference: string | null;
+}
+
+export interface BankDetails { accountName: string; sortCode: string; accountNumber: string }
+
+// Sam's own bank details, typed in by him on the projects page. Shown to a
+// client only when they have something to pay by bank transfer.
+export async function bankDetails(c: Ctx): Promise<BankDetails | null> {
+  const row = await c.db.prepare("SELECT value FROM settings WHERE key = 'bank_details'").first<{ value: string }>();
+  if (!row) return null;
+  try {
+    const bank = JSON.parse(row.value) as BankDetails;
+    return bank.accountName && bank.sortCode && bank.accountNumber ? bank : null;
+  } catch {
+    return null;
+  }
 }
 
 const DAY = 24 * 60 * 60 * 1000;
@@ -175,8 +191,13 @@ export async function syncStale(c: Ctx): Promise<void> {
 
 export async function paymentLines(c: Ctx, projectId: string) {
   const admin = c.user!.role === 'admin';
-  const lines = await c.db.prepare('SELECT * FROM payments WHERE project_id = ? ORDER BY position, created_at').bind(projectId).all<PaymentLine>();
+  const [lines, receipts] = await Promise.all([
+    c.db.prepare('SELECT * FROM payments WHERE project_id = ? ORDER BY position, created_at').bind(projectId).all<PaymentLine>(),
+    c.db.prepare('SELECT payment_id, period FROM payment_receipts WHERE project_id = ? ORDER BY period').bind(projectId).all<{ payment_id: string; period: string }>(),
+  ]);
   return lines.results.map((l) => ({
+    method: l.method, reference: l.reference,
+    received: receipts.results.filter((r) => r.payment_id === l.id).map((r) => r.period),
     id: l.id, kind: l.kind, label: l.label, amount: l.amount, months: l.months, min_months: l.min_months,
     due_on: l.due_on, status: l.status, invoice_no: l.invoice_no, requested_at: l.requested_at,
     paid_at: l.paid_at, ended_at: l.ended_at,
@@ -278,12 +299,110 @@ const markPaid: Handler = async (c, [lineId]) => {
 
 const cancelMonthly: Handler = async (c, [lineId]) => {
   const line = await getLine(c, lineId);
+  const standingOrder = line.method === 'standing_order';
   if (line.kind !== 'monthly' || !['active', 'overdue'].includes(line.status)) throw new HttpError(409, 'invalid');
   if (line.subscription_id) await revolut.cancelSubscription(c.env, line.subscription_id);
   await c.db.batch([
     c.db.prepare("UPDATE payments SET status = 'cancelled', ended_at = ? WHERE id = ?").bind(now(), lineId),
-    ...record(c, line.project_id, `Monthly payment cancelled: ${line.label}`),
+    ...record(c, line.project_id, standingOrder ? `Monthly payment ended: ${line.label}. The client must cancel their standing order at their bank` : `Monthly payment cancelled: ${line.label}`),
   ]);
+  return json({ ok: true });
+};
+
+// ---------- monthly payments by standing order ----------
+//
+// The client sets the standing order up at their own bank, so nothing here
+// takes money. Sam ticks each month off when he sees it arrive.
+
+const PERIOD_RE = /^\d{4}-(0[1-9]|1[0-2])$/;
+
+async function nextReference(c: Ctx): Promise<string> {
+  const row = await c.db
+    .prepare(
+      `INSERT INTO settings (key, value) VALUES ('standing_order_seq', '1')
+       ON CONFLICT (key) DO UPDATE SET value = CAST(CAST(value AS INTEGER) + 1 AS TEXT) RETURNING value`,
+    )
+    .first<{ value: string }>();
+  return `FWD-SO-${String(row?.value ?? '1').padStart(4, '0')}`;
+}
+
+// The client (or Sam on their behalf) chooses to pay a monthly line by standing order.
+const chooseStandingOrder: Handler = async (c, [lineId]) => {
+  let line = await getLine(c, lineId);
+  if (line.kind !== 'monthly') throw new HttpError(422, 'invalid');
+  if (!(await bankDetails(c))) throw new HttpError(422, 'no_bank_details');
+  if (line.subscription_id) {
+    // A card checkout was opened. Make sure it was not completed, then close it.
+    await syncLine(c, line).catch(() => undefined);
+    line = await getLine(c, lineId);
+    if (line.status === 'requested' && line.subscription_id) await revolut.cancelSubscription(c.env, line.subscription_id).catch(() => undefined);
+  }
+  if (line.status !== 'requested') throw new HttpError(409, 'payment_started');
+  await c.db.batch([
+    c.db
+      .prepare("UPDATE payments SET method = 'standing_order', reference = COALESCE(reference, ?), subscription_id = NULL, order_id = NULL, checkout_url = NULL WHERE id = ?")
+      .bind(await nextReference(c), lineId),
+    ...record(c, line.project_id, `${line.label}: paying by standing order`),
+  ]);
+  if (c.user!.role === 'client') {
+    await tellSam(c, line.project_id, `Standing order chosen: ${line.label}`, `${c.user!.name || c.user!.email} has chosen to pay ${line.label} (${pounds(line.amount)} a month) by standing order. Tick each month off in the client area when it arrives.`);
+  }
+  return json({ ok: true });
+};
+
+// Back to paying by card, as long as no month has been ticked off yet.
+const chooseCard: Handler = async (c, [lineId]) => {
+  const line = await getLine(c, lineId);
+  if (line.method !== 'standing_order' || line.status !== 'requested') throw new HttpError(409, 'payment_started');
+  await c.db.batch([
+    c.db.prepare('UPDATE payments SET method = NULL WHERE id = ?').bind(lineId),
+    ...record(c, line.project_id, `${line.label}: paying by card instead of standing order`),
+  ]);
+  return json({ ok: true });
+};
+
+// Sam ticks (or unticks) a month as received.
+const setReceipt: Handler = async (c, [lineId]) => {
+  const line = await getLine(c, lineId);
+  if (line.method !== 'standing_order' || !['requested', 'active', 'finished'].includes(line.status)) throw new HttpError(409, 'invalid');
+  const body = await readJson(c.request);
+  const period = clean(body.period, 7);
+  if (!PERIOD_RE.test(period) || period > now().slice(0, 7)) throw new HttpError(422, 'invalid');
+  const month = new Date(`${period}-15`).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+
+  if (body.received === false) {
+    await c.db.batch([
+      c.db.prepare('DELETE FROM payment_receipts WHERE payment_id = ? AND period = ?').bind(lineId, period),
+      ...record(c, line.project_id, `${line.label}: ${month} unticked`),
+    ]);
+  } else {
+    await c.db.batch([
+      c.db.prepare('INSERT OR IGNORE INTO payment_receipts (payment_id, project_id, period, received_at) VALUES (?, ?, ?, ?)').bind(lineId, line.project_id, period, now()),
+      ...record(c, line.project_id, `${line.label}: ${month} received`),
+    ]);
+  }
+  // The line is running once any month has arrived, and finished once a fixed
+  // term has had all its payments.
+  const count = (await c.db.prepare('SELECT COUNT(*) AS n FROM payment_receipts WHERE payment_id = ?').bind(lineId).first<{ n: number }>())?.n ?? 0;
+  const status = count === 0 ? 'requested' : line.months && count >= line.months ? 'finished' : 'active';
+  await c.db
+    .prepare('UPDATE payments SET status = ?, paid_at = CASE WHEN ? = 0 THEN NULL ELSE COALESCE(paid_at, ?) END, ended_at = ? WHERE id = ?')
+    .bind(status, count, now(), status === 'finished' ? now() : null, lineId)
+    .run();
+  return json({ ok: true });
+};
+
+const saveBank: Handler = async (c) => {
+  const body = await readJson(c.request);
+  const accountName = clean(body.accountName, 100);
+  const sortCode = clean(body.sortCode, 20).replace(/[^0-9]/g, '');
+  const accountNumber = clean(body.accountNumber, 20).replace(/[^0-9]/g, '');
+  if (!accountName || sortCode.length !== 6 || accountNumber.length !== 8) throw new HttpError(422, 'bad_bank_details');
+  const value = JSON.stringify({ accountName, sortCode: sortCode.replace(/(\d{2})(\d{2})(\d{2})/, '$1-$2-$3'), accountNumber });
+  await c.db
+    .prepare("INSERT INTO settings (key, value) VALUES ('bank_details', ?) ON CONFLICT (key) DO UPDATE SET value = excluded.value")
+    .bind(value)
+    .run();
   return json({ ok: true });
 };
 
@@ -312,6 +431,7 @@ const checkout: Handler = async (c, [lineId]) => {
     line = await getLine(c, lineId);
   }
   if (line.status !== 'requested') return json({ ok: true, paid: line.status === 'paid' || line.status === 'active' });
+  if (line.method === 'standing_order') throw new HttpError(409, 'payment_started');
   if (line.order_id && line.checkout_url) {
     const open = await revolut.getOrder(c.env, line.order_id);
     if (open.state === 'pending') return json({ ok: true, url: line.checkout_url });
@@ -373,5 +493,9 @@ export const paymentRoutes: Route[] = [
   ['POST', new RegExp(`^/payments/${ID}/mark-paid$`), 'admin', markPaid],
   ['POST', new RegExp(`^/payments/${ID}/cancel$`), 'admin', cancelMonthly],
   ['POST', new RegExp(`^/payments/${ID}/checkout$`), 'user', checkout],
+  ['POST', new RegExp(`^/payments/${ID}/standing-order$`), 'user', chooseStandingOrder],
+  ['POST', new RegExp(`^/payments/${ID}/card$`), 'user', chooseCard],
+  ['POST', new RegExp(`^/payments/${ID}/receipts$`), 'admin', setReceipt],
+  ['PUT', /^\/settings\/bank$/, 'admin', saveBank],
   ['GET', new RegExp(`^/payments/${ID}/invoice\\.pdf$`), 'user', invoice],
 ];

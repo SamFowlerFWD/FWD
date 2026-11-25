@@ -76,6 +76,14 @@ const MIGRATIONS: string[][] = [
     `CREATE INDEX IF NOT EXISTS idx_payments_project ON payments (project_id)`,
     `ALTER TABLE clients ADD COLUMN revolut_customer_id TEXT`,
   ],
+  // 3: monthly payments by standing order, ticked off by hand each month
+  [
+    `ALTER TABLE payments ADD COLUMN method TEXT`,
+    `ALTER TABLE payments ADD COLUMN reference TEXT`,
+    `CREATE TABLE IF NOT EXISTS payment_receipts (
+      payment_id TEXT NOT NULL, project_id TEXT NOT NULL, period TEXT NOT NULL,
+      received_at TEXT NOT NULL, PRIMARY KEY (payment_id, period))`,
+  ],
 ];
 
 let ready = false;

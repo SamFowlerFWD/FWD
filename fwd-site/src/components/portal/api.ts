@@ -19,6 +19,8 @@ const MESSAGES: Record<string, string> = {
   payment_started: 'That payment has already been paid or set up, so it cannot be changed here.',
   payments_running: 'This project has a monthly payment running. Cancel it first.',
   payments_not_configured: 'Online payment is not switched on yet.',
+  no_bank_details: 'Add your bank details on the projects page first.',
+  bad_bank_details: 'Check the bank details: a 6 digit sort code and an 8 digit account number.',
   payment_provider_error: 'Revolut could not be reached. Please try again in a minute.',
 };
 
@@ -76,7 +78,9 @@ export interface PaymentLine {
   status: 'planned' | 'requested' | 'paid' | 'active' | 'overdue' | 'cancelled' | 'finished';
   invoice_no: string | null; requested_at: string | null; paid_at: string | null; ended_at: string | null;
   paid_how?: string | null;
+  method: 'standing_order' | null; reference: string | null; received: string[];
 }
+export interface BankDetails { accountName: string; sortCode: string; accountNumber: string }
 export interface PortalUser { email: string; name: string; role: 'admin' | 'client' }
 export interface Item { id: string; kind: 'upload' | 'access'; label: string; help: string; status: 'todo' | 'done'; note: string }
 export interface FileRow { id: string; item_id: string; filename: string; size: number; created_at: string }
@@ -99,5 +103,6 @@ export interface ProjectData {
   tasks: Task[];
   payments: PaymentLine[];
   paymentsEnabled: boolean;
+  bank: BankDetails | null;
   activity: { actor: string; action: string; created_at: string }[];
 }

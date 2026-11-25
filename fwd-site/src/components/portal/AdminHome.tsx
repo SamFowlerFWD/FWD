@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
-import { api, errorText, formatDate, formatDateTime } from './api';
+import { api, errorText, formatDate, formatDateTime, type BankDetails } from './api';
 import { Button, Card, Field, Notice, Pill, inputClass, useAction } from './ui';
 import { STAGES } from '../../data/portal';
 
@@ -7,11 +7,11 @@ interface ProjectRow {
   id: string; name: string; stage: string; updated_at: string; client_name: string; company: string;
   contract_status: 'draft' | 'sent' | 'signed' | null; brief_submitted_at: string | null;
   items_total: number; items_done: number; tasks_open: number; next_due: string | null;
-  payments_due: number; payments_overdue: number;
+  payments_due: number; payments_overdue: number; standing_orders_to_check: number;
 }
 interface ClientRow { id: string; name: string; company: string; email: string | null; last_login_at: string | null }
 interface TermsRow { id: string; label: string; filename: string; created_at: string }
-interface Overview { projects: ProjectRow[]; clients: ClientRow[]; terms: TermsRow | null }
+interface Overview { projects: ProjectRow[]; clients: ClientRow[]; terms: TermsRow | null; bank: BankDetails | null }
 
 const today = () => new Date().toISOString().slice(0, 10);
 
@@ -56,6 +56,7 @@ export default function AdminHome() {
                       <Pill tone={p.items_total > 0 && p.items_done === p.items_total ? 'green' : 'grey'}>Checklist: {p.items_done}/{p.items_total}</Pill>
                       {p.payments_overdue > 0 && <Pill tone="amber">Payment failed</Pill>}
                       {p.payments_due > 0 && <Pill tone="amber">Payment due</Pill>}
+                      {p.standing_orders_to_check > 0 && <Pill tone="amber">Standing order: this month not ticked</Pill>}
                       {p.tasks_open > 0 && <Pill tone="violet">{p.tasks_open} open {p.tasks_open === 1 ? 'task' : 'tasks'}</Pill>}
                       {p.next_due && <Pill tone={p.next_due < today() ? 'amber' : 'grey'}>{p.next_due < today() ? 'Overdue' : 'Next due'} {formatDate(p.next_due)}</Pill>}
                     </div>
@@ -83,6 +84,7 @@ export default function AdminHome() {
       </Card>
 
       <TermsOfBusiness terms={data.terms} reload={load} />
+      <BankDetailsCard bank={data.bank} reload={load} />
     </div>
   );
 }
@@ -221,6 +223,39 @@ function TermsOfBusiness({ terms, reload }: { terms: TermsRow | null; reload: ()
         <Button type="submit" disabled={busy || !file}>{busy ? 'Uploading...' : terms ? 'Upload new version' : 'Upload'}</Button>
       </form>
       {error && <div className="mt-2"><Notice tone="error">{error}</Notice></div>}
+    </Card>
+  );
+}
+
+function BankDetailsCard({ bank, reload }: { bank: BankDetails | null; reload: () => Promise<unknown> }) {
+  const [form, setForm] = useState<BankDetails>(bank || { accountName: 'FWD Thinking Solutions Limited', sortCode: '', accountNumber: '' });
+  const [saved, setSaved] = useState(false);
+  const { busy, error, run } = useAction();
+  const submit = (event: FormEvent) => {
+    event.preventDefault();
+    run(async () => {
+      await api('/settings/bank', { method: 'PUT', body: form });
+      await reload();
+      setSaved(true);
+    });
+  };
+  const set = (key: keyof BankDetails, value: string) => { setSaved(false); setForm({ ...form, [key]: value }); };
+  return (
+    <Card title="Bank details" status={<Pill tone={bank ? 'green' : 'amber'}>{bank ? 'Saved' : 'Not added'}</Pill>}>
+      <p className="mb-4 text-slate-700">
+        For clients who pay by bank transfer or standing order. A client only sees these when they have something to pay.
+        {!bank && ' Until you add them, clients are only offered card payment.'}
+      </p>
+      <form onSubmit={submit} className="grid gap-3 sm:grid-cols-3">
+        <Field label="Account name"><input className={inputClass} required value={form.accountName} onChange={(e) => set('accountName', e.target.value)} /></Field>
+        <Field label="Sort code"><input className={inputClass} required inputMode="numeric" autoComplete="off" value={form.sortCode} onChange={(e) => set('sortCode', e.target.value)} placeholder="00-00-00" /></Field>
+        <Field label="Account number"><input className={inputClass} required inputMode="numeric" autoComplete="off" value={form.accountNumber} onChange={(e) => set('accountNumber', e.target.value)} placeholder="8 digits" /></Field>
+        {error && <div className="sm:col-span-3"><Notice tone="error">{error}</Notice></div>}
+        <div className="flex items-center gap-3 sm:col-span-3">
+          <Button type="submit" disabled={busy}>Save bank details</Button>
+          {saved && <span role="status" className="text-sm text-green-700">Saved.</span>}
+        </div>
+      </form>
     </Card>
   );
 }
