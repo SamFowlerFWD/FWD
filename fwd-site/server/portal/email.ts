@@ -35,7 +35,7 @@ export function brandedHtml(body: string): string {
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f3f4f6"><tr><td align="center" style="padding:24px 12px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:12px;border:1px solid #e5e7eb">
 <tr><td style="padding:24px 32px 16px;border-bottom:3px solid ${COMPANY.purple}">
-<img src="${COMPANY.logoUrl}" width="132" alt="${COMPANY.shortName}" style="display:block;border:0;${FONT};font-size:20px;font-weight:700;color:${COMPANY.ink}">
+<img src="${COMPANY.logoUrl}" width="120" alt="${COMPANY.shortName}" style="display:block;border:0;${FONT};font-size:20px;font-weight:700;color:${COMPANY.ink}">
 <div style="${FONT};font-size:13px;color:#4b5563;margin-top:6px">${COMPANY.shortName}</div>
 </td></tr>
 <tr><td style="padding:28px 32px 12px;${FONT};font-size:16px;line-height:1.55;color:${COMPANY.ink}">

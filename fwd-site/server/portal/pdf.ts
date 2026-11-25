@@ -1,6 +1,7 @@
 import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from 'pdf-lib';
 import { COMPANY } from './company';
 import { pounds, ukDateTime } from './core';
+import { LOGO_HEIGHT, LOGO_PNG_BASE64, LOGO_WIDTH } from './logo';
 
 export interface SignatureRecord {
   projectName: string;
@@ -32,18 +33,14 @@ const A4 = { width: 595.28, height: 841.89 };
 const MARGIN = 56;
 const WIDTH = A4.width - MARGIN * 2;
 
-// The FWD logo: three arrows, drawn as shapes so no image file is needed.
-// (x, top) is its top left corner; it is about 100 wide and 30 tall at size 1.
-function drawLogo(page: PDFPage, bold: PDFFont, x: number, top: number, size = 1) {
-  const k = 0.5 * size;
-  const arrows: [number, string, [number, number, number], [number, number, number], number][] = [
-    [20, 'F', [0, 0, 0], [1, 1, 1], 40],
-    [90, 'W', [0, 0.706, 0.847], [1, 1, 1], 105],
-    [160, 'D', [0.565, 0.933, 0.565], [0, 0, 0], 180],
-  ];
-  for (const [left, letter, fill, text, letterX] of arrows) {
-    page.drawSvgPath(`M ${left} 20 L ${left + 60} 50 L ${left} 80 Z`, { x: x - 20 * k, y: top + 20 * k, scale: k, color: rgb(...fill) });
-    page.drawText(letter, { x: x + (letterX - 20) * k, y: top - (58 - 20) * k, size: 24 * k, font: bold, color: rgb(...text) });
+// The FWD logo at the top of a page. (x, top) is its top left corner.
+async function drawLogo(pdf: PDFDocument, page: PDFPage, x: number, top: number, height = 44) {
+  try {
+    const bytes = Uint8Array.from(atob(LOGO_PNG_BASE64), (ch) => ch.charCodeAt(0));
+    const image = await pdf.embedPng(bytes);
+    page.drawImage(image, { x, y: top - height, width: (LOGO_WIDTH / LOGO_HEIGHT) * height, height });
+  } catch {
+    // A page without its logo is better than no page.
   }
 }
 
@@ -104,7 +101,7 @@ export async function signedPack(sow: ArrayBuffer, terms: ArrayBuffer, r: Signat
   const ink = rgb(0.06, 0.09, 0.16);
   const grey = rgb(0.39, 0.45, 0.55);
   const page: PDFPage = pdf.addPage([A4.width, A4.height]);
-  drawLogo(page, bold, MARGIN, A4.height - 40, 0.8);
+  await drawLogo(pdf, page, MARGIN, A4.height - 30, 40);
   drawFooter(page, regular);
   let y = A4.height - MARGIN - 30;
 
@@ -202,7 +199,7 @@ export async function invoicePdf(inv: InvoiceDetails): Promise<Uint8Array> {
   const grey = rgb(0.39, 0.45, 0.55);
   const page = pdf.addPage([A4.width, A4.height]);
   const right = A4.width - MARGIN;
-  drawLogo(page, bold, MARGIN, A4.height - 40);
+  await drawLogo(pdf, page, MARGIN, A4.height - 30);
   drawFooter(page, regular);
   page.drawLine({ start: { x: MARGIN, y: A4.height - 84 }, end: { x: right, y: A4.height - 84 }, thickness: 1.5, color: PURPLE });
   let y = A4.height - 96;
