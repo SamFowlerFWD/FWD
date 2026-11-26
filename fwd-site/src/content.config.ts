@@ -18,6 +18,8 @@ const blog = defineCollection({
     services: z.array(z.enum(SERVICE_KEYS)).default([]),
     featured: z.boolean().default(false),
     draft: z.boolean().default(false),
+    /** Shown as a question list under the post and sent to Google as FAQPage data. */
+    faqs: z.array(z.object({ question: z.string(), answer: z.string() })).optional(),
   }),
 });
 

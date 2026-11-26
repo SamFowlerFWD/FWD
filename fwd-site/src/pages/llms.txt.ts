@@ -40,7 +40,8 @@ Sam works with all kinds of businesses, but knows two industries from the inside
 
 ## Location
 
-Norwich, Norfolk, United Kingdom. Working with businesses across the UK.
+Norwich, Norfolk, United Kingdom. Working with businesses across Norfolk, Suffolk and the rest of the UK.
+Norfolk and Suffolk: https://f-w-d.co.uk/web-design-norfolk-suffolk
 
 ## Portfolio
 

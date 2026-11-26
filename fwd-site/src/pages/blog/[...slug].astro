@@ -16,7 +16,7 @@ export async function getStaticPaths() {
 const { post, allPosts } = Astro.props;
 const { Content } = await render(post);
 
-const { title, description, pubDate, lastUpdated: updatedDate, heroImage, heroImageAlt, category, tags, industries, services } = post.data;
+const { title, description, pubDate, lastUpdated: updatedDate, heroImage, heroImageAlt, category, tags, industries, services, faqs = [] } = post.data;
 
 // Related reading: same industry counts most, then shared services, then newest.
 const related = allPosts
@@ -128,6 +128,25 @@ const siteUrl = 'https://f-w-d.co.uk';
       <Content />
     </div>
 
+    {faqs.length > 0 && (
+      <section class="mb-12" aria-labelledby="faq-heading">
+        <h2 id="faq-heading" class="text-2xl font-bold text-deep-space mb-6">Common Questions</h2>
+        <div class="space-y-4">
+          {faqs.map(item => (
+            <details class="bg-gray-50 rounded-lg border border-gray-100 group shadow-sm">
+              <summary class="p-5 cursor-pointer list-none flex items-center justify-between hover:bg-gray-100 rounded-lg">
+                <h3 class="font-semibold text-deep-space pr-4 text-base">{item.question}</h3>
+                <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </summary>
+              <div class="px-5 pb-5"><p class="text-gray-700">{item.answer}</p></div>
+            </details>
+          ))}
+        </div>
+      </section>
+    )}
+
     <!-- Tags -->
     {tags && tags.length > 0 && (
       <div class="flex flex-wrap gap-2 mb-12">
@@ -194,4 +213,16 @@ const siteUrl = 'https://f-w-d.co.uk';
       "@id": `${siteUrl}/blog/${post.id}`
     }
   })} />
+
+  {faqs.length > 0 && (
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": faqs.map(faq => ({
+        "@type": "Question",
+        "name": faq.question,
+        "acceptedAnswer": { "@type": "Answer", "text": faq.answer }
+      }))
+    })} />
+  )}
 </Layout>

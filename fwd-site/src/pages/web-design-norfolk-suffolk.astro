@@ -1,0 +1,242 @@
+---
+// Local landing page for businesses in Norfolk and Suffolk.
+// Prices come from src/data/services.ts; local projects are any in
+// src/data/projects.ts whose location is in Norfolk or Suffolk.
+import Layout from '../layouts/Layout.astro';
+import ProjectCard from '../components/hub/ProjectCard.astro';
+import { projects } from '../data/projects';
+import { PRICES as P, gbp, serviceList, fromPrice } from '../data/services';
+import { BUSINESS_ID, SAM_ID, SITE } from '../lib/schema';
+
+const path = '/web-design-norfolk-suffolk';
+const pageUrl = `${SITE}${path}`;
+const title = 'Web Design & Software in Norfolk and Suffolk';
+const description = `Websites, booking systems and custom software for Norfolk and Suffolk businesses, built by Sam Fowler in Norwich. Fixed prices from ${gbp(P.websites.starter)}, or pay monthly.`;
+
+const waLink = `https://wa.me/447516330379?text=${encodeURIComponent("Hi Sam, I'd like to talk about a website for my business.")}`;
+
+const localProjects = projects.filter(p => /Norwich|Norfolk|Suffolk/.test(p.location ?? ''));
+
+const prices = [
+  { label: 'Starter', price: gbp(P.websites.starter), text: 'Up to five pages, set up for Google, with a contact form. Usually ready in about two weeks.' },
+  { label: 'Professional', price: gbp(P.websites.professional), text: 'Up to ten pages, a design made for your business, a blog and proper SEO. Usually ready in about three weeks.' },
+  { label: 'Bespoke', price: `From ${gbp(P.websites.bespoke)}`, text: 'Online shops, bookings, customer logins and connections to the systems you already use.' },
+  { label: 'Pay monthly', price: `From ${gbp(P.monthly.from)}/month`, text: 'Nothing to pay upfront. Your website, hosting and small changes each month.' },
+];
+
+const faqs = [
+  {
+    question: 'Do you work with businesses in Suffolk?',
+    answer: "Yes. I'm based in Norwich and work with businesses across Norfolk and Suffolk, as well as further afield. Most projects run over video calls, email and a private client area, so being in Ipswich, Bury St Edmunds or Lowestoft makes no difference to how we work together.",
+  },
+  {
+    question: 'Can we meet in person?',
+    answer: "I'm happy to meet clients around Norfolk in person. For businesses further away we'll usually start with a video call, which is quicker to arrange and means we can look at examples together on screen.",
+  },
+  {
+    question: 'How much does a website cost?',
+    answer: `Websites start at ${gbp(P.websites.starter)} for a simple site of up to five pages. Most clients choose the Professional package at ${gbp(P.websites.professional)}, and bespoke builds with shops or bookings start at ${gbp(P.websites.bespoke)}. You can also pay monthly from ${gbp(P.monthly.from)} with nothing upfront. Every project gets a fixed price before any work starts.`,
+  },
+  {
+    question: 'How long does a website take to build?',
+    answer: 'A Starter site usually takes about two weeks and a Professional site about three, once your words and photos are ready. Shops, booking systems and custom software take longer, and you get a timeline with your quote.',
+  },
+  {
+    question: 'Will my website show up in local Google searches?',
+    answer: "It's built to. Every site I make is fast, works well on phones, says clearly what you do and where you do it, and includes the structured data Google uses to understand a business. Your Google Business Profile and reviews matter just as much for local searches, and I'll show you how to get those right.",
+  },
+  {
+    question: 'Do I own my website?',
+    answer: "If you pay for your site outright, you own it, and you can move it elsewhere whenever you like. On a monthly plan, your domain and content are always yours.",
+  },
+];
+
+const prose = 'space-y-5 text-lg text-gray-700 leading-relaxed [&_a]:text-ai-purple [&_a]:font-semibold [&_a:hover]:underline';
+---
+
+<Layout title={title} description={description}>
+  <!-- Hero -->
+  <section class="relative py-20 bg-slate-900">
+    <div class="absolute inset-0 bg-ai-mesh opacity-20"></div>
+    <div class="container relative z-10 mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto text-center text-white">
+        <p class="text-amber-400 font-semibold uppercase tracking-wider text-sm mb-4">Norfolk &amp; Suffolk</p>
+        <h1 class="text-4xl lg:text-5xl font-bold mb-6">Web Design and Software for Norfolk and Suffolk Businesses</h1>
+        <p class="text-xl text-gray-100 mb-8">
+          I'm Sam Fowler, a web developer in Norwich. I build websites, booking systems and the software small businesses run on, for clients across Norfolk, Suffolk and the rest of the UK. You deal with me from the first chat to launch day, and the price is fixed before any work starts.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href={waLink} target="_blank" rel="noopener noreferrer" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-lg transition-colors shadow-lg inline-block">
+            Talk to Sam
+          </a>
+          <a href="#prices" class="bg-white/10 backdrop-blur-sm border-2 border-white text-white font-bold py-4 px-8 rounded-lg hover:bg-white hover:text-slate-900 transition-all inline-block">
+            See Prices
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why a local developer -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 mb-8">A Local Developer, Without the Agency Price Tag</h2>
+        <div class={prose}>
+          <p>
+            If you've looked for a website locally, you've probably found two options: an agency with an account manager and a price to match, or a DIY builder you end up wrestling with on a Sunday evening. I sit in between. One person doing the work properly, at a price a small business can justify.
+          </p>
+          <p>
+            I'm based in Norwich and happy to meet clients around Norfolk in person. Most of the work happens over video calls, email and a private client area where you sign your agreement, fill in a short brief and send your words and photos. So it works just as well whether you're in Norwich, Ipswich, Bury St Edmunds, Lowestoft or King's Lynn.
+          </p>
+          <p>
+            Everything is built to be found locally: fast pages, clear wording about what you do and where, the structured data Google uses to understand a business, and honest advice on the free things that matter most, like your Google Business Profile and reviews.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What I build -->
+  <section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-5xl mx-auto">
+        <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 mb-12 text-center">What I Build</h2>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {serviceList().map(service => (
+            <a href={service.href} class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow group flex flex-col">
+              <h3 class="text-lg font-bold text-slate-900 mb-1 group-hover:text-ai-purple transition-colors">{service.name}</h3>
+              <p class="text-sm font-semibold text-amber-700 mb-3">{fromPrice(service)}</p>
+              <p class="text-gray-600 text-sm leading-relaxed flex-1">{service.summary}</p>
+              <span class="text-ai-purple font-semibold text-sm mt-4 inline-block">Find out more &rarr;</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Local work -->
+  <section id="proof" class="py-20 bg-white scroll-mt-32">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-5xl mx-auto">
+        <div class="max-w-3xl mx-auto mb-12">
+          <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 mb-8">Work for Local Businesses</h2>
+          <div class={prose}>
+            <p>
+              Here are some of the businesses and clubs close to home I've built for. You can see everything else, from manufacturers to horsebox hire companies, on <a href="/work">my work page</a>.
+            </p>
+            <p>
+              Suffolk is horse country too, from the racing yards of Newmarket to livery yards and farriers across the county, and equestrian software is a big part of what I do. If that's your world, have a look at <a href="/equestrian">my equestrian work</a>.
+            </p>
+          </div>
+        </div>
+        <div class={localProjects.length < 3 ? 'grid md:grid-cols-2 gap-6 max-w-3xl mx-auto' : 'grid md:grid-cols-2 lg:grid-cols-3 gap-6'}>
+          {localProjects.map(project => <ProjectCard project={project} />)}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Prices -->
+  <section id="prices" class="py-20 bg-gray-50 scroll-mt-32">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-5xl mx-auto">
+        <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 mb-4 text-center">What a Website Costs</h2>
+        <p class="text-center text-lg text-gray-600 mb-12 max-w-2xl mx-auto">Fixed prices, published up front. Pay once and own it, or pay monthly with nothing upfront.</p>
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {prices.map(item => (
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+              <p class="text-sm font-semibold text-amber-700 mb-1">{item.label}</p>
+              <p class="text-2xl font-bold text-slate-900 mb-3">{item.price}</p>
+              <p class="text-gray-600 text-sm leading-relaxed">{item.text}</p>
+            </div>
+          ))}
+        </div>
+        <p class="text-center text-gray-600 mt-8 max-w-2xl mx-auto [&_a]:text-ai-purple [&_a]:font-semibold [&_a:hover]:underline">
+          Not sure what you need? Read <a href="/blog/how-much-does-a-website-cost-uk">how much a website costs in the UK</a>, or see <a href="/pricing">all my prices</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 mb-12 text-center">Frequently Asked Questions</h2>
+        <div class="space-y-4">
+          {faqs.map(item => (
+            <details class="bg-gray-50 rounded-lg border border-gray-100 group shadow-sm">
+              <summary class="p-6 cursor-pointer list-none flex items-center justify-between hover:bg-gray-100 rounded-lg">
+                <span class="font-semibold text-slate-900 pr-4">{item.question}</span>
+                <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </summary>
+              <div class="px-6 pb-6"><p class="text-gray-600">{item.answer}</p></div>
+            </details>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-20 bg-slate-900 text-white">
+    <div class="container mx-auto px-6 lg:px-8 text-center">
+      <div class="max-w-2xl mx-auto">
+        <h2 class="text-4xl font-bold mb-6 text-white">Tell Me About Your Business</h2>
+        <p class="text-xl text-gray-100 mb-8">
+          Send me a message with what you do and what you'd like your website to do. I'll come back with an honest view and a fixed price.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href={waLink} target="_blank" rel="noopener noreferrer" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-lg transition-colors shadow-lg inline-block">
+            Message Sam on WhatsApp
+          </a>
+          <a href="/contact" class="bg-white/10 border-2 border-white text-white font-bold py-4 px-8 rounded-lg hover:bg-white hover:text-slate-900 transition-all inline-block">
+            Use the Contact Form
+          </a>
+        </div>
+        <p class="text-sm text-gray-300 mt-6">Based in Norwich. Working with businesses across Norfolk, Suffolk and the UK.</p>
+      </div>
+    </div>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": `${pageUrl}#page`,
+        "url": pageUrl,
+        "name": title,
+        "description": description,
+        "about": { "@id": `${pageUrl}#service` },
+        "author": { "@id": SAM_ID },
+        "publisher": { "@id": BUSINESS_ID },
+      },
+      {
+        "@type": "Service",
+        "@id": `${pageUrl}#service`,
+        "name": "Web design and software development in Norfolk and Suffolk",
+        "serviceType": "Web design",
+        "provider": { "@id": BUSINESS_ID },
+        "areaServed": [
+          { "@type": "AdministrativeArea", "name": "Norfolk" },
+          { "@type": "AdministrativeArea", "name": "Suffolk" },
+        ],
+        "url": pageUrl,
+      },
+      {
+        "@type": "FAQPage",
+        "@id": `${pageUrl}#faq`,
+        "mainEntity": faqs.map(faq => ({
+          "@type": "Question",
+          "name": faq.question,
+          "acceptedAnswer": { "@type": "Answer", "text": faq.answer },
+        })),
+      },
+    ],
+  })} />
+</Layout>

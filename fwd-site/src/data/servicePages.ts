@@ -181,7 +181,7 @@ export const servicePages: ServicePage[] = [
           schemaDescription: 'Bespoke design, e-commerce and custom integrations',
         },
       ],
-      note: 'All packages include a free consultation, professional design, and training on how to manage your site.',
+      note: 'All packages include a free consultation, professional design, and training on how to manage your site. Comparing quotes? Read <a href="/blog/how-much-does-a-website-cost-uk" class="text-ai-purple font-semibold hover:underline">how much a website costs in the UK</a>, including the yearly running costs.',
       monthlyPlans: true,
     },
     related: [
